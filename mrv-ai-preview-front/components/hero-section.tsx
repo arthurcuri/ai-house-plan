@@ -31,11 +31,11 @@ export function HeroSection({ onTryNow }: HeroSectionProps) {
                 Powered by AI Technology
               </div>
               <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 leading-tight">
-                Transform Floor Plans into <span className="text-emerald-600">Realistic Previews</span> with AI
+                Transforme Plantas Baixas em <span className="text-emerald-600">Previews Realistas</span> com IA
               </h1>
               <p className="text-xl text-gray-600 leading-relaxed max-w-lg">
-                Experience your future apartment before it's built with MRV AI Preview. Get photorealistic
-                visualizations in seconds.
+                Experimente seu futuro apartamento antes mesmo de ser construído com o MRV AI Preview. Obtenha
+                visualizações fotorrealistas em segundos.
               </p>
             </div>
 

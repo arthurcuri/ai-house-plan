@@ -40,9 +40,10 @@ export function AppInterface({ onBackToLanding }: AppInterfaceProps) {
 
     try {
       const formData = new FormData()
-      formData.append("floorplan", uploadedFile)
+      formData.append("floorplan", uploadedFile) // Mudança: volta para "floorplan" para corresponder à API route
 
       const response = await fetch("/api/generate-preview", {
+        // Usar a rota da API do Next.js
         method: "POST",
         body: formData,
       })
@@ -55,12 +56,12 @@ export function AppInterface({ onBackToLanding }: AppInterfaceProps) {
       const imageUrl = URL.createObjectURL(blob)
       setGeneratedImage(imageUrl)
     } catch (err) {
-      setError("Failed to generate preview. Please try again.")
+      setError("Falha ao gerar preview. Tente novamente.")
       console.error("Error generating preview:", err)
 
-      // For demo purposes, show a placeholder result after a delay
+      // Para demonstração, mostrar um resultado placeholder após um delay
       setTimeout(() => {
-        setGeneratedImage("/placeholder.svg?height=400&width=600&text=AI+Generated+Preview")
+        setGeneratedImage("/placeholder.svg?height=400&width=600&text=Preview+Gerado+por+IA")
         setError(null)
       }, 2000)
     } finally {

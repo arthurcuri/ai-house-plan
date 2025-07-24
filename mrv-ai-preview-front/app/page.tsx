@@ -9,25 +9,19 @@ import { HowItWorksSection } from "@/components/how-it-works-section"
 import { PreviewShowcase } from "@/components/preview-showcase"
 import { FAQSection } from "@/components/faq-section"
 import { Footer } from "@/components/footer"
-import { LoginModal } from "@/components/login-modal"
 import { AppInterface } from "@/components/app-interface"
 
 export default function Home() {
   const { user, isAuthenticated } = useAuth()
-  const [showLoginModal, setShowLoginModal] = useState(false)
   const [showApp, setShowApp] = useState(false)
 
   const handleTryNow = () => {
     if (isAuthenticated) {
       setShowApp(true)
     } else {
-      setShowLoginModal(true)
+      // Redirect to login page
+      window.location.href = "/login"
     }
-  }
-
-  const handleLoginSuccess = () => {
-    setShowLoginModal(false)
-    setShowApp(true)
   }
 
   if (showApp && isAuthenticated) {
@@ -36,7 +30,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white">
-      <Header onTryNow={handleTryNow} onLogin={() => setShowLoginModal(true)} />
+      <Header onTryNow={handleTryNow} />
       <main>
         <HeroSection onTryNow={handleTryNow} />
         <AboutSection />
@@ -45,12 +39,6 @@ export default function Home() {
         <FAQSection />
       </main>
       <Footer />
-
-      <LoginModal
-        isOpen={showLoginModal}
-        onClose={() => setShowLoginModal(false)}
-        onLoginSuccess={handleLoginSuccess}
-      />
     </div>
   )
 }

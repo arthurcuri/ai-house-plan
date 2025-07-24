@@ -12,13 +12,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import Link from "next/link"
 
 interface HeaderProps {
   onTryNow?: () => void
-  onLogin?: () => void
 }
 
-export function Header({ onTryNow, onLogin }: HeaderProps) {
+export function Header({ onTryNow }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { user, isAuthenticated, logout } = useAuth()
 
@@ -49,7 +49,7 @@ export function Header({ onTryNow, onLogin }: HeaderProps) {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-3">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center">
                 <Building2 className="w-5 h-5 text-white" />
@@ -59,7 +59,7 @@ export function Header({ onTryNow, onLogin }: HeaderProps) {
               </div>
             </div>
             <span className="text-xl font-bold text-gray-900">MRV AI Preview</span>
-          </div>
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">
@@ -67,19 +67,19 @@ export function Header({ onTryNow, onLogin }: HeaderProps) {
               onClick={() => scrollToSection("about")}
               className="text-gray-600 hover:text-emerald-600 transition-colors"
             >
-              About
+              Sobre
             </button>
             <button
               onClick={() => scrollToSection("how-it-works")}
               className="text-gray-600 hover:text-emerald-600 transition-colors"
             >
-              How It Works
+              Como Funciona
             </button>
             <button
               onClick={() => scrollToSection("showcase")}
               className="text-gray-600 hover:text-emerald-600 transition-colors"
             >
-              Examples
+              Exemplos
             </button>
             <button
               onClick={() => scrollToSection("faq")}
@@ -109,26 +109,28 @@ export function Header({ onTryNow, onLogin }: HeaderProps) {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={onTryNow} className="cursor-pointer">
                     <User className="mr-2 h-4 w-4" />
-                    <span>Open App</span>
+                    <span>Abrir App</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="cursor-pointer">
                     <Settings className="mr-2 h-4 w-4" />
-                    <span>Settings</span>
+                    <span>Configurações</span>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600">
                     <LogOut className="mr-2 h-4 w-4" />
-                    <span>Log out</span>
+                    <span>Sair</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
               <div className="flex items-center gap-3">
-                <Button variant="ghost" onClick={onLogin} className="text-gray-600 hover:text-emerald-600">
-                  Sign In
-                </Button>
+                <Link href="/login">
+                  <Button variant="ghost" className="text-gray-600 hover:text-emerald-600">
+                    Entrar
+                  </Button>
+                </Link>
                 <Button onClick={onTryNow} className="bg-emerald-600 hover:bg-emerald-700 text-white">
-                  Try Now
+                  Experimentar
                 </Button>
               </div>
             )}
@@ -151,19 +153,19 @@ export function Header({ onTryNow, onLogin }: HeaderProps) {
                 onClick={() => scrollToSection("about")}
                 className="text-left text-gray-600 hover:text-emerald-600 transition-colors"
               >
-                About
+                Sobre
               </button>
               <button
                 onClick={() => scrollToSection("how-it-works")}
                 className="text-left text-gray-600 hover:text-emerald-600 transition-colors"
               >
-                How It Works
+                Como Funciona
               </button>
               <button
                 onClick={() => scrollToSection("showcase")}
                 className="text-left text-gray-600 hover:text-emerald-600 transition-colors"
               >
-                Examples
+                Exemplos
               </button>
               <button
                 onClick={() => scrollToSection("faq")}
@@ -188,23 +190,25 @@ export function Header({ onTryNow, onLogin }: HeaderProps) {
                     </div>
                   </div>
                   <Button onClick={onTryNow} className="bg-emerald-600 hover:bg-emerald-700 text-white w-full">
-                    Open App
+                    Abrir App
                   </Button>
                   <Button
                     onClick={handleLogout}
                     variant="outline"
                     className="w-full text-red-600 border-red-200 bg-transparent"
                   >
-                    Log out
+                    Sair
                   </Button>
                 </div>
               ) : (
                 <div className="pt-4 border-t border-gray-200 space-y-3">
-                  <Button onClick={onLogin} variant="outline" className="w-full bg-transparent">
-                    Sign In
-                  </Button>
+                  <Link href="/login">
+                    <Button variant="outline" className="w-full bg-transparent">
+                      Entrar
+                    </Button>
+                  </Link>
                   <Button onClick={onTryNow} className="bg-emerald-600 hover:bg-emerald-700 text-white w-full">
-                    Try Now
+                    Experimentar
                   </Button>
                 </div>
               )}
