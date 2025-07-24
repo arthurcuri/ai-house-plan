@@ -1,11 +1,26 @@
 "use client"
 
 import { useState } from "react"
-import { Building2, Menu, X } from "lucide-react"
+import { Building2, Menu, X, User, LogOut, Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useAuth } from "@/hooks/use-auth"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
-export function Header() {
+interface HeaderProps {
+  onTryNow?: () => void
+  onLogin?: () => void
+}
+
+export function Header({ onTryNow, onLogin }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { user, isAuthenticated, logout } = useAuth()
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId)
@@ -13,6 +28,20 @@ export function Header() {
       element.scrollIntoView({ behavior: "smooth" })
     }
     setIsMenuOpen(false)
+  }
+
+  const handleLogout = () => {
+    logout()
+    setIsMenuOpen(false)
+  }
+
+  const getUserInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2)
   }
 
   return (
@@ -58,9 +87,51 @@ export function Header() {
             >
               FAQ
             </button>
-            <Button onClick={() => scrollToSection("hero")} className="bg-emerald-600 hover:bg-emerald-700 text-white">
-              Try Now
-            </Button>
+
+            {/* Authentication Section */}
+            {isAuthenticated ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                    <Avatar className="h-10 w-10">
+                      <AvatarImage src={user?.avatar || "/placeholder.svg"} alt={user?.name} />
+                      <AvatarFallback className="bg-emerald-100 text-emerald-700">
+                        {user?.name ? getUserInitials(user.name) : "U"}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <div className="flex flex-col space-y-1 p-2">
+                    <p className="text-sm font-medium leading-none">{user?.name}</p>
+                    <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={onTryNow} className="cursor-pointer">
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Open App</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="cursor-pointer">
+                    <Settings className="mr-2 h-4 w-4" />
+                    <span>Settings</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <div className="flex items-center gap-3">
+                <Button variant="ghost" onClick={onLogin} className="text-gray-600 hover:text-emerald-600">
+                  Sign In
+                </Button>
+                <Button onClick={onTryNow} className="bg-emerald-600 hover:bg-emerald-700 text-white">
+                  Try Now
+                </Button>
+              </div>
+            )}
           </nav>
 
           {/* Mobile Menu Button */}
@@ -100,12 +171,43 @@ export function Header() {
               >
                 FAQ
               </button>
-              <Button
-                onClick={() => scrollToSection("hero")}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white w-full mt-2"
-              >
-                Try Now
-              </Button>
+
+              {/* Mobile Authentication */}
+              {isAuthenticated ? (
+                <div className="pt-4 border-t border-gray-200 space-y-3">
+                  <div className="flex items-center gap-3">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={user?.avatar || "/placeholder.svg"} alt={user?.name} />
+                      <AvatarFallback className="bg-emerald-100 text-emerald-700 text-sm">
+                        {user?.name ? getUserInitials(user.name) : "U"}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="text-sm font-medium">{user?.name}</p>
+                      <p className="text-xs text-gray-500">{user?.email}</p>
+                    </div>
+                  </div>
+                  <Button onClick={onTryNow} className="bg-emerald-600 hover:bg-emerald-700 text-white w-full">
+                    Open App
+                  </Button>
+                  <Button
+                    onClick={handleLogout}
+                    variant="outline"
+                    className="w-full text-red-600 border-red-200 bg-transparent"
+                  >
+                    Log out
+                  </Button>
+                </div>
+              ) : (
+                <div className="pt-4 border-t border-gray-200 space-y-3">
+                  <Button onClick={onLogin} variant="outline" className="w-full bg-transparent">
+                    Sign In
+                  </Button>
+                  <Button onClick={onTryNow} className="bg-emerald-600 hover:bg-emerald-700 text-white w-full">
+                    Try Now
+                  </Button>
+                </div>
+              )}
             </nav>
           </div>
         )}

@@ -2,12 +2,18 @@
 
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Sparkles } from "lucide-react"
+import { useAuth } from "@/hooks/use-auth"
 import Image from "next/image"
 
-export function HeroSection() {
-  const scrollToApp = () => {
-    // This would navigate to the actual app or scroll to a demo section
-    const element = document.getElementById("about")
+interface HeroSectionProps {
+  onTryNow: () => void
+}
+
+export function HeroSection({ onTryNow }: HeroSectionProps) {
+  const { isAuthenticated } = useAuth()
+
+  const scrollToLearnMore = () => {
+    const element = document.getElementById("how-it-works")
     if (element) {
       element.scrollIntoView({ behavior: "smooth" })
     }
@@ -35,18 +41,18 @@ export function HeroSection() {
 
             <div className="flex flex-col sm:flex-row gap-4">
               <Button
-                onClick={scrollToApp}
+                onClick={onTryNow}
                 size="lg"
                 className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 text-lg font-semibold"
               >
-                Try Now
+                {isAuthenticated ? "Open App" : "Try Now"}
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
               <Button
                 variant="outline"
                 size="lg"
-                onClick={() => document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" })}
-                className="border-emerald-200 text-emerald-700 hover:bg-emerald-50 px-8 py-4 text-lg"
+                onClick={scrollToLearnMore}
+                className="border-emerald-200 text-emerald-700 hover:bg-emerald-50 px-8 py-4 text-lg bg-transparent"
               >
                 Learn More
               </Button>

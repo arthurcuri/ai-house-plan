@@ -1,0 +1,19 @@
+# Dependências
+/mrv-ai-preview-front/node_modules/
+
+# Next.js
+/mrv-ai-preview-front/.next/
+
+# Arquivos de ambiente
+/mrv-ai-preview-front/.env*
+
+# Vercel
+/mrv-ai-preview-front/.vercel
+
+# TypeScript
+/mrv-ai-preview-front/*.tsbuildinfo
+/mrv-ai-preview-front/next-env.d.ts
+
+# Arquivos extras
+perg.txt
+node.txt
