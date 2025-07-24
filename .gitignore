@@ -17,3 +17,8 @@
 # Arquivos extras
 perg.txt
 node.txt
+
+
+.env
+
+/mrv-ai-preview-back/workflow/.env
