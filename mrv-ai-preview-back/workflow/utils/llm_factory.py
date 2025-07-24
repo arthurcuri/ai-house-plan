@@ -11,7 +11,8 @@ genai.configure(api_key=GEMINI_API_KEY)
 
 # Modelos específicos por funcionalidade
 modelo_texto = genai.GenerativeModel("gemini-2.5-flash")
-modelo_multimodal = genai.GenerativeModel("gemini-2.0-flash-preview-image-generation")
+modelo_imagem = genai.GenerativeModel("gemini-2.0-flash-preview-image-generation")
+modelo_multimodal = genai.GenerativeModel("gemini-1.5-flash")
 
 
 def interpretar_texto(prompt: str, history: list[dict] = None) -> str:
