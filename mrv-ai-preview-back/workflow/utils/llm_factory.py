@@ -60,3 +60,14 @@ def interpretar_planta_com_imagem(prompt: str, image_bytes: bytes) -> str:
     ]
     response = modelo_multimodal.generate_content(contents)
     return response.text
+
+
+
+def classificar_tipo_comodo(prompt: str) -> str:
+    """
+    Classifica o tipo de cômodo com base em descrição textual, usando o modelo de texto Gemini.
+    
+    Retorna apenas a string com o tipo (ex: 'quarto_casal', 'sala', etc.).
+    """
+    response = modelo_texto.generate_content(prompt)
+    return response.text.strip().lower()

@@ -79,27 +79,3 @@ O ambiente deve transmitir uma área de lazer íntima e econômica, ideal para r
 
 
 
-# Seleção dinâmica
-def gerar_prompt_por_comodo(comodo, tipo):
-    nome = comodo["nome"].lower()
-    chave = ""
-
-    if "quarto" in nome:
-        chave = f"quarto_{tipo}"
-    elif "cozinha" in nome and "sala" in nome:
-        chave = f"sala_cozinha_{tipo}"
-    elif "cozinha" in nome:
-        chave = f"cozinha_{tipo}"
-    elif "banheiro" in nome:
-        chave = f"banheiro_{tipo}"
-    else:
-        return prompt_padrao(comodo, tipo)
-
-    # Mapear função dinamicamente
-    mapa = globals()
-    func = mapa.get(chave)
-
-    if func:
-        return func(comodo)
-    else:
-        return prompt_padrao(comodo, tipo)
