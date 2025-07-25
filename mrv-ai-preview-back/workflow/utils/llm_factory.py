@@ -31,6 +31,8 @@ def interpretar_texto(prompt: str, history: list[dict] = None) -> str:
 
 def gerar_imagem(prompt: str, image_bytes: bytes = None) -> bytes:
     """
+    Detalhamento/comentário: 
+
     Gera ou edita imagem 3D com modelo Gemini 2.0 Flash Preview Image Generation.
     Pode receber prompt apenas ou prompt + imagem de base para edição.
     Retorna bytes da imagem gerada.
