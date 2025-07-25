@@ -17,20 +17,20 @@ def interpretar_planta_com_ocr(image_bytes: bytes, texto_ocr: list, tipo_apartam
     
     # ✅ Prompt estruturado para a LLM interpretar (SEM tipo de apartamento)
     prompt = f"""
-Você é um assistente especialista em interpretação de plantas arquitetônicas residenciais.
+        Você é um assistente especialista em interpretação de plantas arquitetônicas residenciais.
 
-Com base no seguinte texto extraído por OCR da planta:
+        Com base no seguinte texto extraído por OCR da planta:
 
-{texto_ocr}
+        {texto_ocr}
 
-E considerando a imagem da planta fornecida, identifique com o máximo de precisão:
+        E considerando a imagem da planta fornecida, identifique com o máximo de precisão:
 
-1. Quais são os cômodos presentes?
-2. Quais são as dimensões aproximadas de cada um (em cm)?
-3. Qual a localização relativa de cada cômodo (ex: 'superior esquerdo', 'centro', etc)?
+        1. Quais são os cômodos presentes?
+        2. Quais são as dimensões aproximadas de cada um (em cm)?
+        3. Qual a localização relativa de cada cômodo (ex: 'superior esquerdo', 'centro', etc)?
 
-Responda em formato JSON estruturado. Seja preciso e conciso.
-"""
+        Responda em formato JSON estruturado. Seja preciso e conciso.
+        """
 
     # ✅ Chamada para a LLM
     resposta = interpretar_planta_com_imagem(prompt, image_bytes)
