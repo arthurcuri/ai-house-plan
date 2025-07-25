@@ -6,23 +6,23 @@ export function HowItWorksSection() {
     {
       step: "01",
       icon: <Upload className="w-8 h-8 text-white" />,
-      title: "Upload Your Floor Plan",
+      title: "Faça Upload da Sua Planta",
       description:
-        "Simply drag and drop your apartment floor plan or select it from your device. We support all common image and PDF formats.",
+        "Simplesmente arraste e solte sua planta baixa do apartamento ou selecione do seu dispositivo. Suportamos todos os formatos comuns de imagem e PDF.",
     },
     {
       step: "02",
       icon: <Cpu className="w-8 h-8 text-white" />,
-      title: "AI Analyzes Structure",
+      title: "IA Analisa a Estrutura",
       description:
-        "Our advanced AI algorithms analyze the architectural layout, room dimensions, and spatial relationships in your floor plan.",
+        "Nossos algoritmos avançados de IA analisam o layout arquitetônico, dimensões dos cômodos e relações espaciais na sua planta baixa.",
     },
     {
       step: "03",
       icon: <ImageIcon className="w-8 h-8 text-white" />,
-      title: "Receive Realistic Preview",
+      title: "Receba o Preview Realista",
       description:
-        "Get a stunning, photorealistic 3D-style visualization of your apartment in seconds, ready to download and share.",
+        "Obtenha uma visualização 3D fotorrealista impressionante do seu apartamento em segundos, pronta para download e compartilhamento.",
     },
   ]
 
@@ -30,9 +30,9 @@ export function HowItWorksSection() {
     <section id="how-it-works" className="py-20 bg-gray-50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">How It Works</h2>
+          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">Como Funciona</h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Transform your floor plans into realistic previews in just three simple steps
+            Transforme suas plantas baixas em previews realistas em apenas três passos simples
           </p>
         </div>
 

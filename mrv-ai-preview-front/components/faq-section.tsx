@@ -9,24 +9,24 @@ export function FAQSection() {
 
   const faqs = [
     {
-      question: "What file formats are supported for floor plans?",
+      question: "Quais formatos de arquivo são suportados para plantas baixas?",
       answer:
-        "MRV AI Preview supports all common image formats including PNG, JPG, JPEG, and PDF files. We recommend high-resolution images for the best results.",
+        "O MRV AI Preview suporta todos os formatos de imagem comuns incluindo PNG, JPG, JPEG e arquivos PDF. Recomendamos imagens de alta resolução para melhores resultados.",
     },
     {
-      question: "How long does it take to generate a preview?",
+      question: "Quanto tempo leva para gerar um preview?",
       answer:
-        "Our AI typically generates realistic apartment previews in under 30 seconds. Processing time may vary slightly depending on the complexity of your floor plan.",
+        "Nossa IA normalmente gera previews realistas de apartamentos em menos de 30 segundos. O tempo de processamento pode variar ligeiramente dependendo da complexidade da sua planta baixa.",
     },
     {
-      question: "How accurate are the AI-generated previews?",
+      question: "Quão precisos são os previews gerados por IA?",
       answer:
-        "Our AI creates highly realistic visualizations based on architectural best practices and design standards. While the previews are photorealistic, they represent one possible interpretation of your floor plan.",
+        "Nossa IA cria visualizações altamente realistas baseadas em melhores práticas arquitetônicas e padrões de design. Embora os previews sejam fotorrealistas, eles representam uma possível interpretação da sua planta baixa.",
     },
     {
-      question: "Can I customize the generated preview?",
+      question: "Posso personalizar o preview gerado?",
       answer:
-        "Currently, our AI generates previews automatically based on the floor plan structure. We're working on adding customization options for furniture styles, color schemes, and finishes in future updates.",
+        "Atualmente, nossa IA gera previews automaticamente baseados na estrutura da planta baixa. Estamos trabalhando em adicionar opções de personalização para estilos de móveis, esquemas de cores e acabamentos em futuras atualizações.",
     },
   ]
 
@@ -38,9 +38,9 @@ export function FAQSection() {
     <section id="faq" className="py-20 bg-gray-50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">Frequently Asked Questions</h2>
+          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">Perguntas Frequentes</h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Get answers to common questions about MRV AI Preview
+            Obtenha respostas para perguntas comuns sobre o MRV AI Preview
           </p>
         </div>
 

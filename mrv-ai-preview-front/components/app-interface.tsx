@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Building2 } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
+import { CategorySelection } from "@/components/category-selection"
 import { UploadSection } from "@/components/upload-section"
 import { ResultSection } from "@/components/result-section"
 import {
@@ -21,10 +22,18 @@ interface AppInterfaceProps {
 
 export function AppInterface({ onBackToLanding }: AppInterfaceProps) {
   const { user, logout } = useAuth()
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [uploadedFile, setUploadedFile] = useState<File | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const [generatedImage, setGeneratedImage] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+
+  const handleCategorySelect = (category: string) => {
+    setSelectedCategory(category)
+    // Reset previous results when category changes
+    setGeneratedImage(null)
+    setError(null)
+  }
 
   const handleFileUpload = (file: File) => {
     setUploadedFile(file)
@@ -33,17 +42,17 @@ export function AppInterface({ onBackToLanding }: AppInterfaceProps) {
   }
 
   const handleGeneratePreview = async () => {
-    if (!uploadedFile) return
+    if (!uploadedFile || !selectedCategory) return
 
     setIsGenerating(true)
     setError(null)
 
     try {
       const formData = new FormData()
-      formData.append("floorplan", uploadedFile) // Mudança: volta para "floorplan" para corresponder à API route
+      formData.append("floorplan", uploadedFile) // Use "floorplan" para corresponder à API route
+      formData.append("category", selectedCategory) // Send category along with file
 
       const response = await fetch("/api/generate-preview", {
-        // Usar a rota da API do Next.js
         method: "POST",
         body: formData,
       })
@@ -52,16 +61,28 @@ export function AppInterface({ onBackToLanding }: AppInterfaceProps) {
         throw new Error("Failed to generate preview")
       }
 
-      const blob = await response.blob()
-      const imageUrl = URL.createObjectURL(blob)
-      setGeneratedImage(imageUrl)
+      // ✅ ATUALIZADO: Agora recebe JSON com a interpretação da LLM
+      const jsonResponse = await response.json()
+      
+      if (jsonResponse.success && jsonResponse.data.interpretacao_llm) {
+        // Para demonstração, vamos usar uma imagem placeholder por enquanto
+        // Você pode implementar geração de imagem baseada na interpretação depois
+        setGeneratedImage("/placeholder.svg?height=400&width=600&text=Preview+Gerado+por+IA")
+        
+        // Log da interpretação da LLM para debug
+        console.log("Interpretação da LLM:", jsonResponse.data.interpretacao_llm)
+      } else {
+        throw new Error("Invalid response format")
+      }
     } catch (err) {
       setError("Falha ao gerar preview. Tente novamente.")
       console.error("Error generating preview:", err)
 
       // Para demonstração, mostrar um resultado placeholder após um delay
       setTimeout(() => {
-        setGeneratedImage("/placeholder.svg?height=400&width=600&text=Preview+Gerado+por+IA")
+        setGeneratedImage(
+          `/placeholder.svg?height=400&width=600&text=Preview+${selectedCategory?.toUpperCase()}+Gerado+por+IA`,
+        )
         setError(null)
       }, 2000)
     } finally {
@@ -83,6 +104,8 @@ export function AppInterface({ onBackToLanding }: AppInterfaceProps) {
     onBackToLanding()
   }
 
+  const canGeneratePreview = selectedCategory && uploadedFile
+
   return (
     <div className="min-h-screen bg-white">
       {/* App Header */}
@@ -92,7 +115,7 @@ export function AppInterface({ onBackToLanding }: AppInterfaceProps) {
             <div className="flex items-center gap-4">
               <Button variant="ghost" onClick={onBackToLanding} className="text-gray-600 hover:text-emerald-600">
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Landing
+                Voltar ao Início
               </Button>
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-2">
@@ -105,9 +128,7 @@ export function AppInterface({ onBackToLanding }: AppInterfaceProps) {
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold text-gray-900">MRV AI Preview</h1>
-                  <p className="text-sm text-gray-600">
-                    Upload a floor plan and generate a realistic apartment preview
-                  </p>
+                  <p className="text-sm text-gray-600">Selecione a categoria e faça upload da planta baixa</p>
                 </div>
               </div>
             </div>
@@ -130,12 +151,12 @@ export function AppInterface({ onBackToLanding }: AppInterfaceProps) {
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={onBackToLanding} className="cursor-pointer">
-                  Back to Landing
+                  Voltar ao Início
                 </DropdownMenuItem>
-                <DropdownMenuItem className="cursor-pointer">Settings</DropdownMenuItem>
+                <DropdownMenuItem className="cursor-pointer">Configurações</DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600">
-                  Log out
+                  Sair
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -144,15 +165,22 @@ export function AppInterface({ onBackToLanding }: AppInterfaceProps) {
       </header>
 
       {/* App Content */}
-      <main className="container mx-auto px-4 py-8 max-w-4xl">
-        <UploadSection
-          onFileUpload={handleFileUpload}
-          uploadedFile={uploadedFile}
-          onGeneratePreview={handleGeneratePreview}
-          isGenerating={isGenerating}
-          disabled={!uploadedFile}
-        />
+      <main className="container mx-auto px-4 py-8 max-w-6xl space-y-12">
+        {/* Category Selection */}
+        <CategorySelection selectedCategory={selectedCategory} onCategorySelect={handleCategorySelect} />
 
+        {/* Upload Section - Show when category is selected */}
+        {selectedCategory && (
+          <UploadSection
+            onFileUpload={handleFileUpload}
+            uploadedFile={uploadedFile}
+            onGeneratePreview={handleGeneratePreview}
+            isGenerating={isGenerating}
+            disabled={!canGeneratePreview}
+          />
+        )}
+
+        {/* Result Section - Show preview below upload */}
         <ResultSection generatedImage={generatedImage} isGenerating={isGenerating} error={error} />
       </main>
     </div>

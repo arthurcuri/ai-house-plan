@@ -2,19 +2,20 @@ from llm_factory import interpretar_planta_com_imagem
 import io
 from PIL import Image
 
-def interpretar_planta_com_ocr(image_bytes: bytes, texto_ocr: list):
+def interpretar_planta_com_ocr(image_bytes: bytes, texto_ocr: list, tipo_apartamento: str):
     """
     Interpreta uma planta baixa usando OCR e LLM
     
     Args:
         image_bytes: Bytes da imagem da planta
         texto_ocr: Lista de textos extraídos por OCR
+        tipo_apartamento: Tipo do apartamento (class, eco, bio, essential)
     
     Returns:
         Resposta da LLM interpretando a planta
     """
     
-    # ✅ Prompt estruturado para a LLM interpretar
+    # ✅ Prompt estruturado para a LLM interpretar (SEM tipo de apartamento)
     prompt = f"""
 Você é um assistente especialista em interpretação de plantas arquitetônicas residenciais.
 
@@ -51,8 +52,8 @@ if __name__ == "__main__":
     with open(CAMINHO_IMAGEM, "rb") as f:
         image_bytes = f.read()
 
-    # ✅ Teste da função
-    resposta = interpretar_planta_com_ocr(image_bytes, texto_ocr)
+    # ✅ Teste da função com tipo
+    resposta = interpretar_planta_com_ocr(image_bytes, texto_ocr, "class")
     
     # ✅ Resultado
     print("🧠 Resposta da LLM:\n")

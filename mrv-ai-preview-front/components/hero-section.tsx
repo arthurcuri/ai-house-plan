@@ -28,7 +28,7 @@ export function HeroSection({ onTryNow }: HeroSectionProps) {
             <div className="space-y-4">
               <div className="inline-flex items-center gap-2 bg-emerald-100 text-emerald-800 px-4 py-2 rounded-full text-sm font-medium">
                 <Sparkles className="w-4 h-4" />
-                Powered by AI Technology
+                Tecnologia de Inteligência Artificial
               </div>
               <h1 className="text-4xl lg:text-6xl font-bold text-gray-900 leading-tight">
                 Transforme Plantas Baixas em <span className="text-emerald-600">Previews Realistas</span> com IA
@@ -45,7 +45,7 @@ export function HeroSection({ onTryNow }: HeroSectionProps) {
                 size="lg"
                 className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 text-lg font-semibold"
               >
-                {isAuthenticated ? "Open App" : "Try Now"}
+                {isAuthenticated ? "Abrir App" : "Experimentar Agora"}
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
               <Button
@@ -54,23 +54,23 @@ export function HeroSection({ onTryNow }: HeroSectionProps) {
                 onClick={scrollToLearnMore}
                 className="border-emerald-200 text-emerald-700 hover:bg-emerald-50 px-8 py-4 text-lg bg-transparent"
               >
-                Learn More
+                Saiba Mais
               </Button>
             </div>
 
             {/* Stats */}
             <div className="flex flex-wrap gap-8 pt-8 border-t border-gray-200">
               <div>
-                <div className="text-2xl font-bold text-gray-900">10,000+</div>
-                <div className="text-gray-600">Floor Plans Processed</div>
+                <div className="text-2xl font-bold text-gray-900">10.000+</div>
+                <div className="text-gray-600">Plantas Processadas</div>
               </div>
               <div>
                 <div className="text-2xl font-bold text-gray-900">&lt; 30s</div>
-                <div className="text-gray-600">Average Generation Time</div>
+                <div className="text-gray-600">Tempo Médio de Geração</div>
               </div>
               <div>
                 <div className="text-2xl font-bold text-gray-900">95%</div>
-                <div className="text-gray-600">Customer Satisfaction</div>
+                <div className="text-gray-600">Satisfação dos Clientes</div>
               </div>
             </div>
           </div>
@@ -79,8 +79,8 @@ export function HeroSection({ onTryNow }: HeroSectionProps) {
           <div className="relative">
             <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-white p-4">
               <Image
-                src="/placeholder.svg?height=600&width=800&text=Modern+Apartment+Visualization"
-                alt="AI-generated apartment preview"
+                src="/placeholder.svg?height=600&width=800&text=Visualização+Moderna+de+Apartamento"
+                alt="Preview de apartamento gerado por IA"
                 width={800}
                 height={600}
                 className="w-full h-auto rounded-lg"
@@ -89,7 +89,7 @@ export function HeroSection({ onTryNow }: HeroSectionProps) {
               <div className="absolute top-8 right-8 bg-white/90 backdrop-blur-sm rounded-lg px-3 py-2 shadow-lg">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
-                  <span className="text-sm font-medium text-gray-700">AI Processing</span>
+                  <span className="text-sm font-medium text-gray-700">Processando IA</span>
                 </div>
               </div>
             </div>

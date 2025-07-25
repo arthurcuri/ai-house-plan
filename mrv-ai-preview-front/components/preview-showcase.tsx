@@ -11,22 +11,22 @@ export function PreviewShowcase() {
 
   const showcaseItems = [
     {
-      before: "/placeholder.svg?height=300&width=400&text=Floor+Plan+1",
-      after: "/placeholder.svg?height=300&width=400&text=3D+Apartment+1",
-      title: "Modern Studio Apartment",
-      description: "Converted from a simple floor plan to a stunning 3D visualization",
+      before: "/placeholder.svg?height=300&width=400&text=Planta+Baixa+1",
+      after: "/placeholder.svg?height=300&width=400&text=Apartamento+3D+1",
+      title: "Apartamento Studio Moderno",
+      description: "Convertido de uma planta baixa simples para uma visualização 3D impressionante",
     },
     {
-      before: "/placeholder.svg?height=300&width=400&text=Floor+Plan+2",
-      after: "/placeholder.svg?height=300&width=400&text=3D+Apartment+2",
-      title: "Two-Bedroom Layout",
-      description: "Complete with furniture placement and realistic lighting",
+      before: "/placeholder.svg?height=300&width=400&text=Planta+Baixa+2",
+      after: "/placeholder.svg?height=300&width=400&text=Apartamento+3D+2",
+      title: "Layout de Dois Quartos",
+      description: "Completo com disposição de móveis e iluminação realista",
     },
     {
-      before: "/placeholder.svg?height=300&width=400&text=Floor+Plan+3",
-      after: "/placeholder.svg?height=300&width=400&text=3D+Apartment+3",
-      title: "Luxury Penthouse",
-      description: "High-end finishes and premium materials visualization",
+      before: "/placeholder.svg?height=300&width=400&text=Planta+Baixa+3",
+      after: "/placeholder.svg?height=300&width=400&text=Apartamento+3D+3",
+      title: "Cobertura de Luxo",
+      description: "Visualização de acabamentos premium e materiais de alta qualidade",
     },
   ]
 
@@ -42,9 +42,10 @@ export function PreviewShowcase() {
     <section id="showcase" className="py-20 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">See the Magic in Action</h2>
+          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">Veja a Mágica em Ação</h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Discover how our AI transforms simple floor plans into stunning, photorealistic apartment previews
+            Descubra como nossa IA transforma plantas baixas simples em previews fotorrealistas impressionantes de
+            apartamentos
           </p>
         </div>
 
@@ -54,11 +55,11 @@ export function PreviewShowcase() {
               <div className="grid lg:grid-cols-2">
                 {/* Before */}
                 <div className="p-8 bg-gray-50">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-4">Before: Floor Plan</h3>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-4">Antes: Planta Baixa</h3>
                   <div className="relative rounded-lg overflow-hidden bg-white shadow-lg">
                     <Image
                       src={showcaseItems[currentSlide].before || "/placeholder.svg"}
-                      alt="Original floor plan"
+                      alt="Planta baixa original"
                       width={400}
                       height={300}
                       className="w-full h-64 object-cover"
@@ -68,11 +69,11 @@ export function PreviewShowcase() {
 
                 {/* After */}
                 <div className="p-8 bg-emerald-50">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-4">After: AI Preview</h3>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-4">Depois: Preview IA</h3>
                   <div className="relative rounded-lg overflow-hidden bg-white shadow-lg">
                     <Image
                       src={showcaseItems[currentSlide].after || "/placeholder.svg"}
-                      alt="AI-generated preview"
+                      alt="Preview gerado por IA"
                       width={400}
                       height={300}
                       className="w-full h-64 object-cover"

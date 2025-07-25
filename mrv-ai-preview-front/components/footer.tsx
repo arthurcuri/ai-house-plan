@@ -19,27 +19,28 @@ export function Footer() {
               <span className="text-xl font-bold">MRV AI Preview</span>
             </div>
             <p className="text-gray-400 leading-relaxed">
-              Transform your floor plans into realistic apartment previews with the power of artificial intelligence.
+              Transforme suas plantas baixas em previews realistas de apartamentos com o poder da inteligência
+              artificial.
             </p>
           </div>
 
           {/* Product */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Product</h3>
+            <h3 className="text-lg font-semibold mb-4">Produto</h3>
             <ul className="space-y-2">
               <li>
                 <a href="#about" className="text-gray-400 hover:text-white transition-colors">
-                  Features
+                  Funcionalidades
                 </a>
               </li>
               <li>
                 <a href="#how-it-works" className="text-gray-400 hover:text-white transition-colors">
-                  How It Works
+                  Como Funciona
                 </a>
               </li>
               <li>
                 <a href="#showcase" className="text-gray-400 hover:text-white transition-colors">
-                  Examples
+                  Exemplos
                 </a>
               </li>
               <li>
@@ -52,26 +53,26 @@ export function Footer() {
 
           {/* Company */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Company</h3>
+            <h3 className="text-lg font-semibold mb-4">Empresa</h3>
             <ul className="space-y-2">
               <li>
                 <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  About MRV
+                  Sobre a MRV
                 </a>
               </li>
               <li>
                 <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  Careers
+                  Carreiras
                 </a>
               </li>
               <li>
                 <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  Press
+                  Imprensa
                 </a>
               </li>
               <li>
                 <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  Contact
+                  Contato
                 </a>
               </li>
             </ul>
@@ -79,7 +80,7 @@ export function Footer() {
 
           {/* Contact */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Contact</h3>
+            <h3 className="text-lg font-semibold mb-4">Contato</h3>
             <ul className="space-y-3">
               <li className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-emerald-400" />
@@ -94,7 +95,7 @@ export function Footer() {
                 <span className="text-gray-400">
                   São Paulo, SP
                   <br />
-                  Brazil
+                  Brasil
                 </span>
               </li>
             </ul>
@@ -103,16 +104,16 @@ export function Footer() {
 
         {/* Bottom */}
         <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-gray-400 text-sm">© 2024 MRV AI Preview. All rights reserved.</p>
+          <p className="text-gray-400 text-sm">© 2024 MRV AI Preview. Todos os direitos reservados.</p>
           <div className="flex gap-6">
             <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
-              Privacy Policy
+              Política de Privacidade
             </a>
             <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
-              Terms of Service
+              Termos de Serviço
             </a>
             <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
-              Cookie Policy
+              Política de Cookies
             </a>
           </div>
         </div>

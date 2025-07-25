@@ -75,13 +75,13 @@ export function UploadSection({
                 </div>
               </div>
               <div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Upload Floor Plan</h3>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Upload da Planta Baixa</h3>
                 <p className="text-gray-600 mb-4">
                   {isDragActive
-                    ? "Drop your floor plan here..."
-                    : "Drag and drop your floor plan here, or click to browse"}
+                    ? "Solte sua planta baixa aqui..."
+                    : "Arraste e solte sua planta baixa aqui, ou clique para navegar"}
                 </p>
-                <p className="text-sm text-gray-500">Supports PNG, JPG, JPEG, and PDF files</p>
+                <p className="text-sm text-gray-500">Suporta arquivos PNG, JPG, JPEG e PDF</p>
               </div>
             </div>
           ) : (
@@ -111,10 +111,10 @@ export function UploadSection({
           {isGenerating ? (
             <div className="flex items-center gap-2">
               <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              Generating...
+              Gerando Preview...
             </div>
           ) : (
-            "Generate Preview"
+            "Gerar Preview"
           )}
         </Button>
       </div>

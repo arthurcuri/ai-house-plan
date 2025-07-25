@@ -17,7 +17,7 @@ export function ResultSection({ generatedImage, isGenerating, error }: ResultSec
 
     const link = document.createElement("a")
     link.href = generatedImage
-    link.download = "apartment-preview.png"
+    link.download = "preview-apartamento.png"
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -33,7 +33,7 @@ export function ResultSection({ generatedImage, isGenerating, error }: ResultSec
         <CardHeader className="bg-gray-50 border-b">
           <CardTitle className="flex items-center gap-2 text-xl">
             <Eye className="w-5 h-5 text-emerald-600" />
-            Generated Preview
+            Preview Gerado
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6">
@@ -41,8 +41,8 @@ export function ResultSection({ generatedImage, isGenerating, error }: ResultSec
             <div className="flex flex-col items-center justify-center py-12 space-y-4">
               <div className="w-12 h-12 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin" />
               <div className="text-center">
-                <p className="text-lg font-medium text-gray-900">Generating your apartment preview...</p>
-                <p className="text-gray-600 mt-1">This may take a few moments</p>
+                <p className="text-lg font-medium text-gray-900">Gerando seu preview do apartamento...</p>
+                <p className="text-gray-600 mt-1">Isso pode levar alguns momentos</p>
               </div>
             </div>
           )}
@@ -53,7 +53,7 @@ export function ResultSection({ generatedImage, isGenerating, error }: ResultSec
                 <X className="w-6 h-6 text-red-600" />
               </div>
               <div className="text-center">
-                <p className="text-lg font-medium text-red-900">Generation Failed</p>
+                <p className="text-lg font-medium text-red-900">Falha na Geração</p>
                 <p className="text-red-600 mt-1">{error}</p>
               </div>
             </div>
@@ -64,7 +64,7 @@ export function ResultSection({ generatedImage, isGenerating, error }: ResultSec
               <div className="relative rounded-lg overflow-hidden bg-gray-100">
                 <Image
                   src={generatedImage || "/placeholder.svg"}
-                  alt="Generated apartment preview"
+                  alt="Preview do apartamento gerado"
                   width={800}
                   height={600}
                   className="w-full h-auto object-contain"
@@ -75,7 +75,7 @@ export function ResultSection({ generatedImage, isGenerating, error }: ResultSec
               <div className="flex justify-center gap-4">
                 <Button onClick={downloadImage} variant="outline" className="flex items-center gap-2 bg-transparent">
                   <Download className="w-4 h-4" />
-                  Download Preview
+                  Baixar Preview
                 </Button>
               </div>
             </div>
