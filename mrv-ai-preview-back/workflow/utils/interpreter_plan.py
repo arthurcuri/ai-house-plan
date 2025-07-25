@@ -8,7 +8,7 @@ def interpretar_planta_com_ocr(image_bytes: bytes, texto_ocr: list, tipo_apartam
     
     Args:
         image_bytes: Bytes da imagem da planta
-        texto_ocr: Lista de textos extraídos por OCR
+        texto_ocr: Lista de textos extraídos por OCR (valores reais da planta)
         tipo_apartamento: Tipo do apartamento (class, eco, bio, essential)
     
     Returns:
@@ -36,25 +36,3 @@ Responda em formato JSON estruturado. Seja preciso e conciso.
     resposta = interpretar_planta_com_imagem(prompt, image_bytes)
     
     return resposta
-
-# ✅ Exemplo de uso (mantido para compatibilidade)
-if __name__ == "__main__":
-    # ✅ Caminho absoluto da imagem da planta
-    CAMINHO_IMAGEM = r"C:\Users\lucas.nogueira\Documents\projetos_pessoais\mrv-ai\mrv-house-plan\mrv-ai-preview-back\workflow\planta01.jpg"
-
-    # ✅ OCR real extraído via EasyOCR
-    texto_ocr = [
-        "QUARTO", "QUARTO", "240", "122", "120", "230",
-        "140", "CIRC.", "192", "254", "140", "SALACOZINHAAS"
-    ]
-
-    # ✅ Leitura da imagem como bytes
-    with open(CAMINHO_IMAGEM, "rb") as f:
-        image_bytes = f.read()
-
-    # ✅ Teste da função com tipo
-    resposta = interpretar_planta_com_ocr(image_bytes, texto_ocr, "class")
-    
-    # ✅ Resultado
-    print("🧠 Resposta da LLM:\n")
-    print(resposta)
