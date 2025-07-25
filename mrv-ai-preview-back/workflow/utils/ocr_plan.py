@@ -9,7 +9,6 @@ app = FastAPI()
 reader = easyocr.Reader(['pt', 'en'], gpu=False)  # você pode ativar gpu=True se quiser
 
 
-
 @app.post("/ocr")
 async def processar_planta(file: UploadFile = File(...)):
     contents = await file.read()
