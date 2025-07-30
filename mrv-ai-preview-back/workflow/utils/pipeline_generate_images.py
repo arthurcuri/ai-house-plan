@@ -1,11 +1,9 @@
+
 from prompt_factory import *
 from llm_factory import gerar_imagem, classificar_tipo_comodo
 import base64
 
-
-
-def classificar_comodo(comodo:dict) -> str:
-
+def classificar_comodo(comodo: dict) -> str:
     prompt = f"""
 Você é um assistente que classifica ambientes de uma planta arquitetônica residencial.
 
@@ -27,9 +25,7 @@ Classifique o tipo de cômodo, escolhendo **apenas uma das seguintes opções**:
 
 Retorne **apenas o nome da opção** correspondente ao tipo do cômodo.
 """
-    
-    return classificar_comodo(prompt)
-
+    return classificar_tipo_comodo(prompt)
 
 def gerar_prompt_essencial(comodo: dict) -> str:
     tipo = classificar_comodo(comodo)
@@ -48,25 +44,28 @@ def gerar_prompt_essencial(comodo: dict) -> str:
 Crie uma imagem 3D genérica para o cômodo '{comodo['nome']}' com dimensões {comodo['dimensões']['largura']} x {comodo['dimensões']['comprimento']} cm. 
 Decoração simples no padrão ESSENCIAL da MRV.
 """
-        
-def gerar_imagens_para_comodos(lista_comodos: list[dict], imagem_planta_bytes: bytes,) -> list[dict]:
-     """
+
+def gerar_imagens_para_comodos(lista_comodos: list[dict], imagem_planta_bytes: bytes) -> list[dict]:
+    """
     Gera imagens com base nos cômodos e na planta original.
     """
-     
-     imagens= []
+    imagens = []
 
-     for comodo in lista_comodos:
-         prompt = gerar_prompt_essencial(comodo)
-         imagem = gerar_imagem(prompt, image_bytes=imagem_planta_bytes)
-         imagem_base64 = base64.b64(imagem).decode("utf-8")
-         imagens.append({
-    "comodo": comodo["nome"],
-    "prompt": prompt,
-    "imagem_base64": imagem_base64
+    for comodo in lista_comodos:
+        try:
+            prompt = gerar_prompt_essencial(comodo)
+            imagem = gerar_imagem(prompt, image_bytes=imagem_planta_bytes)
+            imagem_base64 = base64.b64encode(imagem).decode("utf-8")
+            imagens.append({
+                "comodo": comodo["nome"],
+                "prompt": prompt,
+                "imagem_base64": imagem_base64
             })
-         return imagens
-     
+        except Exception as e:
+            imagens.append({
+                "comodo": comodo.get("nome", "Desconhecido"),
+                "erro": str(e)
+            })
 
+    return imagens
 
-     

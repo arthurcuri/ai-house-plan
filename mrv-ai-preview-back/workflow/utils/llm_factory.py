@@ -1,16 +1,22 @@
 import google.generativeai as genai
+#from google import genai
+from google.genai import types
+from google.generativeai.types import generation_types
+from google.generativeai import GenerativeModel
 from dotenv import load_dotenv
 import os
 import requests
 
 
+
+ # Lógica usando GEMINI em comentario
 # Carregar variáveis do .env
 load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY_LUCAS")
 genai.configure(api_key=GEMINI_API_KEY)
 
 # Modelos específicos por funcionalidade
-modelo_texto = genai.GenerativeModel("gemini-2.5-flash")
+modelo_texto = genai.GenerativeModel("gemini-1.5-flash")
 modelo_imagem = genai.GenerativeModel("gemini-2.0-flash-preview-image-generation")
 modelo_multimodal = genai.GenerativeModel("gemini-1.5-flash")
 
@@ -31,26 +37,31 @@ def interpretar_texto(prompt: str, history: list[dict] = None) -> str:
 
 def gerar_imagem(prompt: str, image_bytes: bytes = None) -> bytes:
     """
-    Detalhamento/comentário: 
-
     Gera ou edita imagem 3D com modelo Gemini 2.0 Flash Preview Image Generation.
     Pode receber prompt apenas ou prompt + imagem de base para edição.
     Retorna bytes da imagem gerada.
     """
-    contents = [prompt]
+    contents = [{"text": prompt}]
     if image_bytes:
-        # modelo multimodal
         contents.append({"mime_type": "image/jpeg", "data": image_bytes})
-    response = genai.Client().models.generate_content(
+
+    client = genai.Client(api_key=GEMINI_API_KEY)
+    response = client.models.generate_content(
         model="gemini-2.0-flash-preview-image-generation",
         contents=contents,
-        config=genai.types.GenerateContentConfig(response_modalities=["TEXT", "IMAGE"])
+        config=types.GenerateContentConfig(
+            response_modalities=["Text", "IMAGE"]
+        )
     )
-    parts = response.candidates[0].content.parts
-    for part in parts:
-        if part.inline_data is not None:
+
+
+    # ✅ Pega a imagem da resposta
+    for part in response.parts:
+        if hasattr(part, "inline_data") and part.inline_data is not None:
             return part.inline_data.data
-    raise RuntimeError("Nenhuma imagem gerada.")
+
+    raise RuntimeError("Nenhuma imagem foi gerada pela LLM.")
+
 
 
 def interpretar_planta_com_imagem(prompt: str, image_bytes: bytes) -> str:
@@ -71,3 +82,5 @@ def classificar_tipo_comodo(prompt: str) -> str:
     """
     response = modelo_texto.generate_content(prompt)
     return response.text.strip().lower()
+
+    

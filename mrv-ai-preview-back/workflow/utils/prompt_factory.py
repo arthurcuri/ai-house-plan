@@ -1,3 +1,5 @@
+
+
 # QUARTO PEQUENO ESSENCIAL
 def quarto_pequeno_essencial(comodo):
     return f"""
