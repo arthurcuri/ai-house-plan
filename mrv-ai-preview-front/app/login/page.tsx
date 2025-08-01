@@ -1,7 +1,7 @@
+// File: app/login/page.tsx
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -72,7 +72,9 @@ export default function LoginPage() {
 
           <CardContent className="p-8">
             {error && (
-              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">{error}</div>
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                {error}
+              </div>
             )}
 
             <form onSubmit={handleLogin} className="space-y-6">
@@ -132,7 +134,7 @@ export default function LoginPage() {
 
             <div className="mt-6 text-center">
               <p className="text-gray-600">
-                Não tem uma conta?{" "}
+                Não tem uma conta?{' '}
                 <Link href="/register" className="text-emerald-600 hover:text-emerald-700 font-medium">
                   Criar conta
                 </Link>
@@ -140,14 +142,10 @@ export default function LoginPage() {
             </div>
 
             <div className="mt-6 text-center text-sm text-gray-500">
-              Ao continuar, você concorda com nossos{" "}
-              <a href="#" className="text-emerald-600 hover:text-emerald-700">
-                Termos de Serviço
-              </a>{" "}
-              e{" "}
-              <a href="#" className="text-emerald-600 hover:text-emerald-700">
-                Política de Privacidade
-              </a>
+              Ao continuar, você concorda com nossos{' '}
+              <a href="#" className="text-emerald-600 hover:text-emerald-700">Termos de Serviço</a>{' '}
+              e{' '}
+              <a href="#" className="text-emerald-600 hover:text-emerald-700">Política de Privacidade</a>
             </div>
           </CardContent>
         </Card>

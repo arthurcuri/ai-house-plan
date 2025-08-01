@@ -6,8 +6,24 @@ import numpy as np
 from ocr_reader import reader
 from interpreter_plan import interpretar_planta_com_ocr
 from routes.generate_images_api import router as imagens_router
+from auth.routes import router as auth_router
+from auth.models import Base
+from db import engine
+from fastapi.middleware.cors import CORSMiddleware
+
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 @app.post("/ocr")
 async def processar_planta(file: UploadFile = File(...), tipo: str = Form(...)):
@@ -38,3 +54,4 @@ async def processar_planta(file: UploadFile = File(...), tipo: str = Form(...)):
     
 # Inclui as demais rotas
 app.include_router(imagens_router)
+app.include_router(auth_router)

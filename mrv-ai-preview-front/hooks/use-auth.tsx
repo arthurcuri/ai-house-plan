@@ -1,6 +1,7 @@
 "use client"
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
+import { toast } from "@/components/ui/use-toast"
 
 interface User {
   id: string
@@ -24,9 +25,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   useEffect(() => {
-    // Check for existing session on mount
     const savedUser = localStorage.getItem("mrv-user")
-    if (savedUser) {
+    const token = localStorage.getItem("mrv-token")
+    if (savedUser && token) {
       const userData = JSON.parse(savedUser)
       setUser(userData)
       setIsAuthenticated(true)
@@ -34,46 +35,81 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const login = async (email: string, password: string) => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    try {
+      const response = await fetch("http://127.0.0.1:8000/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, senha: password }),
+      })
 
-    // Mock user data - in real app, this would come from your API
-    const userData: User = {
-      id: "1",
-      name: email.split("@")[0].charAt(0).toUpperCase() + email.split("@")[0].slice(1),
-      email: email,
-      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
+      if (!response.ok) throw new Error("Credenciais inválidas")
+
+      const data = await response.json()
+      const userData: User = {
+        id: Date.now().toString(),
+        name: email.split("@")[0],
+        email,
+        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
+      }
+
+      setUser(userData)
+      setIsAuthenticated(true)
+      localStorage.setItem("mrv-user", JSON.stringify(userData))
+      localStorage.setItem("mrv-token", data.access_token)
+      toast({ title: "Login realizado com sucesso" })
+    } catch (error: any) {
+      toast({ title: "Erro ao fazer login", description: error.message, variant: "destructive" })
+      throw error
     }
-
-    setUser(userData)
-    setIsAuthenticated(true)
-    localStorage.setItem("mrv-user", JSON.stringify(userData))
   }
 
   const register = async (name: string, email: string, password: string) => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    try {
+      const body = JSON.stringify({ nome: name, email, senha: password })
 
-    const userData: User = {
-      id: Date.now().toString(),
-      name: name,
-      email: email,
-      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
+      const response = await fetch("http://127.0.0.1:8000/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body,
+      })
+
+      if (!response.ok) throw new Error("Erro ao registrar")
+
+      const data = await response.json()
+      const userData: User = {
+        id: Date.now().toString(),
+        name,
+        email,
+        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
+      }
+
+      setUser(userData)
+      setIsAuthenticated(true)
+      localStorage.setItem("mrv-user", JSON.stringify(userData))
+      localStorage.setItem("mrv-token", data.access_token)
+      toast({ title: "Conta criada com sucesso" })
+    } catch (error: any) {
+      toast({ title: "Erro ao registrar", description: error.message, variant: "destructive" })
+      throw error
     }
-
-    setUser(userData)
-    setIsAuthenticated(true)
-    localStorage.setItem("mrv-user", JSON.stringify(userData))
   }
 
   const logout = () => {
     setUser(null)
     setIsAuthenticated(false)
     localStorage.removeItem("mrv-user")
+    localStorage.removeItem("mrv-token")
+    toast({ title: "Logout realizado com sucesso" })
   }
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, register, logout }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ user, isAuthenticated, login, register, logout }}>
+      {children}
+    </AuthContext.Provider>
   )
 }
 

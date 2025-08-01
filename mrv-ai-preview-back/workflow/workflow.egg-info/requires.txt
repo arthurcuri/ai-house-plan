@@ -1,6 +1,8 @@
 easyocr>=1.7.2
 fastapi>=0.116.1
+google-genai>=1.27.0
 google-generativeai>=0.8.5
+langchain-google-genai>=2.0.10
 numpy>=2.3.1
 pillow>=11.3.0
 pytesseract>=0.3.13
@@ -8,3 +10,7 @@ python-dotenv>=1.1.1
 python-multipart>=0.0.20
 requests>=2.32.4
 uvicorn>=0.35.0
+passlib[bcrypt]
+python-jose
+sqlalchemy>=2.0.0
+mysqlclient>=2.2.0
