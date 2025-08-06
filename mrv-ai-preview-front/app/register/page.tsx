@@ -30,8 +30,19 @@ export default function RegisterPage() {
     e.preventDefault()
     setError("")
 
-    if (registerForm.password !== registerForm.confirmPassword) {
-      setError("As senhas não coincidem")
+    // Validações mais robustas
+    if (!registerForm.name.trim()) {
+      setError("Nome é obrigatório")
+      return
+    }
+
+    if (registerForm.name.trim().length < 2) {
+      setError("Nome deve ter pelo menos 2 caracteres")
+      return
+    }
+
+    if (!registerForm.email.includes("@") || !registerForm.email.includes(".")) {
+      setError("Email inválido")
       return
     }
 
@@ -40,10 +51,15 @@ export default function RegisterPage() {
       return
     }
 
+    if (registerForm.password !== registerForm.confirmPassword) {
+      setError("As senhas não coincidem")
+      return
+    }
+
     setIsLoading(true)
 
     try {
-      await register(registerForm.name, registerForm.email, registerForm.password)
+      await register(registerForm.name.trim(), registerForm.email.toLowerCase().trim(), registerForm.password)
       router.push("/")
     } catch (error) {
       setError("Erro ao criar conta. Tente novamente.")

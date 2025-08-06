@@ -14,7 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 
 interface AppInterfaceProps {
   onBackToLanding: () => void
@@ -137,7 +137,6 @@ export function AppInterface({ onBackToLanding }: AppInterfaceProps) {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                   <Avatar className="h-10 w-10">
-                    <AvatarImage src={user?.avatar || "/placeholder.svg"} alt={user?.name} />
                     <AvatarFallback className="bg-emerald-100 text-emerald-700">
                       {user?.name ? getUserInitials(user.name) : "U"}
                     </AvatarFallback>

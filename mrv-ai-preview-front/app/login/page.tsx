@@ -2,8 +2,8 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -18,20 +18,46 @@ export default function LoginPage() {
   const [error, setError] = useState("")
   const { login } = useAuth()
   const router = useRouter()
+  const searchParams = useSearchParams()
 
   const [loginForm, setLoginForm] = useState({
     email: "",
     password: "",
   })
 
+  // Verificar se há parâmetros de redirecionamento
+  const redirectUrl = searchParams.get('redirect')
+  const action = searchParams.get('action')
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     setError("")
 
+    // Validações básicas
+    if (!loginForm.email.trim() || !loginForm.password.trim()) {
+      setError("Email e senha são obrigatórios")
+      setIsLoading(false)
+      return
+    }
+
+    if (!loginForm.email.includes("@") || !loginForm.email.includes(".")) {
+      setError("Email inválido")
+      setIsLoading(false)
+      return
+    }
+
     try {
-      await login(loginForm.email, loginForm.password)
-      router.push("/")
+      await login(loginForm.email.toLowerCase().trim(), loginForm.password)
+      
+      // Redirecionar baseado nos parâmetros
+      if (redirectUrl && action === 'start-app') {
+        router.push("/?start-app=true")
+      } else if (redirectUrl) {
+        window.location.href = redirectUrl
+      } else {
+        router.push("/")
+      }
     } catch (error) {
       setError("Email ou senha incorretos. Tente novamente.")
       console.error("Login failed:", error)

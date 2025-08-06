@@ -40,14 +40,25 @@ export function HeroSection({ onTryNow }: HeroSectionProps) {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button
-                onClick={onTryNow}
-                size="lg"
-                className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 text-lg font-semibold"
-              >
-                {isAuthenticated ? "Abrir App" : "Experimentar Agora"}
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
+              {isAuthenticated ? (
+                <Button
+                  onClick={onTryNow}
+                  size="lg"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 text-lg font-semibold"
+                >
+                  Começar
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+              ) : (
+                <Button
+                  onClick={onTryNow}
+                  size="lg"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 text-lg font-semibold"
+                >
+                  Experimentar Agora
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+              )}
               <Button
                 variant="outline"
                 size="lg"
@@ -57,6 +68,15 @@ export function HeroSection({ onTryNow }: HeroSectionProps) {
                 Saiba Mais
               </Button>
             </div>
+
+            {!isAuthenticated && (
+              <div className="flex items-center gap-2 text-sm text-gray-600 bg-gray-50 rounded-lg p-3">
+                <div className="w-4 h-4 bg-emerald-500 rounded-full flex items-center justify-center">
+                  <div className="w-2 h-2 bg-white rounded-full"></div>
+                </div>
+                <span>Faça login para acessar todas as funcionalidades</span>
+              </div>
+            )}
 
             {/* Stats */}
             <div className="flex flex-wrap gap-8 pt-8 border-t border-gray-200">

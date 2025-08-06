@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import Link from "next/link"
 
 interface HeaderProps {
@@ -94,7 +94,6 @@ export function Header({ onTryNow }: HeaderProps) {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                     <Avatar className="h-10 w-10">
-                      <AvatarImage src={user?.avatar || "/placeholder.svg"} alt={user?.name} />
                       <AvatarFallback className="bg-emerald-100 text-emerald-700">
                         {user?.name ? getUserInitials(user.name) : "U"}
                       </AvatarFallback>
@@ -109,7 +108,7 @@ export function Header({ onTryNow }: HeaderProps) {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={onTryNow} className="cursor-pointer">
                     <User className="mr-2 h-4 w-4" />
-                    <span>Abrir App</span>
+                    <span>Começar</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="cursor-pointer">
                     <Settings className="mr-2 h-4 w-4" />
@@ -179,7 +178,6 @@ export function Header({ onTryNow }: HeaderProps) {
                 <div className="pt-4 border-t border-gray-200 space-y-3">
                   <div className="flex items-center gap-3">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={user?.avatar || "/placeholder.svg"} alt={user?.name} />
                       <AvatarFallback className="bg-emerald-100 text-emerald-700 text-sm">
                         {user?.name ? getUserInitials(user.name) : "U"}
                       </AvatarFallback>
@@ -190,7 +188,7 @@ export function Header({ onTryNow }: HeaderProps) {
                     </div>
                   </div>
                   <Button onClick={onTryNow} className="bg-emerald-600 hover:bg-emerald-700 text-white w-full">
-                    Abrir App
+                    Começar
                   </Button>
                   <Button
                     onClick={handleLogout}
