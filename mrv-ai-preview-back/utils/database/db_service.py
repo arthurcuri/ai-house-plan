@@ -69,10 +69,19 @@ class DatabaseService:
             # Try to import auth models to register them
             try:
                 from ..auth.models import User
-                Base.metadata.create_all(bind=engine)
-                logger.info("SQLite tables created successfully")
+                logger.info("Auth models imported successfully")
             except ImportError:
                 logger.warning("Auth models not available - skipping auth tables")
+            
+            # Try to import image models to register them
+            try:
+                from .image_models import GeneratedImage, ImageSession
+                logger.info("Image models imported successfully")
+            except ImportError:
+                logger.warning("Image models not available - skipping image tables")
+                
+            Base.metadata.create_all(bind=engine)
+            logger.info("SQLite tables created successfully")
         except Exception as e:
             logger.error(f"Error creating tables: {e}")
 

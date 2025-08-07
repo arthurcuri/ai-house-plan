@@ -8,10 +8,10 @@ import os
 import uuid
 import re
 from datetime import datetime
-from core.ocr.ocr_service import reader
-from core.ai import interpreter_plan
-from core.image_generation.image_service import gerar_imagens_para_comodos
-from shared.json_utils import limpar_json_llm
+from ...core.ocr.ocr_service import reader
+from ...core.ai import interpreter_plan
+from ...core.image_generation.image_service import gerar_imagens_para_comodos
+from ...shared.json_utils import limpar_json_llm
 
 router = APIRouter()
 
@@ -58,57 +58,37 @@ def sanitizar_nome_arquivo(nome: str) -> str:
     return nome_limpo
 
 @router.post("/gerar-imagens")
-async def gerar_imagens(file: UploadFile = File(...), tipo: str = Form(...)):
+async def gerar_imagens(
+    file: UploadFile = File(...), 
+    tipo: str = Form(...)
+):
     """
-    Gera imagens 3D de cada cômodo da planta enviada, com base no padrão de acabamento informado.
-    """
-    contents = await file.read()
-    image = Image.open(io.BytesIO(contents))
-    image_np = np.array(image)
-
-    # ✅ OCR
-    result = reader.readtext(image_np)
-    textos_ocr = [r[1] for r in result]
-
-    # ✅ Interpretação da planta via LLM
-    try:
-        interpretacao_raw = interpreter_plan.interpretar_planta_com_ocr(contents, textos_ocr, tipo)
-        dados = limpar_json_llm(interpretacao_raw)
-    except Exception as e:
-        return {
-            "erro": f"Erro ao interpretar a planta ou ao decodificar JSON: {str(e)}",
-            "interpretacao_raw": interpretacao_raw if 'interpretacao_raw' in locals() else None
-        }
-
-    comodos = dados.get("cômodos") or dados.get("comodos")  # aceitar ambos formatos
-
-    if not comodos:
-        return {"erro": "Nenhum cômodo encontrado na interpretação da planta."}
-
-    # ✅ Geração das imagens
-    imagens = gerar_imagens_para_comodos(comodos, contents)
-
-    return {
-        "tipo": tipo,
-        "quantidade_comodos": len(comodos),
-        "resultado": imagens
-    }
-
-
-@router.post("/gerar-imagens-arquivos")
-async def gerar_imagens_arquivos(file: UploadFile = File(...), tipo: str = Form(...), alta_qualidade: bool = Form(True)):
-    """
-    Gera imagens 3D de cada cômodo e salva em arquivos, retornando apenas os caminhos.
-    Melhor para evitar respostas muito grandes com base64.
+    🎨 ROTA SIMPLIFICADA - Geração de Imagens 3D de Cômodos
+    
+    Funcionalidades:
+    - OCR + Interpretação da planta via LLM
+    - Geração de imagens 3D fotorrealísticas em ALTA QUALIDADE
+    - Prompt personalizado baseado no tipo (ESSENTIAL, ECO, BIO, CLASS)
+    - Sempre salva arquivos em disco (não retorna base64)
     
     Args:
         file: Arquivo da planta (JPG/PNG)
-        tipo: Tipo do apartamento (essential, eco, bio, class)
-        alta_qualidade: Se True, gera imagens em qualidade máxima (1024x1024, JPEG 100%)
+        tipo: Tipo do apartamento (essential, eco, bio, class) - define o prompt
+    
+    Returns:
+        Caminhos dos arquivos gerados + metadados em alta qualidade
     """
     contents = await file.read()
     image = Image.open(io.BytesIO(contents))
     image_np = np.array(image)
+
+    # ✅ VALIDAR TIPO DE APARTAMENTO
+    tipos_validos = ['essential', 'eco', 'bio', 'class']
+    if tipo.lower() not in tipos_validos:
+        return {
+            "erro": f"Tipo de apartamento '{tipo}' inválido. Tipos permitidos: {tipos_validos}",
+            "tipos_disponveis": tipos_validos
+        }
 
     # ✅ OCR
     result = reader.readtext(image_np)
@@ -129,7 +109,20 @@ async def gerar_imagens_arquivos(file: UploadFile = File(...), tipo: str = Form(
     if not comodos:
         return {"erro": "Nenhum cômodo encontrado na interpretação da planta."}
 
-    # ✅ Geração das imagens e salvamento em arquivos
+    # ✅ Configurações fixas em ALTA QUALIDADE
+    configuracao = {
+        "alta_qualidade": True,
+        "resolucao": "1024x1024 pixels",
+        "qualidade_jpeg": "100% (máxima qualidade)",
+        "rendering": "Fotorrealístico com ray tracing",
+        "anti_aliasing": "Máximo",
+        "max_tentativas": 8,
+        "delay_progressivo": "5s até 60s",
+        "formato": "JPEG",
+        "tipo_prompt": tipo.upper()
+    }
+
+    # ✅ SEMPRE GERAR ARQUIVOS EM ALTA QUALIDADE
     session_id = str(uuid.uuid4())[:8]
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     session_dir = os.path.join(IMAGES_OUTPUT_DIR, f"{timestamp}_{session_id}")
@@ -139,14 +132,13 @@ async def gerar_imagens_arquivos(file: UploadFile = File(...), tipo: str = Form(
     
     for i, comodo in enumerate(comodos):
         try:
-            # Gerar prompt específico para o cômodo
-            from core.image_generation.image_service import gerar_prompt_essencial
-            prompt = gerar_prompt_essencial(comodo)
+            # Gerar prompt específico para o cômodo baseado no tipo do apartamento
+            from ...core.image_generation.image_service import gerar_prompt_por_tipo
+            prompt = gerar_prompt_por_tipo(comodo, tipo.upper())
             
-            # Gerar imagem com qualidade configurável
-            from core.ai.gemini_service import gerar_imagem
-            compress = not alta_qualidade  # Se alta qualidade, não comprimir
-            image_data = gerar_imagem(prompt, image_bytes=contents, compress=compress)
+            # Gerar imagem sempre em ALTA QUALIDADE (sem compressão)
+            from ...core.ai.gemini_service import gerar_imagem
+            image_data = gerar_imagem(prompt, image_bytes=contents, compress=False)
             
             # Salvar em arquivo
             nome_sanitizado = sanitizar_nome_arquivo(comodo['nome'])
@@ -162,11 +154,16 @@ async def gerar_imagens_arquivos(file: UploadFile = File(...), tipo: str = Form(
                 "arquivo": filepath,
                 "tamanho_bytes": len(image_data),
                 "url_relativa": f"/imagens/{timestamp}_{session_id}/{filename}",
-                "alta_qualidade": alta_qualidade,
                 "dimensoes": comodo.get("dimensões", {}),
                 "localizacao": comodo.get("localização", "")
             })
             
+        except ValueError as e:
+            # Erro de validação de tipo
+            return {
+                "erro": str(e),
+                "tipos_disponveis": tipos_validos
+            }
         except Exception as e:
             imagens_info.append({
                 "comodo": comodo.get("nome", "Desconhecido"),
@@ -174,28 +171,11 @@ async def gerar_imagens_arquivos(file: UploadFile = File(...), tipo: str = Form(
             })
 
     return {
-        "tipo": tipo,
+        "modo": "arquivos_hd",
+        "tipo": tipo.upper(),
         "quantidade_comodos": len(comodos),
         "session_id": f"{timestamp}_{session_id}",
         "diretorio": session_dir,
-        "configuracao": {
-            "alta_qualidade": alta_qualidade,
-            "resolucao": "1024x1024 pixels (formato quadrado)",
-            "qualidade_jpeg": "100% (máxima qualidade Gemini)",
-            "rendering": "Fotorrealístico com ray tracing",
-            "anti_aliasing": "Máximo",
-            "max_tentativas": 8,
-            "delay_progressivo": "5s até 60s",
-            "formato": "JPEG progressivo sem subsampling"
-        },
+        "configuracao": configuracao,
         "resultado": imagens_info
     }
-
-
-@router.post("/gerar-imagens-hd")
-async def gerar_imagens_hd(file: UploadFile = File(...), tipo: str = Form(...)):
-    """
-    Gera imagens 3D em MÁXIMA QUALIDADE de cada cômodo.
-    Especificações: 1024x1024 pixels, JPEG 100%, rendering fotorrealístico.
-    """
-    return await gerar_imagens_arquivos(file=file, tipo=tipo, alta_qualidade=True)

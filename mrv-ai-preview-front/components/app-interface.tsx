@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Building2 } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
+import { TokenManager } from "@/lib/token-manager"
 import { CategorySelection } from "@/components/category-selection"
 import { UploadSection } from "@/components/upload-section"
 import { ResultSection } from "@/components/result-section"
@@ -25,19 +26,26 @@ export function AppInterface({ onBackToLanding }: AppInterfaceProps) {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [uploadedFile, setUploadedFile] = useState<File | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
+  const [isGeneratingImages, setIsGeneratingImages] = useState(false)
   const [generatedImage, setGeneratedImage] = useState<string | null>(null)
+  const [generatedImages, setGeneratedImages] = useState<any[]>([])
   const [error, setError] = useState<string | null>(null)
+  const [previewData, setPreviewData] = useState<any>(null)
 
   const handleCategorySelect = (category: string) => {
     setSelectedCategory(category)
     // Reset previous results when category changes
     setGeneratedImage(null)
+    setGeneratedImages([])
+    setPreviewData(null)
     setError(null)
   }
 
   const handleFileUpload = (file: File) => {
     setUploadedFile(file)
     setGeneratedImage(null)
+    setGeneratedImages([])
+    setPreviewData(null)
     setError(null)
   }
 
@@ -51,6 +59,7 @@ export function AppInterface({ onBackToLanding }: AppInterfaceProps) {
       const formData = new FormData()
       formData.append("floorplan", uploadedFile) // Use "floorplan" para corresponder à API route
       formData.append("category", selectedCategory) // Send category along with file
+      formData.append("generateImages", "false") // Apenas preview
 
       const response = await fetch("/api/generate-preview", {
         method: "POST",
@@ -61,12 +70,13 @@ export function AppInterface({ onBackToLanding }: AppInterfaceProps) {
         throw new Error("Failed to generate preview")
       }
 
-      // ✅ ATUALIZADO: Agora recebe JSON com a interpretação da LLM
       const jsonResponse = await response.json()
       
       if (jsonResponse.success && jsonResponse.data.interpretacao_llm) {
+        // Salvar dados da interpretação
+        setPreviewData(jsonResponse.data)
+        
         // Para demonstração, vamos usar uma imagem placeholder por enquanto
-        // Você pode implementar geração de imagem baseada na interpretação depois
         setGeneratedImage("/placeholder.svg?height=400&width=600&text=Preview+Gerado+por+IA")
         
         // Log da interpretação da LLM para debug
@@ -87,6 +97,53 @@ export function AppInterface({ onBackToLanding }: AppInterfaceProps) {
       }, 2000)
     } finally {
       setIsGenerating(false)
+    }
+  }
+
+  const handleGenerateImages = async () => {
+    if (!uploadedFile || !selectedCategory || !user) return
+
+    const token = TokenManager.getToken()
+    if (!token) {
+      setError("Token de autenticação não encontrado. Faça login novamente.")
+      return
+    }
+
+    setIsGeneratingImages(true)
+    setError(null)
+
+    try {
+      const formData = new FormData()
+      formData.append("floorplan", uploadedFile)
+      formData.append("category", selectedCategory)
+      formData.append("generateImages", "true") // Gerar imagens HD
+      formData.append("authToken", token) // Token de autenticação
+
+      const response = await fetch("/api/generate-preview", {
+        method: "POST",
+        body: formData,
+      })
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error("Sessão expirada. Faça login novamente.")
+        }
+        throw new Error("Failed to generate images")
+      }
+
+      const jsonResponse = await response.json()
+      
+      if (jsonResponse.success && jsonResponse.data.resultado) {
+        setGeneratedImages(jsonResponse.data.resultado)
+        console.log("Imagens geradas:", jsonResponse.data)
+      } else {
+        throw new Error("Invalid response format")
+      }
+    } catch (err: any) {
+      setError(err.message || "Falha ao gerar imagens HD. Tente novamente.")
+      console.error("Error generating images:", err)
+    } finally {
+      setIsGeneratingImages(false)
     }
   }
 
@@ -180,7 +237,15 @@ export function AppInterface({ onBackToLanding }: AppInterfaceProps) {
         )}
 
         {/* Result Section - Show preview below upload */}
-        <ResultSection generatedImage={generatedImage} isGenerating={isGenerating} error={error} />
+        <ResultSection 
+          generatedImage={generatedImage} 
+          generatedImages={generatedImages}
+          isGenerating={isGenerating} 
+          isGeneratingImages={isGeneratingImages}
+          error={error}
+          onGenerateImages={handleGenerateImages}
+          previewData={previewData}
+        />
       </main>
     </div>
   )

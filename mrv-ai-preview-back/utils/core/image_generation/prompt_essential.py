@@ -1,7 +1,7 @@
+# PROMPTS ESSENTIAL - Padrão básico e funcional da MRV
 
-
-# QUARTO PEQUENO ESSENCIAL
-def quarto_pequeno_essencial(comodo):
+# QUARTO PEQUENO ESSENTIAL
+def quarto_pequeno_essential(comodo):
     return f"""
 Crie uma imagem 3D fotorrealista de um quarto pequeno com aproximadamente {comodo['dimensões']['largura']} x {comodo['dimensões']['comprimento']} cm, localizado na região {comodo['localização']} da planta.
 
@@ -18,8 +18,8 @@ Este cômodo deve seguir o padrão ESSENTIAL da MRV, com foco em funcionalidade 
 O ambiente deve transmitir praticidade e conforto, ideal para crianças ou adolescentes, com móveis funcionais e decoração econômica.
 """
 
-# QUARTO CASAL ESSENCIAL
-def quarto_casal_essencial(comodo):
+# QUARTO CASAL ESSENTIAL
+def quarto_casal_essential(comodo):
     return f"""
 Crie uma imagem 3D realista de um quarto de casal com aproximadamente {comodo['dimensões']['largura']} x {comodo['dimensões']['comprimento']} cm, localizado na região {comodo['localização']} da planta.
 
@@ -37,8 +37,8 @@ O cômodo deve seguir o padrão ESSENTIAL da MRV, com decoração simples, confo
 A decoração deve ser econômica, acolhedora e coerente com o padrão de acabamento mais básico da MRV, priorizando praticidade e estética suave.
 """
 
-# SALA ESSENCIAL
-def sala_essencial(comodo):
+# SALA ESSENTIAL
+def sala_essential(comodo):
     return f"""
 Crie uma imagem 3D realista de uma sala de estar e jantar integradas com aproximadamente {comodo['dimensões']['largura']} x {comodo['dimensões']['comprimento']} cm, localizada na região {comodo['localização']} da planta.
 
@@ -57,8 +57,8 @@ A decoração deve seguir o padrão ESSENTIAL da MRV, com foco em ambientes simp
 A proposta deve transmitir um espaço contemporâneo, funcional e bem iluminado, adequado ao padrão de acabamento econômico da MRV.
 """
 
-# ÁREA PRIVATIVA ESSENCIAL
-def area_privativa_essencial(comodo):
+# ÁREA PRIVATIVA ESSENTIAL
+def area_privativa_essential(comodo):
     return f"""
 Crie uma imagem 3D fotorrealista de uma área privativa externa com aproximadamente {comodo['dimensões']['largura']} x {comodo['dimensões']['comprimento']} cm, localizada na parte externa do apartamento, seguindo o padrão ESSENTIAL da MRV.
 
@@ -75,9 +75,53 @@ Considere as seguintes referências extraídas das imagens:
 O ambiente deve transmitir uma área de lazer íntima e econômica, ideal para relaxar ou acomodar pequenos momentos ao ar livre.
 """
 
+# BANHEIRO ESSENTIAL
+def banheiro_essential(comodo):
+    return f"""
+Crie uma imagem 3D fotorrealista de um banheiro com aproximadamente {comodo['dimensões']['largura']} x {comodo['dimensões']['comprimento']} cm, localizado na região {comodo['localização']} da planta.
 
+O cômodo deve seguir o padrão ESSENTIAL da MRV, com acabamento simples e funcional:
 
+- Vaso sanitário branco convencional, com caixa acoplada.
+- Pia simples de louça branca com bancada em granito ou mármore básico.
+- Chuveiro com registro simples, sem ducha ou hidromassagem.
+- Revestimento básico: azulejos brancos ou bege até meia altura, tinta acima.
+- Piso cerâmico antiderrapante em tons neutros (branco, bege, cinza claro).
+- Espelho simples retangular sobre a pia.
+- Iluminação básica com uma lâmpada central ou arandela simples.
+- Toalhas em tons claros, sabonete líquido, papel higiênico.
 
+O ambiente deve ser limpo, funcional e econômico, sem luxos desnecessários.
+"""
 
+# COZINHA ESSENTIAL
+def cozinha_essential(comodo):
+    return f"""
+Crie uma imagem 3D fotorrealista de uma cozinha com aproximadamente {comodo['dimensões']['largura']} x {comodo['dimensões']['comprimento']} cm, localizada na região {comodo['localização']} da planta.
 
+O cômodo deve seguir o padrão ESSENTIAL da MRV, com móveis e eletrodomésticos básicos:
 
+- Armários de MDF branco ou amadeirado, com portas lisas e puxadores simples.
+- Bancada em granito ou fórmica, na cor branca ou bege.
+- Fogão 4 bocas simples, geladeira branca básica, microondas.
+- Pia de inox simples com torneira convencional.
+- Revestimento de azulejos brancos na parede da pia.
+- Piso cerâmico claro, antiderrapante.
+- Iluminação com lâmpada central e sob os armários (opcional).
+- Utensílios básicos: panelas, pratos, alguns temperos, pano de prato.
+
+O ambiente deve ser prático, limpo e funcional, adequado para o dia a dia.
+"""
+
+# GENÉRICO ESSENTIAL
+def generico_essential(comodo):
+    return f"""
+Crie uma imagem 3D genérica para o cômodo '{comodo['nome']}' com dimensões {comodo['dimensões']['largura']} x {comodo['dimensões']['comprimento']} cm, localizado na região {comodo['localização']} da planta.
+
+Decoração simples no padrão ESSENTIAL da MRV:
+- Móveis funcionais em MDF branco ou amadeirado
+- Cores neutras (branco, bege, cinza claro)
+- Iluminação natural e artificial básica
+- Acabamento econômico e prático
+- Ambiente limpo e organizado
+"""

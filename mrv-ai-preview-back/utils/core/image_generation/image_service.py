@@ -19,6 +19,7 @@ Classifique o tipo de cômodo, escolhendo **apenas uma das seguintes opções**:
 - sala
 - sala_cozinha
 - banheiro
+- cozinha
 - área_privativa
 - outro
 
@@ -26,31 +27,106 @@ Retorne **apenas o nome da opção** correspondente ao tipo do cômodo.
 """
     return classificar_tipo_comodo(prompt)
 
-def gerar_prompt_essencial(comodo: dict) -> str:
-    # Import locally to avoid circular imports
-    from core.image_generation.prompts import (
-        quarto_pequeno_essencial,
-        quarto_casal_essencial, 
-        sala_essencial,
-        area_privativa_essencial
-    )
+def gerar_prompt_por_tipo(comodo: dict, tipo_apartamento: str) -> str:
+    """
+    Gera prompt específico baseado no tipo do apartamento (ESSENTIAL, ECO, BIO, CLASS)
+    e no tipo do cômodo detectado.
     
-    tipo = classificar_comodo(comodo)
+    Args:
+        comodo: Dados do cômodo (nome, dimensões, localização)
+        tipo_apartamento: ESSENTIAL, ECO, BIO ou CLASS
+    
+    Returns:
+        Prompt específico para o tipo de apartamento e cômodo
+        
+    Raises:
+        ValueError: Se o tipo de apartamento não for válido
+    """
+    tipo_apartamento = tipo_apartamento.upper()
+    tipo_comodo = classificar_comodo(comodo)
+    
+    # Validar tipos permitidos
+    tipos_validos = ['ESSENTIAL', 'ECO', 'BIO', 'CLASS']
+    if tipo_apartamento not in tipos_validos:
+        raise ValueError(f"Tipo de apartamento '{tipo_apartamento}' inválido. Tipos permitidos: {tipos_validos}")
+    
+    # Importar o módulo correto baseado no tipo
+    if tipo_apartamento == 'ESSENTIAL':
+        from core.image_generation.prompt_essential import (
+            quarto_pequeno_essential, quarto_casal_essential, sala_essential,
+            area_privativa_essential, banheiro_essential, cozinha_essential, generico_essential
+        )
+        prompt_functions = {
+            "quarto_pequeno": quarto_pequeno_essential,
+            "quarto_casal": quarto_casal_essential,
+            "sala": sala_essential,
+            "sala_cozinha": sala_essential,  # Usar mesmo prompt da sala
+            "área_privativa": area_privativa_essential,
+            "banheiro": banheiro_essential,
+            "cozinha": cozinha_essential,
+            "outro": generico_essential
+        }
+    
+    elif tipo_apartamento == 'ECO':
+        from core.image_generation.prompt_eco import (
+            quarto_pequeno_eco, quarto_casal_eco, sala_eco,
+            area_privativa_eco, banheiro_eco, cozinha_eco, generico_eco
+        )
+        prompt_functions = {
+            "quarto_pequeno": quarto_pequeno_eco,
+            "quarto_casal": quarto_casal_eco,
+            "sala": sala_eco,
+            "sala_cozinha": sala_eco,
+            "área_privativa": area_privativa_eco,
+            "banheiro": banheiro_eco,
+            "cozinha": cozinha_eco,
+            "outro": generico_eco
+        }
+    
+    elif tipo_apartamento == 'BIO':
+        from core.image_generation.prompt_bio import (
+            quarto_pequeno_bio, quarto_casal_bio, sala_bio,
+            area_privativa_bio, banheiro_bio, cozinha_bio, generico_bio
+        )
+        prompt_functions = {
+            "quarto_pequeno": quarto_pequeno_bio,
+            "quarto_casal": quarto_casal_bio,
+            "sala": sala_bio,
+            "sala_cozinha": sala_bio,
+            "área_privativa": area_privativa_bio,
+            "banheiro": banheiro_bio,
+            "cozinha": cozinha_bio,
+            "outro": generico_bio
+        }
+    
+    elif tipo_apartamento == 'CLASS':
+        from core.image_generation.prompt_class import (
+            quarto_pequeno_class, quarto_casal_class, sala_class,
+            area_privativa_class, banheiro_class, cozinha_class, generico_class
+        )
+        prompt_functions = {
+            "quarto_pequeno": quarto_pequeno_class,
+            "quarto_casal": quarto_casal_class,
+            "sala": sala_class,
+            "sala_cozinha": sala_class,
+            "área_privativa": area_privativa_class,
+            "banheiro": banheiro_class,
+            "cozinha": cozinha_class,
+            "outro": generico_class
+        }
+    
+    # Buscar função correspondente ao tipo de cômodo
+    prompt_function = prompt_functions.get(tipo_comodo, prompt_functions["outro"])
+    
+    return prompt_function(comodo)
 
-    match tipo:
-        case "quarto_pequeno":
-            return quarto_pequeno_essencial(comodo)
-        case "quarto_casal":
-            return quarto_casal_essencial(comodo)
-        case "sala":
-            return sala_essencial(comodo)
-        case "área_privativa":
-            return area_privativa_essencial(comodo)
-        case _:
-            return f"""
-Crie uma imagem 3D genérica para o cômodo '{comodo['nome']}' com dimensões {comodo['dimensões']['largura']} x {comodo['dimensões']['comprimento']} cm. 
-Decoração simples no padrão ESSENCIAL da MRV.
-"""
+# Função de compatibilidade (mantém o nome antigo)
+def gerar_prompt_essencial(comodo: dict) -> str:
+    """
+    Função de compatibilidade - sempre usa ESSENTIAL
+    DEPRECATED: Use gerar_prompt_por_tipo() para ter controle do tipo
+    """
+    return gerar_prompt_por_tipo(comodo, 'ESSENTIAL')
 
 def gerar_imagens_para_comodos(lista_comodos: list[dict], imagem_planta_bytes: bytes) -> list[dict]:
     """
