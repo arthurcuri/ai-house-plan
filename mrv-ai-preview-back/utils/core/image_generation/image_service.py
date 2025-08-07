@@ -120,24 +120,25 @@ def gerar_prompt_por_tipo(comodo: dict, tipo_apartamento: str) -> str:
     
     return prompt_function(comodo)
 
-# Função de compatibilidade (mantém o nome antigo)
-def gerar_prompt_essencial(comodo: dict) -> str:
-    """
-    Função de compatibilidade - sempre usa ESSENTIAL
-    DEPRECATED: Use gerar_prompt_por_tipo() para ter controle do tipo
-    """
-    return gerar_prompt_por_tipo(comodo, 'ESSENTIAL')
-
-def gerar_imagens_para_comodos(lista_comodos: list[dict], imagem_planta_bytes: bytes) -> list[dict]:
+def gerar_imagens_para_comodos(lista_comodos: list[dict], imagem_planta_bytes: bytes, tipo_apartamento: str = 'ESSENTIAL') -> list[dict]:
     """
     Gera imagens com base nos cômodos e na planta original.
-    Agora com compressão automática para reduzir o tamanho das respostas.
+    Agora com suporte aos 4 tipos de apartamento e compressão automática.
+    
+    Args:
+        lista_comodos: Lista de cômodos detectados
+        imagem_planta_bytes: Bytes da imagem da planta
+        tipo_apartamento: Tipo do apartamento (ESSENTIAL, ECO, BIO, CLASS)
+    
+    Returns:
+        Lista com imagens em base64 e metadados
     """
     imagens = []
 
     for comodo in lista_comodos:
         try:
-            prompt = gerar_prompt_essencial(comodo)
+            # Usar a função genérica que suporta todos os tipos
+            prompt = gerar_prompt_por_tipo(comodo, tipo_apartamento)
             # Usar compressão por padrão para reduzir o tamanho da resposta
             imagem = gerar_imagem(prompt, image_bytes=imagem_planta_bytes, compress=True)
             imagem_base64 = base64.b64encode(imagem).decode("utf-8")
@@ -145,7 +146,8 @@ def gerar_imagens_para_comodos(lista_comodos: list[dict], imagem_planta_bytes: b
                 "comodo": comodo["nome"],
                 "prompt": prompt,
                 "imagem_base64": imagem_base64,
-                "tamanho_bytes": len(imagem)
+                "tamanho_bytes": len(imagem),
+                "tipo_apartamento": tipo_apartamento.upper()
             })
         except Exception as e:
             imagens.append({

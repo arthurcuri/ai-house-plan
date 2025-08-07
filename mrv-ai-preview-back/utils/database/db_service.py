@@ -60,30 +60,25 @@ class DatabaseService:
 
     @staticmethod
     def create_tables():
-        """Create all tables in the database"""
+        """Create only the 'user' table in the database"""
         if not SQLALCHEMY_AVAILABLE:
             logger.warning("SQLAlchemy not available - skipping table creation")
             return
-            
+
         try:
-            # Try to import auth models to register them
+            # Import only the User model and create just its table
             try:
                 from ..auth.models import User
-                logger.info("Auth models imported successfully")
+                logger.info("Auth model 'User' imported successfully")
             except ImportError:
-                logger.warning("Auth models not available - skipping auth tables")
-            
-            # Try to import image models to register them
-            try:
-                from .image_models import GeneratedImage, ImageSession
-                logger.info("Image models imported successfully")
-            except ImportError:
-                logger.warning("Image models not available - skipping image tables")
-                
-            Base.metadata.create_all(bind=engine)
-            logger.info("SQLite tables created successfully")
+                logger.warning("Auth model 'User' not available - skipping table creation")
+                return
+
+            # Create only the User table (do not create any other tables)
+            Base.metadata.create_all(bind=engine, tables=[User.__table__])
+            logger.info("SQLite 'user' table created successfully")
         except Exception as e:
-            logger.error(f"Error creating tables: {e}")
+            logger.error(f"Error creating 'user' table: {e}")
 
     @staticmethod
     def init_db():
@@ -101,7 +96,6 @@ def get_db():
     """Legacy wrapper function"""
     if not SQLALCHEMY_AVAILABLE:
         return None
-        
     db = SessionLocal()
     try:
         yield db
@@ -114,6 +108,12 @@ def get_db():
 
 def create_tables():
     """Legacy wrapper function"""
+    return DatabaseService.create_tables()
+
+def init_db():
+    """Legacy wrapper function"""
+    return DatabaseService.init_db()
+    return DatabaseService.init_db()
     return DatabaseService.create_tables()
 
 def init_db():

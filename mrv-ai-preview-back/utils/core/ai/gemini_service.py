@@ -77,12 +77,12 @@ def gerar_imagem(prompt: str, image_bytes: bytes = None, max_retries: int = 8, c
                 Use essas proporções APENAS para orientar o layout e distribuição dos móveis, não para alterar a resolução da imagem.
                 
                 ESPECIFICAÇÕES TÉCNICAS OBRIGATÓRIAS DA IMAGEM:
-                - Resolução: EXATAMENTE 1024x1024 pixels (formato quadrado padrão)
+                - Resolução: EXATAMENTE 2048x2048 pixels (formato quadrado de alta definição)
                 - Qualidade: Máxima possível do modelo Gemini
                 - Formato: Quadrado independente das proporções do cômodo
                 
                 Gere uma imagem 3D fotorrealista de MÁXIMA QUALIDADE que represente fielmente:
-                1. As proporções do cômodo conforme especificado (mas adapte para formato quadrado 1024x1024)
+                1. As proporções do cômodo conforme especificado (mas adapte para formato quadrado 2048x2048)
                 2. O layout e distribuição de móveis adequados ao tamanho real do cômodo
                 3. Iluminação natural realista com ray tracing global e sombras suaves
                 4. Texturas ultra-detalhadas em alta definição (madeira, tecidos, metais, cerâmica, vidro)
@@ -93,7 +93,7 @@ def gerar_imagem(prompt: str, image_bytes: bytes = None, max_retries: int = 8, c
                 9. Detalhes finos como texturas de parede, grãos de madeira, fibras de tecido
                 10. Composição arquitetônica perfeita enquadrada em formato quadrado
                 
-                IMPORTANTE: Mesmo que o cômodo seja retangular, enquadre a visualização em formato quadrado (1024x1024) 
+                IMPORTANTE: Mesmo que o cômodo seja retangular, enquadre a visualização em formato quadrado (2048x2048) 
                 mostrando uma perspectiva que revele bem as proporções e características do ambiente.
                 
                 A imagem deve ser indistinguível de uma fotografia real de um ambiente construído, com qualidade de portfólio arquitetônico profissional.
@@ -160,37 +160,30 @@ def gerar_imagem(prompt: str, image_bytes: bytes = None, max_retries: int = 8, c
     return _gerar_imagem_placeholder(prompt, compress=compress)
 
 
-def _comprimir_imagem(image_data: bytes, quality: int = 100, max_size: tuple = (1024, 1024)) -> bytes:
+def _comprimir_imagem(image_data: bytes, quality: int = 100, max_size: tuple = (2048, 2048)) -> bytes:
     """
-    Processa imagem em resolução 1024x1024 pixels mantendo qualidade máxima.
+    Processa imagem em resolução 2048x2048 pixels mantendo qualidade máxima.
     """
     try:
         # Abrir a imagem
         image = Image.open(BytesIO(image_data))
         
-        # Forçar exatamente 1024x1024 pixels (formato quadrado)
+        # Forçar exatamente 2048x2048 pixels (formato quadrado)
         target_width, target_height = max_size
         
-        # Redimensionar para exatamente 1024x1024 mantendo a melhor qualidade
+        # Redimensionar para exatamente 2048x2048 mantendo a melhor qualidade
         # Usar LANCZOS que é o melhor algoritmo para redimensionamento
         image = image.resize((target_width, target_height), Image.Resampling.LANCZOS)
         
-        # Converter para RGB se necessário (para JPEG)
-        if image.mode != 'RGB':
-            image = image.convert('RGB')
-        
-        # Salvar com qualidade máxima (100%)
+        # Salvar com qualidade máxima em PNG
         buffer = BytesIO()
         image.save(
             buffer, 
-            format='JPEG', 
-            quality=quality,
-            optimize=False,  # Não otimizar para manter máxima qualidade
-            progressive=True,  # JPEG progressivo para melhor qualidade visual
-            subsampling=0  # Sem subsampling para máxima qualidade de cor
+            format='PNG', 
+            optimize=False  # Não otimizar para manter máxima qualidade
         )
         
-        print(f"📐 Imagem processada: {image.size[0]}x{image.size[1]} pixels, qualidade {quality}% (máxima)")
+        print(f"📐 Imagem processada: {image.size[0]}x{image.size[1]} pixels, formato PNG (máxima qualidade)")
         return buffer.getvalue()
         
     except Exception as e:
@@ -200,11 +193,11 @@ def _comprimir_imagem(image_data: bytes, quality: int = 100, max_size: tuple = (
 
 def _gerar_imagem_placeholder(prompt: str, compress: bool = True) -> bytes:
     """
-    Gera uma imagem placeholder em resolução 1024x1024 baseada no prompt.
+    Gera uma imagem placeholder em resolução 2048x2048 baseada no prompt.
     """
     try:
-        # Sempre usar 1024x1024 para consistência
-        width, height = 1024, 1024
+        # Sempre usar 2048x2048 para consistência
+        width, height = 2048, 2048
         
         print(f"🎨 Gerando placeholder {width}x{height} (qualidade máxima)...")
         
@@ -238,40 +231,37 @@ def _gerar_imagem_placeholder(prompt: str, compress: bool = True) -> bytes:
         
         # Adicionar texto indicativo mais elegante
         try:
-            font_size = 48  # Tamanho fixo para 1024x1024
+            font_size = 96  # Tamanho proporcional para 2048x2048
             font = ImageFont.load_default()
         except:
             font = None
         
-        text = "PLACEHOLDER - QUALIDADE MÁXIMA\n1024x1024 pixels"
+        text = "PLACEHOLDER - QUALIDADE MÁXIMA\n2048x2048 pixels - PNG"
         if font:
             # Calcular posição centralizada para texto multi-linha
             lines = text.split('\n')
-            total_height = len(lines) * 60
+            total_height = len(lines) * 120  # Proporcional ao novo tamanho
             start_y = (height - total_height) // 2
             
             for i, line in enumerate(lines):
                 bbox = draw.textbbox((0, 0), line, font=font)
                 text_width = bbox[2] - bbox[0]
                 x = (width - text_width) // 2
-                y = start_y + i * 60
+                y = start_y + i * 120
                 # Sombra do texto
-                draw.text((x+2, y+2), line, fill=(50, 50, 50), font=font)
+                draw.text((x+4, y+4), line, fill=(50, 50, 50), font=font)
                 # Texto principal
                 draw.text((x, y), line, fill=(100, 100, 100), font=font)
         
-        # Salvar em bytes com qualidade máxima
+        # Salvar em bytes com qualidade máxima em PNG
         buffer = BytesIO()
         image.save(
             buffer, 
-            format='JPEG', 
-            quality=100,
-            optimize=False,
-            progressive=True,
-            subsampling=0
+            format='PNG',
+            optimize=False
         )
         
-        print(f"✅ Placeholder criado: {width}x{height}, {len(buffer.getvalue())} bytes (qualidade máxima)")
+        print(f"✅ Placeholder criado: {width}x{height}, {len(buffer.getvalue())} bytes (qualidade máxima PNG)")
         return buffer.getvalue()
         
     except Exception as e:
@@ -287,7 +277,7 @@ def interpretar_planta_com_imagem(prompt: str, image_bytes: bytes) -> str:
     try:
         # Preparar conteúdo multimodal
         contents = [
-            {"mime_type": "image/jpeg", "data": image_bytes},
+            {"mime_type": "image/png", "data": image_bytes},
             {"text": prompt}
         ]
         response = modelo_multimodal.generate_content(contents)

@@ -112,13 +112,13 @@ async def gerar_imagens(
     # ✅ Configurações fixas em ALTA QUALIDADE
     configuracao = {
         "alta_qualidade": True,
-        "resolucao": "1024x1024 pixels",
-        "qualidade_jpeg": "100% (máxima qualidade)",
+        "resolucao": "2048x2048 pixels",
+        "qualidade": "PNG sem compressão (máxima qualidade)",
         "rendering": "Fotorrealístico com ray tracing",
         "anti_aliasing": "Máximo",
         "max_tentativas": 8,
         "delay_progressivo": "5s até 60s",
-        "formato": "JPEG",
+        "formato": "PNG",
         "tipo_prompt": tipo.upper()
     }
 
@@ -142,7 +142,7 @@ async def gerar_imagens(
             
             # Salvar em arquivo
             nome_sanitizado = sanitizar_nome_arquivo(comodo['nome'])
-            filename = f"comodo_{i+1}_{nome_sanitizado}.jpg"
+            filename = f"comodo_{i+1}_{nome_sanitizado}.png"
             filepath = os.path.join(session_dir, filename)
             
             with open(filepath, 'wb') as f:

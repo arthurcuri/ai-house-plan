@@ -112,8 +112,8 @@ class GeneratedImage(Base):
     # Dados da imagem
     imagem_data = Column(BLOB, nullable=False)  # Dados binários da imagem
     tamanho_bytes = Column(Integer, nullable=False)
-    formato = Column(String(10), default="JPEG")  # Formato da imagem
-    resolucao = Column(String(20), default="1024x1024")  # Resolução da imagem
+    formato = Column(String(10), default="PNG")  # Formato da imagem
+    resolucao = Column(String(20), default="2048x2048")  # Resolução da imagem
     
     # Configurações de geração
     prompt_usado = Column(Text)  # Prompt completo usado para gerar a imagem
