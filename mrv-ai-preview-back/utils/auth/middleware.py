@@ -3,7 +3,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from .utils import decode_access_token
 from .models import get_user_by_email, User
-from db import get_db  # Import absoluto
+from database.db_service import get_db
 from typing import Optional
 import logging
 

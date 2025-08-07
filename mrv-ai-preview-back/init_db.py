@@ -8,14 +8,14 @@ import sys
 import logging
 from pathlib import Path
 
-# Adicionar o diretório utils ao path
-sys.path.append(str(Path(__file__).parent / "utils"))
+# Adicionar utils ao path para imports
+utils_path = Path(__file__).parent / "utils"
+sys.path.insert(0, str(utils_path))
 
 try:
-    from utils.db import init_db
-    from utils.auth.models import User
-    from utils.auth.utils import hash_password
-    from utils.db import SessionLocal
+    from database.db_service import init_db, SessionLocal
+    from auth.models import User
+    from auth.utils import hash_password
 except ImportError as e:
     print(f"Erro ao importar módulos: {e}")
     print("Certifique-se de que todas as dependências estão instaladas")
@@ -59,7 +59,7 @@ def main():
         create_test_user()
         
         # Mostrar localização do banco
-        db_path = os.path.abspath("auth.db")
+        db_path = os.path.abspath("./auth.db")
         print(f"📂 Banco de dados criado em: {db_path}")
         
         print("\n🚀 Sistema pronto para desenvolvimento!")

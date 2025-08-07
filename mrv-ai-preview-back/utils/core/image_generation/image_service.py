@@ -1,6 +1,5 @@
 
-from prompt_factory import *
-from llm_factory import gerar_imagem, classificar_tipo_comodo
+from core.ai.gemini_service import gerar_imagem, classificar_tipo_comodo
 import base64
 
 def classificar_comodo(comodo: dict) -> str:
@@ -28,6 +27,14 @@ Retorne **apenas o nome da opção** correspondente ao tipo do cômodo.
     return classificar_tipo_comodo(prompt)
 
 def gerar_prompt_essencial(comodo: dict) -> str:
+    # Import locally to avoid circular imports
+    from core.image_generation.prompts import (
+        quarto_pequeno_essencial,
+        quarto_casal_essencial, 
+        sala_essencial,
+        area_privativa_essencial
+    )
+    
     tipo = classificar_comodo(comodo)
 
     match tipo:
@@ -68,4 +75,3 @@ def gerar_imagens_para_comodos(lista_comodos: list[dict], imagem_planta_bytes: b
             })
 
     return imagens
-

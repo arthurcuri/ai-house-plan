@@ -1,8 +1,12 @@
 import os
+import warnings
 from passlib.context import CryptContext
 from jose import jwt, JWTError
 from datetime import datetime, timedelta
 from typing import Optional
+
+# Silenciar warnings do bcrypt sobre versão
+warnings.filterwarnings("ignore", category=UserWarning, module="passlib")
 
 # Configurações JWT - usar variáveis de ambiente
 SECRET_KEY = os.getenv("JWT_SECRET_KEY", "dev-secret-key-change-this-in-production")
