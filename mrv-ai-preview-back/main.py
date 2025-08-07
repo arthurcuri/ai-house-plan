@@ -14,7 +14,7 @@ if __name__ == "__main__":
     utils_path = Path(__file__).parent / "utils"
     sys.path.insert(0, str(utils_path))
     
-    from api.main import app
+    from utils.api.main import app
     
     print("🚀 Iniciando MRV AI Preview Server...")
     print("📚 Documentação disponível em: http://127.0.0.1:8000/docs")

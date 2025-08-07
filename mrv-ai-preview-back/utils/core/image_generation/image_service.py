@@ -55,18 +55,21 @@ Decoração simples no padrão ESSENCIAL da MRV.
 def gerar_imagens_para_comodos(lista_comodos: list[dict], imagem_planta_bytes: bytes) -> list[dict]:
     """
     Gera imagens com base nos cômodos e na planta original.
+    Agora com compressão automática para reduzir o tamanho das respostas.
     """
     imagens = []
 
     for comodo in lista_comodos:
         try:
             prompt = gerar_prompt_essencial(comodo)
-            imagem = gerar_imagem(prompt, image_bytes=imagem_planta_bytes)
+            # Usar compressão por padrão para reduzir o tamanho da resposta
+            imagem = gerar_imagem(prompt, image_bytes=imagem_planta_bytes, compress=True)
             imagem_base64 = base64.b64encode(imagem).decode("utf-8")
             imagens.append({
                 "comodo": comodo["nome"],
                 "prompt": prompt,
-                "imagem_base64": imagem_base64
+                "imagem_base64": imagem_base64,
+                "tamanho_bytes": len(imagem)
             })
         except Exception as e:
             imagens.append({

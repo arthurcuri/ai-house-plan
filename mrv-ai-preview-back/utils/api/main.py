@@ -2,8 +2,10 @@ import easyocr
 from PIL import Image
 import io
 from fastapi import FastAPI, UploadFile, File, Form
+from fastapi.staticfiles import StaticFiles
 import numpy as np
 from fastapi.middleware.cors import CORSMiddleware
+import os
 
 # Imports das rotas organizadas
 from api.routes.image_generation import router as imagens_router
@@ -24,7 +26,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Servir imagens geradas estaticamente
+IMAGES_OUTPUT_DIR = "/tmp/generated_images"
+os.makedirs(IMAGES_OUTPUT_DIR, exist_ok=True)
+app.mount("/imagens", StaticFiles(directory=IMAGES_OUTPUT_DIR), name="imagens")
+
 # Inclui as 4 rotas organizadas
 app.include_router(ocr_router)           # POST /ocr
-app.include_router(imagens_router)       # POST /gerar-imagens  
+app.include_router(imagens_router)       # POST /gerar-imagens, POST /gerar-imagens-arquivos  
 app.include_router(auth_router)          # POST /auth/login, /auth/register
