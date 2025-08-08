@@ -19,9 +19,6 @@
 
 .env
 
-/mrv-ai-preview-back/workflow/.env
-
-
 **/__pycache__/
 **/*.pyc
 
