@@ -27,7 +27,11 @@ E considerando a imagem da planta fornecida, identifique com o máximo de precis
 1. Quais são os cômodos presentes?
 2. Quais são as dimensões aproximadas de cada um (em cm)?
 3. Qual a localização relativa de cada cômodo (ex: 'superior esquerdo', 'centro', etc)?
-4. Adicione também um campo opcional chamado "notas", com observações relevantes sobre limitações da planta, escala, possíveis ambiguidades, etc.
+4. Adicione também um campo opcional chamado "notas", contendo:
+   - Observações relevantes sobre limitações da planta, escala, possíveis ambiguidades, etc.
+   - Descrição da disposição dos móveis dentro de cada cômodo.
+   - Formato dos móveis e seu tamanho relativo em comparação ao restante do cômodo (por exemplo: "sofá ocupa metade do comprimento da parede norte", "mesa redonda pequena no centro", "cama queen encostada à parede leste").
+
 
 ⚠️ Responda com **apenas o JSON bruto**, no seguinte formato:
 
