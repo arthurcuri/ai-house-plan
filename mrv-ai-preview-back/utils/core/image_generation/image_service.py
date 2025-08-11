@@ -54,7 +54,7 @@ def gerar_prompt_por_tipo(comodo: dict, tipo_apartamento: str) -> str:
     if tipo_apartamento == 'ESSENTIAL':
         from core.image_generation.prompt_essential import (
             quarto_pequeno_essential, quarto_casal_essential, sala_essential,
-            area_privativa_essential, banheiro_essential, cozinha_essential, generico_essential
+            area_privativa_essential, banheiro_essential, cozinha_essential, varanda_essential, generico_essential
         )
         prompt_functions = {
             "quarto_pequeno": quarto_pequeno_essential,
@@ -64,7 +64,9 @@ def gerar_prompt_por_tipo(comodo: dict, tipo_apartamento: str) -> str:
             "área_privativa": area_privativa_essential,
             "banheiro": banheiro_essential,
             "cozinha": cozinha_essential,
+            "varanda": varanda_essential,  
             "outro": generico_essential
+            
         }
     
     elif tipo_apartamento == 'ECO':
