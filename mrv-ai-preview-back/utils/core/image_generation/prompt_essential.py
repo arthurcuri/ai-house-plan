@@ -5,6 +5,8 @@ def quarto_pequeno_essential(comodo):
     return f"""
 Crie uma imagem 3D fotorrealista de um quarto pequeno com aproximadamente {comodo['dimensões']['largura']} x {comodo['dimensões']['comprimento']} cm, localizado na região {comodo['localização']} da planta.
 
+O campo {comodo['notas']} indica os moveis, suas respectivas disposições e decoração observados na planta. Serão úteis para compor a imagem de forma mais precisa.
+
 Este cômodo deve seguir o padrão ESSENTIAL da MRV, com foco em funcionalidade e acabamento simples. Considere as seguintes características observadas nas imagens de referência:
 
 - Camas de solteiro: pode ser uma ou duas, lado a lado ou beliche, com roupa de cama neutra e colchas claras ou acinzentadas.
@@ -22,6 +24,8 @@ O ambiente deve transmitir praticidade e conforto, ideal para crianças ou adole
 def quarto_casal_essential(comodo):
     return f"""
 Crie uma imagem 3D realista de um quarto de casal com aproximadamente {comodo['dimensões']['largura']} x {comodo['dimensões']['comprimento']} cm, localizado na região {comodo['localização']} da planta.
+
+O campo {comodo['notas']} indica os moveis, suas respectivas disposições e decoração observados na planta. Serão úteis para compor a imagem de forma mais precisa.
 
 O cômodo deve seguir o padrão ESSENTIAL da MRV, com decoração simples, confortável e funcional. Considere os seguintes elementos baseados nas imagens de referência:
 
@@ -41,6 +45,8 @@ A decoração deve ser econômica, acolhedora e coerente com o padrão de acabam
 def sala_essential(comodo):
     return f"""
 Crie uma imagem 3D realista de uma sala de estar e jantar integradas com aproximadamente {comodo['dimensões']['largura']} x {comodo['dimensões']['comprimento']} cm, localizada na região {comodo['localização']} da planta.
+
+O campo {comodo['notas']} indica os moveis, suas respectivas disposições e decoração observados na planta. Serão úteis para compor a imagem de forma mais precisa.
 
 A decoração deve seguir o padrão ESSENTIAL da MRV, com foco em ambientes simples, acolhedores e funcionais. Baseie-se nas seguintes referências:
 
@@ -62,6 +68,8 @@ def area_privativa_essential(comodo):
     return f"""
 Crie uma imagem 3D fotorrealista de uma área privativa externa com aproximadamente {comodo['dimensões']['largura']} x {comodo['dimensões']['comprimento']} cm, localizada na parte externa do apartamento, seguindo o padrão ESSENTIAL da MRV.
 
+O campo {comodo['notas']} indica os moveis, suas respectivas disposições e decoração observados na planta. Serão úteis para compor a imagem de forma mais precisa.
+
 Considere as seguintes referências extraídas das imagens:
 
 - Piso parcialmente gramado (natural ou sintético) com áreas de concreto.
@@ -79,6 +87,8 @@ O ambiente deve transmitir uma área de lazer íntima e econômica, ideal para r
 def banheiro_essential(comodo):
     return f"""
 Crie uma imagem 3D fotorrealista de um banheiro com aproximadamente {comodo['dimensões']['largura']} x {comodo['dimensões']['comprimento']} cm, localizado na região {comodo['localização']} da planta.
+
+O campo {comodo['notas']} indica os moveis, suas respectivas disposições e decoração observados na planta. Serão úteis para compor a imagem de forma mais precisa.
 
 O cômodo deve seguir o padrão ESSENTIAL da MRV, com acabamento simples e funcional:
 
@@ -99,6 +109,8 @@ def cozinha_essential(comodo):
     return f"""
 Crie uma imagem 3D fotorrealista de uma cozinha com aproximadamente {comodo['dimensões']['largura']} x {comodo['dimensões']['comprimento']} cm, localizada na região {comodo['localização']} da planta.
 
+O campo {comodo['notas']} indica os moveis, suas respectivas disposições e decoração observados na planta. Serão úteis para compor a imagem de forma mais precisa.
+
 O cômodo deve seguir o padrão ESSENTIAL da MRV, com móveis e eletrodomésticos básicos:
 
 - Armários de MDF branco ou amadeirado, com portas lisas e puxadores simples.
@@ -113,10 +125,33 @@ O cômodo deve seguir o padrão ESSENTIAL da MRV, com móveis e eletrodoméstico
 O ambiente deve ser prático, limpo e funcional, adequado para o dia a dia.
 """
 
+# VARANDA ESSENTIAL
+def varanda_essential(comodo):
+    return f"""
+Crie uma imagem 3D fotorrealista de uma varanda com aproximadamente {comodo['dimensões']['largura']} x {comodo['dimensões']['comprimento']} cm, localizada na região {comodo['localização']} da planta.
+
+O campo {comodo['notas']} indica os moveis, suas respectivas disposições e decoração observados na planta. Serão úteis para compor a imagem de forma mais precisa.
+
+O ambiente deve seguir o padrão ESSENTIAL da MRV, com foco em praticidade e conforto:
+
+- Conjunto pequeno de mesa e cadeiras em fibra sintética ou alumínio em tons neutros (bege, cinza).
+- Floreira ou vasos com plantas pequenas e de baixa manutenção.
+- Piso cerâmico antiderrapante em tom claro.
+- Guarda-corpo em alumínio e vidro temperado.
+- Iluminação pontual com spot ou arandela simples.
+- Cortina tipo persiana externa (opcional).
+- Tapete emborrachado simples (opcional).
+- Decoração minimalista com um ou dois elementos decorativos.
+
+O ambiente deve ser acolhedor e funcional, ideal para momentos de relaxamento ao ar livre, mantendo o padrão econômico da linha Essential.
+"""
+
 # GENÉRICO ESSENTIAL
 def generico_essential(comodo):
     return f"""
 Crie uma imagem 3D genérica para o cômodo '{comodo['nome']}' com dimensões {comodo['dimensões']['largura']} x {comodo['dimensões']['comprimento']} cm, localizado na região {comodo['localização']} da planta.
+
+O campo {comodo['notas']} indica os moveis, suas respectivas disposições e decoração observados na planta. Serão úteis para compor a imagem de forma mais precisa.
 
 Decoração simples no padrão ESSENTIAL da MRV:
 - Móveis funcionais em MDF branco ou amadeirado
