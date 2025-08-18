@@ -132,6 +132,14 @@ async def gerar_imagens(
     
     for i, comodo in enumerate(comodos):
         try:
+
+            # Debug log to inspect the 'comodo' object
+            print(f"Debug: Processing cômodo {i+1}: {comodo}")  # Log the 'comodo' object
+            
+            # Ensure 'comodo' is a dictionary
+            if not isinstance(comodo, dict):
+                raise ValueError(f"Expected 'comodo' to be a dictionary, got {type(comodo)}")
+            
             # Gerar prompt específico para o cômodo baseado no tipo do apartamento
             from ...core.image_generation.image_service import gerar_prompt_por_tipo
             prompt = gerar_prompt_por_tipo(comodo, tipo.upper())
@@ -155,7 +163,8 @@ async def gerar_imagens(
                 "tamanho_bytes": len(image_data),
                 "url_relativa": f"/imagens/{timestamp}_{session_id}/{filename}",
                 "dimensoes": comodo.get("dimensões", {}),
-                "localizacao": comodo.get("localização", "")
+                "localizacao": comodo.get("localização", ""),
+                "notas": comodo.get("notas", "")  # Add this line to include the 'notas' field
             })
             
         except ValueError as e:

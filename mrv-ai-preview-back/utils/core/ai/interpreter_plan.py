@@ -27,15 +27,16 @@ E considerando a imagem da planta fornecida, identifique com o máximo de precis
 1. Quais são os cômodos presentes?
 2. Quais são as dimensões aproximadas de cada um (em cm)?
 3. Qual a localização relativa de cada cômodo (ex: 'superior esquerdo', 'centro', etc)?
-4. Adicione também um campo opcional chamado "notas", contendo:
+4. Adicione também um campo opcional chamado "notas" para cada cômodo contendo:
    - Observações relevantes sobre limitações da planta, escala, possíveis ambiguidades, etc.
-   - Descrição da disposição dos móveis dentro de cada cômodo.
+   - Descrição detalhada da disposição dos móveis dentro de cada cômodo.
    - Formato dos móveis e seu tamanho relativo em comparação ao restante do cômodo (por exemplo: "sofá ocupa metade do comprimento da parede norte", "mesa redonda pequena no centro", "cama queen encostada à parede leste").
+   - O máximo de descrição possível sobre cada móvel presente, para que a geração do modelo 3D seja precisa e realista.
 
 
 ⚠️ Responda com **apenas o JSON bruto**, no seguinte formato:
 
-{{"cômodos": [{{"nome": "...", "dimensões": {{"largura": ..., "comprimento": ...}}, "localização": "..."}}], "notas": ["..."]}}
+{{"cômodos": [{{"nome": "...", "dimensões": {{"largura": ..., "comprimento": ...}}, "localização": "...", "notas": "..."}}]
 
 ❌ **Não use expressões matemáticas** como "122 + 120". Faça o cálculo e informe apenas o valor numérico final.
 
