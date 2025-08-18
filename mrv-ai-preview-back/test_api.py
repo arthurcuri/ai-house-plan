@@ -21,11 +21,16 @@ def test_gemini_api():
         response = model.generate_content("Olá, isso é um teste da API.")
         
         print("\n✅ API funcionando corretamente!")
-        print("Resposta do modelo:", response.text)
+        print("Resposta do modelo:", response.text[:100] + "..." if len(response.text) > 100 else response.text)
+        
+        # Teste adicional: listar modelos disponíveis
+        print("\n📋 Modelos disponíveis:")
+        for model in genai.list_models():
+            if 'generateContent' in model.supported_generation_methods:
+                print(f"  - {model.name} (Texto)")
+            elif hasattr(model, 'supported_generation_methods'):
+                print(f"  - {model.name} (Outros métodos)")
         
     except Exception as e:
         print("\n❌ Erro ao testar a API:")
         print(str(e))
-
-if __name__ == "__main__":
-    test_gemini_api()

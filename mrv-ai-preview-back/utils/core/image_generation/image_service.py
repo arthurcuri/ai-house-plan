@@ -1,4 +1,3 @@
-
 from core.ai.gemini_service import gerar_imagem, classificar_tipo_comodo
 import base64
 
@@ -125,7 +124,7 @@ def gerar_prompt_por_tipo(comodo: dict, tipo_apartamento: str) -> str:
 def gerar_imagens_para_comodos(lista_comodos: list[dict], imagem_planta_bytes: bytes, tipo_apartamento: str = 'ESSENTIAL') -> list[dict]:
     """
     Gera imagens com base nos cômodos e na planta original.
-    Agora com suporte aos 4 tipos de apartamento e compressão automática.
+    Agora com suporte aos 4 tipos de apartamento e qualidade 4K fixa.
     
     Args:
         lista_comodos: Lista de cômodos detectados
@@ -141,15 +140,21 @@ def gerar_imagens_para_comodos(lista_comodos: list[dict], imagem_planta_bytes: b
         try:
             # Usar a função genérica que suporta todos os tipos
             prompt = gerar_prompt_por_tipo(comodo, tipo_apartamento)
-            # Usar compressão por padrão para reduzir o tamanho da resposta
-            imagem = gerar_imagem(prompt, image_bytes=imagem_planta_bytes, compress=True)
+            
+            # Adicionar especificações de qualidade 4K ao prompt
+            prompt_4k = f"{prompt}. Renderize em resolução 4K (3840x2160), qualidade ultra, detalhes fotorrealísticos, iluminação cinematográfica, textura de alta definição, sem compressão."
+            
+            # Gerar imagem sem compressão para qualidade máxima
+            imagem = gerar_imagem(prompt_4k, image_bytes=imagem_planta_bytes, compress=False)
             imagem_base64 = base64.b64encode(imagem).decode("utf-8")
             imagens.append({
                 "comodo": comodo["nome"],
-                "prompt": prompt,
+                "prompt": prompt_4k,
                 "imagem_base64": imagem_base64,
                 "tamanho_bytes": len(imagem),
-                "tipo_apartamento": tipo_apartamento.upper()
+                "tipo_apartamento": tipo_apartamento.upper(),
+                "resolucao": "4K (3840x2160)",
+                "qualidade": "ultra"
             })
         except Exception as e:
             imagens.append({
