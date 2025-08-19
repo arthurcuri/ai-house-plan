@@ -4,6 +4,7 @@ Estrutura hierárquica: Usuário → Plantas → Sessões → Imagens
 """
 
 import hashlib
+import logging
 import time
 from typing import Optional, List, Dict, Any
 from sqlalchemy.orm import Session
@@ -105,7 +106,7 @@ class ImageDatabaseService:
             
         except Exception as e:
             db.rollback()
-            print(f"Erro ao salvar imagem no banco: {e}")
+            logging.error(f"Erro ao salvar imagem no banco: {e}")
             
             # Atualizar progresso com erro
             update_session_progress(db, session_id, sucesso=False)
@@ -230,7 +231,7 @@ class ImageDatabaseService:
             
         except Exception as e:
             db.rollback()
-            print(f"Erro ao deletar planta: {e}")
+            logging.error(f"Erro ao deletar planta: {e}")
             return False
         finally:
             db.close()

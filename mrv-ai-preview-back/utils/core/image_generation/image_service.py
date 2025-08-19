@@ -121,42 +121,31 @@ def gerar_prompt_por_tipo(comodo: dict, tipo_apartamento: str) -> str:
     
     return prompt_function(comodo)
 
-def gerar_imagens_para_comodos(lista_comodos: list[dict], imagem_planta_bytes: bytes, tipo_apartamento: str = 'ESSENTIAL') -> list[dict]:
+def gerar_imagens_para_comodos(lista_comodos: list[dict], imagem_planta_bytes: bytes, tipo_apartamento: str) -> list[dict]:
     """
     Gera imagens com base nos cômodos e na planta original.
-    Agora com suporte aos 4 tipos de apartamento e qualidade 4K fixa.
-    
-    Args:
-        lista_comodos: Lista de cômodos detectados
-        imagem_planta_bytes: Bytes da imagem da planta
-        tipo_apartamento: Tipo do apartamento (ESSENTIAL, ECO, BIO, CLASS)
-    
-    Returns:
-        Lista com imagens em base64 e metadados
     """
+    import traceback
     imagens = []
 
-    for comodo in lista_comodos:
+    for i, comodo in enumerate(lista_comodos):
         try:
-            # Usar a função genérica que suporta todos os tipos
             prompt = gerar_prompt_por_tipo(comodo, tipo_apartamento)
             
-            # Adicionar especificações de qualidade 4K ao prompt
-            prompt_4k = f"{prompt}. Renderize em resolução 4K (3840x2160), qualidade ultra, detalhes fotorrealísticos, iluminação cinematográfica, textura de alta definição, sem compressão."
+            imagem = gerar_imagem(prompt, image_bytes=imagem_planta_bytes)
             
-            # Gerar imagem sem compressão para qualidade máxima
-            imagem = gerar_imagem(prompt_4k, image_bytes=imagem_planta_bytes, compress=False)
             imagem_base64 = base64.b64encode(imagem).decode("utf-8")
             imagens.append({
                 "comodo": comodo["nome"],
-                "prompt": prompt_4k,
+                "prompt": prompt,
                 "imagem_base64": imagem_base64,
                 "tamanho_bytes": len(imagem),
-                "tipo_apartamento": tipo_apartamento.upper(),
-                "resolucao": "4K (3840x2160)",
-                "qualidade": "ultra"
+                "tipo_apartamento": tipo_apartamento.upper()
             })
+            
         except Exception as e:
+            traceback.print_exc()
+            
             imagens.append({
                 "comodo": comodo.get("nome", "Desconhecido"),
                 "erro": str(e)

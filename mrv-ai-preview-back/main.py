@@ -16,9 +16,6 @@ if __name__ == "__main__":
     
     from utils.api.main import app
     
-    print("🚀 Iniciando MRV AI Preview Server...")
-    print("📚 Documentação disponível em: http://127.0.0.1:8000/docs")
-    
     uvicorn.run(
         "utils.api.main:app",
         host="127.0.0.1",

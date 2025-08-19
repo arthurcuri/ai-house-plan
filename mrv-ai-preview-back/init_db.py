@@ -17,8 +17,8 @@ try:
     from auth.models import User
     from auth.utils import hash_password
 except ImportError as e:
-    print(f"Erro ao importar módulos: {e}")
-    print("Certifique-se de que todas as dependências estão instaladas")
+    logging.error(f"Erro ao importar módulos: {e}")
+    logging.error("Certifique-se de que todas as dependências estão instaladas")
     sys.exit(1)
 
 def create_test_user():
@@ -28,7 +28,6 @@ def create_test_user():
         # Verificar se já existe um usuário de teste
         test_user = db.query(User).filter(User.email == "test@mrv.com").first()
         if test_user:
-            print("Usuário de teste já existe: test@mrv.com")
             return
         
         # Criar usuário de teste
@@ -39,34 +38,26 @@ def create_test_user():
         )
         db.add(test_user)
         db.commit()
-        print("Usuário de teste criado: test@mrv.com / senha: 123456")
     except Exception as e:
-        print(f"Erro ao criar usuário de teste: {e}")
+        logging.error(f"Erro ao criar usuário de teste: {e}")
         db.rollback()
     finally:
         db.close()
 
 def main():
-    """Função principal"""
-    print("🏗️  Inicializando banco de dados SQLite para desenvolvimento...")
-    
+    """Função principal"""    
     try:
         # Inicializar banco de dados
         init_db()
-        print("✅ Banco de dados SQLite inicializado com sucesso!")
         
         # Criar usuário de teste
         create_test_user()
         
         # Mostrar localização do banco
         db_path = os.path.abspath("./auth.db")
-        print(f"📂 Banco de dados criado em: {db_path}")
-        
-        print("\n🚀 Sistema pronto para desenvolvimento!")
-        print("📚 Acesse a documentação em: http://127.0.0.1:8000/docs")
         
     except Exception as e:
-        print(f"❌ Erro ao inicializar banco: {e}")
+        logging.error(f"Erro ao inicializar banco: {e}")
         sys.exit(1)
 
 if __name__ == "__main__":

@@ -5,6 +5,8 @@ Handles database connections, sessions, and initialization.
 import os
 import logging
 
+logger = logging.getLogger(__name__)
+
 # Try to import SQLAlchemy, fallback to mock if not available
 try:
     from sqlalchemy import create_engine
@@ -13,9 +15,7 @@ try:
     SQLALCHEMY_AVAILABLE = True
 except ImportError:
     SQLALCHEMY_AVAILABLE = False
-    print("⚠️ SQLAlchemy not available - using mock database service")
-
-logger = logging.getLogger(__name__)
+    logger.warning("SQLAlchemy not available - using mock database service")
 
 if SQLALCHEMY_AVAILABLE:
     # Database configuration

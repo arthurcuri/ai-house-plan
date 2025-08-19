@@ -62,23 +62,9 @@ async def gerar_imagens(
     file: UploadFile = File(...), 
     tipo: str = Form(...)
 ):
-    """
-    🎨 ROTA SIMPLIFICADA - Geração de Imagens 3D de Cômodos
-    
-    Funcionalidades:
-    - OCR + Interpretação da planta via LLM
-    - Geração de imagens 3D fotorrealísticas em ALTA QUALIDADE
-    - Prompt personalizado baseado no tipo (ESSENTIAL, ECO, BIO, CLASS)
-    - Sempre salva arquivos em disco (não retorna base64)
-    
-    Args:
-        file: Arquivo da planta (JPG/PNG)
-        tipo: Tipo do apartamento (essential, eco, bio, class) - define o prompt
-    
-    Returns:
-        Caminhos dos arquivos gerados + metadados em alta qualidade
-    """
     contents = await file.read()
+    # Manter os bytes originais para máxima qualidade na geração de imagens
+    # Converter para numpy array apenas para OCR, sem afetar a qualidade original
     image = Image.open(io.BytesIO(contents))
     image_np = np.array(image)
 
@@ -109,16 +95,16 @@ async def gerar_imagens(
     if not comodos:
         return {"erro": "Nenhum cômodo encontrado na interpretação da planta."}
 
-    # ✅ Configurações fixas em ALTA QUALIDADE
+    # ✅ Configurações fixas em ULTRA ALTA QUALIDADE
     configuracao = {
         "alta_qualidade": True,
-        "resolucao": "2048x2048 pixels",
-        "qualidade": "PNG sem compressão (máxima qualidade)",
-        "rendering": "Fotorrealístico com ray tracing",
+        "resolucao": "MÁXIMA DISPONÍVEL NO MODELO",
+        "qualidade": "ULTRA ALTA DEFINIÇÃO - sem compressão",
+        "rendering": "Fotorrealístico com ray tracing completo",
         "anti_aliasing": "Máximo",
         "max_tentativas": 8,
-        "delay_progressivo": "5s até 60s",
-        "formato": "PNG",
+        "delay_progressivo": "5s até 80s",
+        "formato": "PNG sem compressão",
         "tipo_prompt": tipo.upper()
     }
 
@@ -132,10 +118,6 @@ async def gerar_imagens(
     
     for i, comodo in enumerate(comodos):
         try:
-
-            # Debug log to inspect the 'comodo' object
-            print(f"Debug: Processing cômodo {i+1}: {comodo}")  # Log the 'comodo' object
-            
             # Ensure 'comodo' is a dictionary
             if not isinstance(comodo, dict):
                 raise ValueError(f"Expected 'comodo' to be a dictionary, got {type(comodo)}")
@@ -144,9 +126,9 @@ async def gerar_imagens(
             from ...core.image_generation.image_service import gerar_prompt_por_tipo
             prompt = gerar_prompt_por_tipo(comodo, tipo.upper())
             
-            # Gerar imagem sempre em ALTA QUALIDADE (sem compressão)
+            # Gerar imagem sempre em ULTRA ALTA QUALIDADE
             from ...core.ai.gemini_service import gerar_imagem
-            image_data = gerar_imagem(prompt, image_bytes=contents, compress=False)
+            image_data = gerar_imagem(prompt, image_bytes=contents)
             
             # Salvar em arquivo
             nome_sanitizado = sanitizar_nome_arquivo(comodo['nome'])

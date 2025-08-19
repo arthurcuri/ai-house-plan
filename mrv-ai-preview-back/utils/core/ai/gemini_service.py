@@ -19,7 +19,6 @@ try:
     GEMINI_2_AVAILABLE = True
 except ImportError:
     GEMINI_2_AVAILABLE = False
-    print("Gemini 2.0 não disponível, usando implementação alternativa")
 
 # Lógica usando GEMINI
 # Carregar variáveis do .env
@@ -54,220 +53,130 @@ def interpretar_texto(prompt: str, history: list[dict] = None) -> str:
         raise RuntimeError(f"Erro na interpretação de texto: {str(e)}")
 
 
-def gerar_imagem(prompt: str, image_bytes: bytes = None, max_retries: int = 8, compress: bool = True) -> bytes:
+def gerar_imagem(prompt: str, image_bytes: bytes = None, max_retries: int = 8) -> bytes:
     """
-    Gera uma imagem usando Gemini 2.0 Flash Preview se disponível,
-    caso contrário usa implementação alternativa.
-    Requer uma imagem de referência e retorna tanto texto quanto imagem.
+    Gera uma imagem usando Gemini 2.0 Flash Preview.
+    Requer uma imagem de referência e retorna imagem em máxima qualidade.
     
     Args:
         prompt: Descrição do que gerar
-        image_bytes: Bytes da imagem de referência (planta)
+        image_bytes: Bytes da imagem de referência (planta) - OBRIGATÓRIO
         max_retries: Número máximo de tentativas em caso de erro 503/500 (padrão: 8)
-        compress: Se deve comprimir a imagem para reduzir o tamanho
     """
+    if not image_bytes:
+        raise ValueError("image_bytes é obrigatório para geração de imagens")
+    
+    if not GEMINI_2_AVAILABLE:
+        raise RuntimeError("Gemini 2.0 não está disponível. Instale a versão mais recente.")
+    
     for attempt in range(max_retries):
         try:
-            if GEMINI_2_AVAILABLE and image_bytes:
-                # Preparar a entrada de texto com mais detalhes sobre dimensões
-                text_input = f"""
-                Baseado na planta arquitetônica fornecida, {prompt}
-                
-                IMPORTANTE SOBRE PROPORÇÕES: As dimensões reais deste cômodo foram extraídas da planta via OCR. 
-                Use essas proporções APENAS para orientar o layout e distribuição dos móveis, não para alterar a resolução da imagem.
-                
-                ESPECIFICAÇÕES TÉCNICAS OBRIGATÓRIAS DA IMAGEM:
-                - Resolução: EXATAMENTE 2048x2048 pixels (formato quadrado de alta definição)
-                - Qualidade: Máxima possível do modelo Gemini
-                - Formato: Quadrado independente das proporções do cômodo
-                
-                Gere uma imagem 3D fotorrealista de MÁXIMA QUALIDADE que represente fielmente:
-                1. As proporções do cômodo conforme especificado (mas adapte para formato quadrado 2048x2048)
-                2. O layout e distribuição de móveis adequados ao tamanho real do cômodo
-                3. Iluminação natural realista com ray tracing global e sombras suaves
-                4. Texturas ultra-detalhadas em alta definição (madeira, tecidos, metais, cerâmica, vidro)
-                5. Cores vibrantes mas naturais com correção de cor cinematográfica
-                6. Perspectiva arquitetônica profissional com profundidade de campo realista
-                7. Materiais fotorrealistas com reflexos, refrações e brilhos naturais
-                8. Qualidade de renderização cinematográfica com anti-aliasing máximo
-                9. Detalhes finos como texturas de parede, grãos de madeira, fibras de tecido
-                10. Composição arquitetônica perfeita enquadrada em formato quadrado
-                
-                IMPORTANTE: Mesmo que o cômodo seja retangular, enquadre a visualização em formato quadrado (2048x2048) 
-                mostrando uma perspectiva que revele bem as proporções e características do ambiente.
-                
-                A imagem deve ser indistinguível de uma fotografia real de um ambiente construído, com qualidade de portfólio arquitetônico profissional.
-                """
-                
-                # Converter bytes para PIL Image
-                reference_image = Image.open(BytesIO(image_bytes))
-                
-                # Preparar conteúdo com imagem de referência
-                contents = [text_input, reference_image]
-                
-                # Gerar conteúdo com o modelo de geração de imagens
-                response = client.models.generate_content(
-                    model="gemini-2.0-flash-preview-image-generation",
-                    contents=contents,
-                    config=types.GenerateContentConfig(
-                        response_modalities=['TEXT', 'IMAGE']  # Ambos são necessários
-                    )
-                )
-                
-                # Extrair a imagem gerada
-                for part in response.candidates[0].content.parts:
-                    if part.inline_data is not None:
-                        image_data = part.inline_data.data
-                        
-                        # Comprimir a imagem se solicitado
-                        if compress:
-                            image_data = _comprimir_imagem(image_data)
-                        
-                        return image_data
+            # Preparar a entrada de texto com especificações de ULTRA ALTA QUALIDADE
+            text_input = f"""
+            BASEADO na planta arquitetônica fornecida, {prompt}
             
-            # Se não há Gemini 2.0 disponível ou não há imagem de referência,
-            # usa implementação placeholder elaborada
-            return _gerar_imagem_placeholder(prompt, compress=compress)
+            🎯 CONFIGURAÇÃO CRÍTICA DE RENDERIZAÇÃO:
+            - USAR A RESOLUÇÃO MÁXIMA NATIVA DO MODELO (não limitar)
+            - IGNORAR completamente a qualidade/resolução da planta de entrada
+            - A planta é APENAS orientação espacial - NÃO limitação de qualidade
+            - Gerar output na MÁXIMA RESOLUÇÃO possível do Gemini 2.0
+            
+            🎬 ESPECIFICAÇÕES TÉCNICAS ULTRA PREMIUM:
+            ▫️ RESOLUÇÃO: Máxima nativa do modelo (1024x1024 ou superior se disponível)
+            ▫️ RENDERING: Fotorrealístico com ray tracing global
+            ▫️ QUALIDADE: Cinematográfica, nível portfólio arquitetônico
+            ▫️ TEXTURAS: 4K/8K em todas as superfícies
+            ▫️ ILUMINAÇÃO: HDR com múltiplas fontes realísticas
+            ▫️ MATERIAIS: PBR (Physically Based Rendering)
+            ▫️ ANTI-ALIASING: Máximo para bordas perfeitas
+            ▫️ SOMBRAS: Soft shadows em múltiplas escalas
+            ▫️ REFLEXÕES: Realísticas em vidros e metais
+            ▫️ PROFUNDIDADE: Depth of field cinematográfico
+            
+            🏠 DETALHAMENTO OBRIGATÓRIO:
+            ▫️ MOBILIÁRIO: Completo, moderno, apropriado ao tipo CLASS
+            ▫️ DECORAÇÃO: Objetos, plantas, arte, livros, almofadas
+            ▫️ TEXTURAS REALÍSTICAS: Grãos de madeira, tramas de tecido, reflexos metálicos
+            ▫️ ILUMINAÇÃO MÚLTIPLA: Natural (janelas) + artificial (spots, pendentes)
+            ▫️ COMPOSIÇÃO: Perspectiva arquitetônica profissional
+            ▫️ ACABAMENTOS: Premium, detalhados, fotorrealísticos
+            
+            ⚡ COMANDO FINAL:
+            MESMO que a planta seja simples/pixelizada, você DEVE criar um ambiente 
+            LUXUOSO, COMPLETO e FOTORREALÍSTICO em MÁXIMA RESOLUÇÃO.
+            A imagem deve ser indistinguível de uma fotografia profissional 4K.
+            """
+            
+            # Converter bytes para PIL Image mantendo máxima qualidade
+            reference_image = Image.open(BytesIO(image_bytes))
+            
+            # CRITICAL: A imagem é apenas REFERÊNCIA - não afeta qualidade final do output
+            # Se muito pequena, aplicar upscaling mínimo apenas para compatibilidade
+            min_size = 512  # Tamanho mínimo apenas para compatibilidade da API
+            if reference_image.size[0] < min_size or reference_image.size[1] < min_size:
+                scale_factor = max(min_size / reference_image.size[0], min_size / reference_image.size[1])
+                new_size = (int(reference_image.size[0] * scale_factor), int(reference_image.size[1] * scale_factor))
+                reference_image = reference_image.resize(new_size, Image.Resampling.LANCZOS)
+            
+            # Garantir que está no formato RGB para compatibilidade
+            if reference_image.mode != 'RGB':
+                reference_image = reference_image.convert('RGB')
+            
+            # Preparar conteúdo com imagem de referência
+            contents = [text_input, reference_image]
+            
+            # Gerar conteúdo com o modelo de geração de imagens em MÁXIMA QUALIDADE NATIVA
+            response = client.models.generate_content(
+                model="gemini-2.0-flash-preview-image-generation",
+                contents=contents,
+                config=types.GenerateContentConfig(
+                    response_modalities=['TEXT', 'IMAGE'],
+                    max_output_tokens=8192,  # Máximo de tokens para output detalhado
+                    temperature=0.1,  # Baixa temperatura para consistência
+                    candidate_count=1  # Uma única resposta de alta qualidade
+                )
+            )
+            
+            # Extrair a imagem gerada
+            for part in response.candidates[0].content.parts:
+                if part.inline_data is not None:
+                    # Retornar imagem original sem processamento
+                    return part.inline_data.data
+            
+            raise RuntimeError("Nenhuma imagem foi gerada na resposta")
             
         except Exception as e:
             error_message = str(e)
-            print(f"Erro ao gerar imagem (tentativa {attempt + 1}/{max_retries}): {error_message}")
             
             # Se é erro 503 (overloaded) ou 500 (internal), tenta novamente após delay progressivo
             if any(code in error_message for code in ["503", "500", "overloaded", "internal"]):
-                if attempt < max_retries - 1:  # Não esperar na última tentativa
+                if attempt < max_retries - 1:
                     # Delay progressivo: 5s, 10s, 15s, 25s, 35s, 50s, 65s, 80s
                     base_delays = [5, 10, 15, 25, 35, 50, 65, 80]
                     delay = base_delays[min(attempt, len(base_delays) - 1)]
-                    # Adicionar pequena randomização para evitar thundering herd
                     delay += random.uniform(-1, 3)
                     
-                    if "503" in error_message or "overloaded" in error_message.lower():
-                        print(f"🔄 Modelo sobrecarregado, aguardando {delay:.1f}s antes da próxima tentativa...")
-                    elif "500" in error_message or "internal" in error_message.lower():
-                        print(f"⚠️  Erro interno do servidor, aguardando {delay:.1f}s antes da próxima tentativa...")
-                    
-                    print(f"⏱️  Tentativa {attempt + 2} de {max_retries} em breve...")
                     time.sleep(delay)
                     continue
             
-            # Para outros erros, retorna placeholder imediatamente
-            print(f"❌ Erro não recuperável, abortando: {error_message}")
-            break
+            # Para outros erros, falha imediatamente
+            raise RuntimeError(f"Erro ao gerar imagem: {error_message}")
     
-    # Se todas as tentativas falharam, retorna placeholder elaborado
-    print("🎨 Todas as tentativas falharam, gerando placeholder elaborado em alta qualidade...")
-    return _gerar_imagem_placeholder(prompt, compress=compress)
+    # Se todas as tentativas falharam
+    raise RuntimeError("Todas as tentativas de geração de imagem falharam")
 
 
-def _comprimir_imagem(image_data: bytes, quality: int = 100, max_size: tuple = (2048, 2048)) -> bytes:
+def classificar_tipo_comodo(prompt: str) -> str:
     """
-    Processa imagem em resolução 2048x2048 pixels mantendo qualidade máxima.
-    """
-    try:
-        # Abrir a imagem
-        image = Image.open(BytesIO(image_data))
-        
-        # Forçar exatamente 2048x2048 pixels (formato quadrado)
-        target_width, target_height = max_size
-        
-        # Redimensionar para exatamente 2048x2048 mantendo a melhor qualidade
-        # Usar LANCZOS que é o melhor algoritmo para redimensionamento
-        image = image.resize((target_width, target_height), Image.Resampling.LANCZOS)
-        
-        # Salvar com qualidade máxima em PNG
-        buffer = BytesIO()
-        image.save(
-            buffer, 
-            format='PNG', 
-            optimize=False  # Não otimizar para manter máxima qualidade
-        )
-        
-        print(f"📐 Imagem processada: {image.size[0]}x{image.size[1]} pixels, formato PNG (máxima qualidade)")
-        return buffer.getvalue()
-        
-    except Exception as e:
-        print(f"Erro ao processar imagem: {e}")
-        return image_data  # Retorna original em caso de erro
-
-
-def _gerar_imagem_placeholder(prompt: str, compress: bool = True) -> bytes:
-    """
-    Gera uma imagem placeholder em resolução 2048x2048 baseada no prompt.
+    Classifica o tipo de cômodo com base em descrição textual, usando o modelo de texto Gemini.
+    
+    Retorna apenas a string com o tipo (ex: 'quarto_casal', 'sala', etc.).
     """
     try:
-        # Sempre usar 2048x2048 para consistência
-        width, height = 2048, 2048
-        
-        print(f"🎨 Gerando placeholder {width}x{height} (qualidade máxima)...")
-        
-        # Determinar cor baseada no prompt
-        if "quarto" in prompt.lower() or "dormitório" in prompt.lower():
-            color = (173, 216, 230)  # Azul claro
-        elif "sala" in prompt.lower():
-            color = (255, 222, 173)  # Laranja claro
-        elif "cozinha" in prompt.lower():
-            color = (144, 238, 144)  # Verde claro
-        elif "banho" in prompt.lower() or "banheiro" in prompt.lower():
-            color = (230, 230, 250)  # Lavanda
-        else:
-            color = (245, 245, 245)  # Cinza claro
-        
-        # Criar imagem com gradiente mais sofisticado
-        from PIL import ImageDraw, ImageFont, ImageFilter
-        image = Image.new('RGB', (width, height), color)
-        draw = ImageDraw.Draw(image)
-        
-        # Gradiente radial do centro para as bordas
-        center_x, center_y = width // 2, height // 2
-        max_distance = ((width/2)**2 + (height/2)**2)**0.5
-        
-        for y in range(height):
-            for x in range(width):
-                distance = ((x - center_x)**2 + (y - center_y)**2)**0.5
-                alpha = distance / max_distance
-                gradient_color = tuple(int(c * (0.9 + 0.1 * alpha)) for c in color)
-                image.putpixel((x, y), gradient_color)
-        
-        # Adicionar texto indicativo mais elegante
-        try:
-            font_size = 96  # Tamanho proporcional para 2048x2048
-            font = ImageFont.load_default()
-        except:
-            font = None
-        
-        text = "PLACEHOLDER - QUALIDADE MÁXIMA\n2048x2048 pixels - PNG"
-        if font:
-            # Calcular posição centralizada para texto multi-linha
-            lines = text.split('\n')
-            total_height = len(lines) * 120  # Proporcional ao novo tamanho
-            start_y = (height - total_height) // 2
-            
-            for i, line in enumerate(lines):
-                bbox = draw.textbbox((0, 0), line, font=font)
-                text_width = bbox[2] - bbox[0]
-                x = (width - text_width) // 2
-                y = start_y + i * 120
-                # Sombra do texto
-                draw.text((x+4, y+4), line, fill=(50, 50, 50), font=font)
-                # Texto principal
-                draw.text((x, y), line, fill=(100, 100, 100), font=font)
-        
-        # Salvar em bytes com qualidade máxima em PNG
-        buffer = BytesIO()
-        image.save(
-            buffer, 
-            format='PNG',
-            optimize=False
-        )
-        
-        print(f"✅ Placeholder criado: {width}x{height}, {len(buffer.getvalue())} bytes (qualidade máxima PNG)")
-        return buffer.getvalue()
-        
+        response = modelo_texto.generate_content(prompt)
+        return response.text.strip().lower()
     except Exception as e:
-        print(f"Erro ao criar placeholder: {e}")
-        # Se tudo falhar, retorna dados básicos
-        return b"placeholder_image_data"
+        raise RuntimeError(f"Erro na classificação de cômodo: {str(e)}")
 
 
 def interpretar_planta_com_imagem(prompt: str, image_bytes: bytes) -> str:
@@ -284,18 +193,3 @@ def interpretar_planta_com_imagem(prompt: str, image_bytes: bytes) -> str:
         return response.text
     except Exception as e:
         raise RuntimeError(f"Erro na interpretação da planta: {str(e)}")
-
-
-def classificar_tipo_comodo(prompt: str) -> str:
-    """
-    Classifica o tipo de cômodo com base em descrição textual, usando o modelo de texto Gemini.
-    
-    Retorna apenas a string com o tipo (ex: 'quarto_casal', 'sala', etc.).
-    """
-    try:
-        response = modelo_texto.generate_content(prompt)
-        return response.text.strip().lower()
-    except Exception as e:
-        raise RuntimeError(f"Erro na classificação de cômodo: {str(e)}")
-
-    

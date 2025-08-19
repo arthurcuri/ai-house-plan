@@ -5,6 +5,7 @@ Utiliza EasyOCR para extração de texto de imagens.
 """
 
 import easyocr
+import logging
 from typing import List, Dict, Any, Optional
 from pathlib import Path
 import io
@@ -15,10 +16,8 @@ class OCRService:
     """Serviço de OCR usando EasyOCR"""
     
     def __init__(self):
-        """Inicializa o leitor EasyOCR"""
-        print("Inicializando OCR Service...")
-        self.reader = easyocr.Reader(['pt', 'en'], gpu=False)
-        print("OCR Service pronto!")
+        """Inicializar EasyOCR."""
+        self.reader = easyocr.Reader(['pt'])
     
     def extract_text_from_image(self, image_data: bytes) -> List[Dict[str, Any]]:
         """
@@ -50,7 +49,7 @@ class OCRService:
             return extracted_data
             
         except Exception as e:
-            print(f"Erro ao extrair texto: {e}")
+            logging.error(f"Erro ao extrair texto: {e}")
             return []
     
     def extract_text_from_file(self, file_path: str) -> List[Dict[str, Any]]:
@@ -71,7 +70,7 @@ class OCRService:
             return self.extract_text_from_image(image_data)
             
         except Exception as e:
-            print(f"Erro ao processar arquivo {file_path}: {e}")
+            logging.error(f"Erro ao processar arquivo {file_path}: {e}")
             return []
 
 # Manter compatibilidade com código legado
