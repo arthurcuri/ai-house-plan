@@ -10,12 +10,3 @@ flowchart TD
     E --> F["Exemplo de saída JSON"]
 
 ```
-
-
-# Rodar servidor back
-
-workflow\utils> python start_server.py
-
-# Rodar front
-
-mrv-ai-preview-front> npm run dev
