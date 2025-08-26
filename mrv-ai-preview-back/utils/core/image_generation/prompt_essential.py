@@ -1,162 +1,162 @@
-# PROMPTS ESSENTIAL - Padrão básico e funcional da MRV
+# PROMPTS ESSENTIAL - Basic and functional MRV standard
 
 # QUARTO PEQUENO ESSENTIAL
 def quarto_pequeno_essential(comodo):
     return f"""
-Crie uma imagem 3D fotorrealista de um quarto pequeno com aproximadamente {comodo['dimensões']['largura']} x {comodo['dimensões']['comprimento']} cm, localizado na região {comodo['localização']} da planta.
+Create a photorealistic 3D image of a small bedroom with approximately {comodo['dimensões']['largura']} x {comodo['dimensões']['comprimento']} cm, located in the {comodo['localização']} area of the floor plan.
 
-A seguir, indicaçao dos móveis, suas respectivas disposições e decorações observadas na planta. Estas informações serão úteis para compor a imagem de forma mais precisa: {comodo.get('notas')}.
+Below, the indication of the furniture, their respective arrangements and decorations observed in the plan. This information will be useful to compose the image more precisely: {comodo.get('notas')}.
 
-Este cômodo deve seguir o padrão ESSENTIAL da MRV, com foco em funcionalidade e acabamento simples. Considere as seguintes características observadas nas imagens de referência:
+This room must follow the MRV ESSENTIAL standard, focusing on functionality and simple finishes. Consider the following features observed in the reference images:
 
-- Camas de solteiro: pode ser uma ou duas, lado a lado ou beliche, com roupa de cama neutra e colchas claras ou acinzentadas.
-- Armários simples de MDF branco ou amadeirado, embutidos ou com portas lisas.
-- Escrivaninha compacta ou bancada de estudos sob a janela, com cadeira simples (estilo escritório ou Eames branca).
-- Decoração infantil ou juvenil discreta: prateleiras com livros, brinquedos, quadros temáticos (animais, frases).
-- Paredes com pintura bicolor (verde-claro, cinza ou bege) ou papel de parede com bolinhas.
-- Iluminação natural generosa vinda de janela lateral com persiana ou cortina leve.
-- Piso laminado ou vinílico de cor clara ou amadeirada suave.
+- Single beds: one or two, side by side or bunk bed, with neutral bedding and light or grayish quilts.
+- Simple MDF wardrobes in white or wood tones, built-in or with plain doors.
+- Compact desk or study bench under the window, with a simple chair (office style or white Eames).
+- Discreet children/teen decoration: shelves with books, toys, themed paintings (animals, quotes).
+- Walls with two-tone paint (light green, gray or beige) or polka dot wallpaper.
+- Generous natural lighting coming from a side window with blind or light curtain.
+- Light-colored or soft wood vinyl/laminate flooring.
 
-O ambiente deve transmitir praticidade e conforto, ideal para crianças ou adolescentes, com móveis funcionais e decoração econômica.
+The environment should convey practicality and comfort, ideal for children or teenagers, with functional furniture and economical decoration.
 """
 
 # QUARTO CASAL ESSENTIAL
 def quarto_casal_essential(comodo):
     return f"""
-Crie uma imagem 3D realista de um quarto de casal com aproximadamente {comodo['dimensões']['largura']} x {comodo['dimensões']['comprimento']} cm, localizado na região {comodo['localização']} da planta.
+Create a realistic 3D image of a master bedroom with approximately {comodo['dimensões']['largura']} x {comodo['dimensões']['comprimento']} cm, located in the {comodo['localização']} area of the floor plan.
 
-A seguir, indicaçao dos móveis, suas respectivas disposições e decorações observadas na planta. Estas informações serão úteis para compor a imagem de forma mais precisa: {comodo.get('notas')}.
+Below, the indication of the furniture, their respective arrangements and decorations observed in the plan. This information will be useful to compose the image more precisely: {comodo.get('notas')}.
 
-O cômodo deve seguir o padrão ESSENTIAL da MRV, com decoração simples, confortável e funcional. Considere os seguintes elementos baseados nas imagens de referência:
+The room must follow the MRV ESSENTIAL standard, with simple, comfortable and functional decoration. Consider the following elements based on the reference images:
 
-- Cama de casal centralizada, com cabeceira estofada ou ripada em tom verde, bege ou ratan.
-- Roupa de cama clara, mantas sobrepostas (verde oliva, nude, bege).
-- Armário embutido de MDF amadeirado com portas lisas ou ripadas.
-- Cortinas longas e finas em tom off-white.
-- Paredes neutras ou com pintura bicolor (ex: verde musgo, terracota, bege claro).
-- TV na parede oposta à cama, prateleiras ou nichos com decoração leve.
-- Piso vinílico ou laminado em madeira clara.
-- Iluminação natural ampla com entrada de luz lateral.
+- Double bed centered, with upholstered or slatted headboard in green, beige or rattan tones.
+- Light bedding, layered blankets (olive green, nude, beige).
+- Built-in MDF wardrobe in wood tones with plain or slatted doors.
+- Long, thin curtains in off-white tones.
+- Neutral walls or two-tone paint (e.g., moss green, terracotta, light beige).
+- TV on the wall opposite the bed, shelves or niches with light decoration.
+- Light wood vinyl or laminate flooring.
+- Ample natural lighting with side light entry.
 
-A decoração deve ser econômica, acolhedora e coerente com o padrão de acabamento mais básico da MRV, priorizando praticidade e estética suave.
+The decoration should be economical, cozy and consistent with MRV’s most basic finish standard, prioritizing practicality and soft aesthetics.
 """
 
 # SALA ESSENTIAL
 def sala_essential(comodo):
     return f"""
-Crie uma imagem 3D realista de uma sala de estar e jantar integradas com aproximadamente {comodo['dimensões']['largura']} x {comodo['dimensões']['comprimento']} cm, localizada na região {comodo['localização']} da planta.
+Create a realistic 3D image of an integrated living and dining room with approximately {comodo['dimensões']['largura']} x {comodo['dimensões']['comprimento']} cm, located in the {comodo['localização']} area of the floor plan.
 
-A seguir, indicaçao dos móveis, suas respectivas disposições e decorações observadas na planta. Estas informações serão úteis para compor a imagem de forma mais precisa: {comodo.get('notas')}.
+Below, the indication of the furniture, their respective arrangements and decorations observed in the plan. This information will be useful to compose the image more precisely: {comodo.get('notas')}.
 
-A decoração deve seguir o padrão ESSENTIAL da MRV, com foco em ambientes simples, acolhedores e funcionais. Baseie-se nas seguintes referências:
+The decoration must follow the MRV ESSENTIAL standard, focusing on simple, cozy and functional environments. Base it on the following references:
 
-- Sofá reto de 2 a 3 lugares, em tom claro (bege, areia ou cinza), com almofadas terrosas ou verdes.
-- Painel de TV ou rack ripado em MDF amadeirado simples.
-- Tapete claro e liso, cobrindo parcialmente a área da sala.
-- TV de tela plana instalada na parede oposta ao sofá.
-- Mesa de jantar compacta para 2 ou 4 lugares, com cadeiras em madeira ou palha.
-- Parede de fundo com cor neutra ou destaque (verde musgo, terracota, cinza).
-- Decoração leve com vasos de planta, luminária de canto, espelhos ou nichos decorativos.
-- Piso vinílico ou laminado amadeirado claro.
-- Iluminação natural abundante vinda de janelas com cortinas translúcidas.
+- Straight sofa with 2 to 3 seats, in light tones (beige, sand or gray), with earthy or green cushions.
+- TV panel or simple wood MDF rack.
+- Light and plain rug, partially covering the living area.
+- Flat-screen TV installed on the wall opposite the sofa.
+- Compact dining table for 2 or 4 seats, with wood or straw chairs.
+- Background wall in neutral or accent color (moss green, terracotta, gray).
+- Light decoration with plant pots, corner lamp, mirrors or decorative niches.
+- Light-colored wood vinyl or laminate flooring.
+- Abundant natural lighting coming from windows with translucent curtains.
 
-A proposta deve transmitir um espaço contemporâneo, funcional e bem iluminado, adequado ao padrão de acabamento econômico da MRV.
+The proposal should convey a contemporary, functional and well-lit space, suitable for MRV’s economical finish standard.
 """
 
 # ÁREA PRIVATIVA ESSENTIAL
 def area_privativa_essential(comodo):
     return f"""
-Crie uma imagem 3D fotorrealista de uma área privativa externa com aproximadamente {comodo['dimensões']['largura']} x {comodo['dimensões']['comprimento']} cm, localizada na parte externa do apartamento, seguindo o padrão ESSENTIAL da MRV.
+Create a photorealistic 3D image of a private outdoor area with approximately {comodo['dimensões']['largura']} x {comodo['dimensões']['comprimento']} cm, located outside the apartment, following the MRV ESSENTIAL standard.
 
-A seguir, indicaçao dos móveis, suas respectivas disposições e decorações observadas na planta. Estas informações serão úteis para compor a imagem de forma mais precisa: {comodo.get('notas')}.
+Below, the indication of the furniture, their respective arrangements and decorations observed in the plan. This information will be useful to compose the image more precisely: {comodo.get('notas')}.
 
-Considere as seguintes referências extraídas das imagens:
+Consider the following references from the images:
 
-- Piso parcialmente gramado (natural ou sintético) com áreas de concreto.
-- Mesa redonda pequena com 2 a 4 cadeiras simples, em material metálico, plástico ou madeira.
-- Plantas decorativas em vasos nos cantos ou ao longo dos muros.
-- Parede de fundo lisa em tom areia ou branco, com acabamento simples.
-- Iluminação natural generosa e, se for noturna, incluir iluminação de jardim embutida ou poste externo moderno.
-- Itens decorativos simples: banco de madeira com almofadas, puffs, espreguiçadeiras ou casinha de cachorro.
-- Aparência organizada, funcional e convidativa, sem excessos.
+- Partially grassed floor (natural or synthetic) with concrete areas.
+- Small round table with 2 to 4 simple chairs, in metal, plastic or wood.
+- Decorative plants in pots in the corners or along the walls.
+- Plain background wall in sand or white tones, with simple finish.
+- Generous natural lighting and, if nighttime, include garden spotlights or a modern outdoor post.
+- Simple decorative items: wooden bench with cushions, poufs, loungers or doghouse.
+- Organized, functional and inviting appearance, without excess.
 
-O ambiente deve transmitir uma área de lazer íntima e econômica, ideal para relaxar ou acomodar pequenos momentos ao ar livre.
+The environment should convey an intimate and economical leisure area, ideal for relaxing or small outdoor moments.
 """
 
 # BANHEIRO ESSENTIAL
 def banheiro_essential(comodo):
     return f"""
-Crie uma imagem 3D fotorrealista de um banheiro com aproximadamente {comodo['dimensões']['largura']} x {comodo['dimensões']['comprimento']} cm, localizado na região {comodo['localização']} da planta.
+Create a photorealistic 3D image of a bathroom with approximately {comodo['dimensões']['largura']} x {comodo['dimensões']['comprimento']} cm, located in the {comodo['localização']} area of the floor plan.
 
-A seguir, indicaçao dos móveis, suas respectivas disposições e decorações observadas na planta. Estas informações serão úteis para compor a imagem de forma mais precisa: {comodo.get('notas')}.
+Below, the indication of the furniture, their respective arrangements and decorations observed in the plan. This information will be useful to compose the image more precisely: {comodo.get('notas')}.
 
-O cômodo deve seguir o padrão ESSENTIAL da MRV, com acabamento simples e funcional:
+The room must follow the MRV ESSENTIAL standard, with simple and functional finishes:
 
-- Vaso sanitário branco convencional, com caixa acoplada.
-- Pia simples de louça branca com bancada em granito ou mármore básico.
-- Chuveiro com registro simples, sem ducha ou hidromassagem.
-- Revestimento básico: azulejos brancos ou bege até meia altura, tinta acima.
-- Piso cerâmico antiderrapante em tons neutros (branco, bege, cinza claro).
-- Espelho simples retangular sobre a pia.
-- Iluminação básica com uma lâmpada central ou arandela simples.
-- Toalhas em tons claros, sabonete líquido, papel higiênico.
+- Conventional white toilet, with attached tank.
+- Simple white porcelain sink with basic granite or marble countertop.
+- Shower with simple control, no shower head or hydromassage.
+- Basic finish: white or beige tiles up to mid-height, paint above.
+- Neutral-toned (white, beige, light gray) non-slip ceramic flooring.
+- Simple rectangular mirror above the sink.
+- Basic lighting with central lamp or simple wall sconce.
+- Light-colored towels, liquid soap, toilet paper.
 
-O ambiente deve ser limpo, funcional e econômico, sem luxos desnecessários.
+The environment must be clean, functional and economical, without unnecessary luxuries.
 """
 
 # COZINHA ESSENTIAL
 def cozinha_essential(comodo):
     return f"""
-Crie uma imagem 3D fotorrealista de uma cozinha com aproximadamente {comodo['dimensões']['largura']} x {comodo['dimensões']['comprimento']} cm, localizada na região {comodo['localização']} da planta.
+Create a photorealistic 3D image of a kitchen with approximately {comodo['dimensões']['largura']} x {comodo['dimensões']['comprimento']} cm, located in the {comodo['localização']} area of the floor plan.
 
-A seguir, indicaçao dos móveis, suas respectivas disposições e decorações observadas na planta. Estas informações serão úteis para compor a imagem de forma mais precisa: {comodo.get('notas')}.
+Below, the indication of the furniture, their respective arrangements and decorations observed in the plan. This information will be useful to compose the image more precisely: {comodo.get('notas')}.
 
-O cômodo deve seguir o padrão ESSENTIAL da MRV, com móveis e eletrodomésticos básicos:
+The room must follow the MRV ESSENTIAL standard, with basic furniture and appliances:
 
-- Armários de MDF branco ou amadeirado, com portas lisas e puxadores simples.
-- Bancada em granito ou fórmica, na cor branca ou bege.
-- Fogão 4 bocas simples, geladeira branca básica, microondas.
-- Pia de inox simples com torneira convencional.
-- Revestimento de azulejos brancos na parede da pia.
-- Piso cerâmico claro, antiderrapante.
-- Iluminação com lâmpada central e sob os armários (opcional).
-- Utensílios básicos: panelas, pratos, alguns temperos, pano de prato.
+- MDF cabinets in white or wood tones, with plain doors and simple handles.
+- Granite or formica countertop, in white or beige.
+- Simple 4-burner stove, basic white refrigerator, microwave.
+- Simple stainless steel sink with conventional faucet.
+- White tile backsplash on the sink wall.
+- Light-colored, non-slip ceramic flooring.
+- Lighting with central lamp and under-cabinet lights (optional).
+- Basic utensils: pots, plates, some spices, dish towel.
 
-O ambiente deve ser prático, limpo e funcional, adequado para o dia a dia.
+The environment must be practical, clean and functional, suitable for everyday life.
 """
 
 # VARANDA ESSENTIAL
 def varanda_essential(comodo):
     return f"""
-Crie uma imagem 3D fotorrealista de uma varanda com aproximadamente {comodo['dimensões']['largura']} x {comodo['dimensões']['comprimento']} cm, localizada na região {comodo['localização']} da planta.
+Create a photorealistic 3D image of a balcony with approximately {comodo['dimensões']['largura']} x {comodo['dimensões']['comprimento']} cm, located in the {comodo['localização']} area of the floor plan.
 
-A seguir, indicaçao dos móveis, suas respectivas disposições e decorações observadas na planta. Estas informações serão úteis para compor a imagem de forma mais precisa: {comodo.get('notas')}.
+Below, the indication of the furniture, their respective arrangements and decorations observed in the plan. This information will be useful to compose the image more precisely: {comodo.get('notas')}.
 
-O ambiente deve seguir o padrão ESSENTIAL da MRV, com foco em praticidade e conforto:
+The environment must follow the MRV ESSENTIAL standard, focusing on practicality and comfort:
 
-- Conjunto pequeno de mesa e cadeiras em fibra sintética ou alumínio em tons neutros (bege, cinza).
-- Floreira ou vasos com plantas pequenas e de baixa manutenção.
-- Piso cerâmico antiderrapante em tom claro.
-- Guarda-corpo em alumínio e vidro temperado.
-- Iluminação pontual com spot ou arandela simples.
-- Cortina tipo persiana externa (opcional).
-- Tapete emborrachado simples (opcional).
-- Decoração minimalista com um ou dois elementos decorativos.
+- Small set of table and chairs in synthetic fiber or aluminum in neutral tones (beige, gray).
+- Planter or pots with small, low-maintenance plants.
+- Light-toned non-slip ceramic flooring.
+- Aluminum and tempered glass railing.
+- Spot or simple wall sconce lighting.
+- External blind-type curtain (optional).
+- Simple rubber mat (optional).
+- Minimalist decoration with one or two decorative elements.
 
-O ambiente deve ser acolhedor e funcional, ideal para momentos de relaxamento ao ar livre, mantendo o padrão econômico da linha Essential.
+The environment should be cozy and functional, ideal for outdoor relaxation, while maintaining MRV’s economical Essential line.
 """
 
 # GENÉRICO ESSENTIAL
 def generico_essential(comodo):
     return f"""
-Crie uma imagem 3D genérica para o cômodo '{comodo['nome']}' com dimensões {comodo['dimensões']['largura']} x {comodo['dimensões']['comprimento']} cm, localizado na região {comodo['localização']} da planta.
+Create a generic 3D image for the room '{comodo['nome']}' with dimensions {comodo['dimensões']['largura']} x {comodo['dimensões']['comprimento']} cm, located in the {comodo['localização']} area of the floor plan.
 
-A seguir, indicaçao dos móveis, suas respectivas disposições e decorações observadas na planta. Estas informações serão úteis para compor a imagem de forma mais precisa: {comodo.get('notas')}.
+Below, the indication of the furniture, their respective arrangements and decorations observed in the plan. This information will be useful to compose the image more precisely: {comodo.get('notas')}.
 
-Decoração simples no padrão ESSENTIAL da MRV:
-- Móveis funcionais em MDF branco ou amadeirado
-- Cores neutras (branco, bege, cinza claro)
-- Iluminação natural e artificial básica
-- Acabamento econômico e prático
-- Ambiente limpo e organizado
+Simple decoration in MRV ESSENTIAL standard:
+- Functional furniture in white or wood MDF
+- Neutral colors (white, beige, light gray)
+- Basic natural and artificial lighting
+- Economical and practical finish
+- Clean and organized environment
 """

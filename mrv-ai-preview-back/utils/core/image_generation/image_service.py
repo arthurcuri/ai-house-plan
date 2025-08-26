@@ -3,15 +3,15 @@ import base64
 
 def classificar_comodo(comodo: dict) -> str:
     prompt = f"""
-Você é um assistente que classifica ambientes de uma planta arquitetônica residencial.
+You are an assistant that classifies rooms from a residential architectural floor plan.
 
-Com base nas seguintes informações:
+Based on the following information:
 
 - Nome do cômodo: {comodo["nome"]}
 - Dimensões: {comodo["dimensões"]}
 - Localização: {comodo["localização"]}
 
-Classifique o tipo de cômodo, escolhendo **apenas uma das seguintes opções**:
+Classify the type of room, choosing **only one of the following options**:
 
 - quarto_pequeno
 - quarto_casal
@@ -22,8 +22,9 @@ Classifique o tipo de cômodo, escolhendo **apenas uma das seguintes opções**:
 - área_privativa
 - outro
 
-Retorne **apenas o nome da opção** correspondente ao tipo do cômodo.
+Return **only the name of the option** corresponding to the room type.
 """
+
     return classificar_tipo_comodo(prompt)
 
 def gerar_prompt_por_tipo(comodo: dict, tipo_apartamento: str) -> str:

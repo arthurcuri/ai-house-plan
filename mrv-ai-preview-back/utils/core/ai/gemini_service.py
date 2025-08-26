@@ -73,38 +73,38 @@ def gerar_imagem(prompt: str, image_bytes: bytes = None, max_retries: int = 8) -
         try:
             # Preparar a entrada de texto com especificações de ULTRA ALTA QUALIDADE
             text_input = f"""
-            BASEADO na planta arquitetônica fornecida, {prompt}
+            BASED on the provided architectural floor plan, {prompt}
             
-            🎯 CONFIGURAÇÃO CRÍTICA DE RENDERIZAÇÃO:
-            - USAR A RESOLUÇÃO MÁXIMA NATIVA DO MODELO (não limitar)
-            - IGNORAR completamente a qualidade/resolução da planta de entrada
-            - A planta é APENAS orientação espacial - NÃO limitação de qualidade
-            - Gerar output na MÁXIMA RESOLUÇÃO possível do Gemini 2.0
+             CRITICAL RENDERING CONFIGURATION:
+            - USE THE MODEL'S MAXIMUM NATIVE RESOLUTION (no limits)
+            - COMPLETELY IGNORE the input floor plan’s quality/resolution
+            - The floor plan is ONLY a spatial orientation – NOT a quality limitation
+            - Generate output at the HIGHEST RESOLUTION possible from Gemini 2.0
             
-            🎬 ESPECIFICAÇÕES TÉCNICAS ULTRA PREMIUM:
-            ▫️ RESOLUÇÃO: Máxima nativa do modelo (1024x1024 ou superior se disponível)
-            ▫️ RENDERING: Fotorrealístico com ray tracing global
-            ▫️ QUALIDADE: Cinematográfica, nível portfólio arquitetônico
-            ▫️ TEXTURAS: 4K/8K em todas as superfícies
-            ▫️ ILUMINAÇÃO: HDR com múltiplas fontes realísticas
-            ▫️ MATERIAIS: PBR (Physically Based Rendering)
-            ▫️ ANTI-ALIASING: Máximo para bordas perfeitas
-            ▫️ SOMBRAS: Soft shadows em múltiplas escalas
-            ▫️ REFLEXÕES: Realísticas em vidros e metais
-            ▫️ PROFUNDIDADE: Depth of field cinematográfico
+             ULTRA PREMIUM TECHNICAL SPECIFICATIONS:
+             RESOLUTION: Maximum native model resolution (1024x1024 or higher if available)
+             RENDERING: Photorealistic with global ray tracing
+             QUALITY: Cinematic, architectural portfolio level
+             TEXTURES: 4K/8K across all surfaces
+             LIGHTING: HDR with multiple realistic sources
+             MATERIALS: PBR (Physically Based Rendering)
+             ANTI-ALIASING: Maximum for flawless edges
+             SHADOWS: Soft shadows at multiple scales
+             REFLECTIONS: Realistic on glass and metals
+             DEPTH: Cinematic depth of field
             
-            🏠 DETALHAMENTO OBRIGATÓRIO:
-            ▫️ MOBILIÁRIO: Completo, moderno, apropriado ao tipo CLASS
-            ▫️ DECORAÇÃO: Objetos, plantas, arte, livros, almofadas
-            ▫️ TEXTURAS REALÍSTICAS: Grãos de madeira, tramas de tecido, reflexos metálicos
-            ▫️ ILUMINAÇÃO MÚLTIPLA: Natural (janelas) + artificial (spots, pendentes)
-            ▫️ COMPOSIÇÃO: Perspectiva arquitetônica profissional
-            ▫️ ACABAMENTOS: Premium, detalhados, fotorrealísticos
+             MANDATORY DETAILING:
+             FURNITURE: Complete, modern, CLASS-type appropriate
+             DECORATION: Objects, plants, art, books, pillows
+             REALISTIC TEXTURES: Wood grains, fabric weaves, metallic reflections
+             MULTIPLE LIGHTING: Natural (windows) + artificial (spots, pendants)
+             COMPOSITION: Professional architectural perspective
+             FINISHES: Premium, detailed, photorealistic
             
-            ⚡ COMANDO FINAL:
-            MESMO que a planta seja simples/pixelizada, você DEVE criar um ambiente 
-            LUXUOSO, COMPLETO e FOTORREALÍSTICO em MÁXIMA RESOLUÇÃO.
-            A imagem deve ser indistinguível de uma fotografia profissional 4K.
+             FINAL COMMAND:
+            EVEN if the floor plan is simple/pixelated, you MUST create a
+            LUXURIOUS, COMPLETE, and PHOTOREALISTIC environment at MAXIMUM RESOLUTION.
+            The image must be indistinguishable from a professional 4K photograph.
             """
             
             # Converter bytes para PIL Image mantendo máxima qualidade

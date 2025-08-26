@@ -17,7 +17,7 @@ class OCRService:
     
     def __init__(self):
         """Inicializar EasyOCR."""
-        self.reader = easyocr.Reader(['pt'])
+        self.reader = easyocr.Reader(['pt', 'en'])
     
     def extract_text_from_image(self, image_data: bytes) -> List[Dict[str, Any]]:
         """

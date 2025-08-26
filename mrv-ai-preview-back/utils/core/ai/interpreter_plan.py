@@ -16,31 +16,34 @@ def interpretar_planta_com_ocr(image_bytes: bytes, texto_ocr: list, tipo_apartam
     """
     
     # Prompt estruturado para a LLM interpretar
-    prompt = f"""Você é um assistente especialista em interpretação de plantas arquitetônicas residenciais.
+    prompt = f"""You are a specialist assistant in interpreting residential architectural floor plans.
 
-Com base no seguinte texto extraído por OCR da planta:
+            Based on the following text extracted by OCR from the plan:
 
-{texto_ocr}
+            {texto_ocr}
 
-E considerando a imagem da planta fornecida, identifique com o máximo de precisão:
+            And considering the provided floor plan image, identify with maximum accuracy:
 
-1. Quais são os cômodos presentes?
-2. Quais são as dimensões aproximadas de cada um (em cm)?
-3. Qual a localização relativa de cada cômodo (ex: 'superior esquerdo', 'centro', etc)?
-4. Adicione também um campo opcional chamado "notas" para cada cômodo contendo:
-   - Observações relevantes sobre limitações da planta, escala, possíveis ambiguidades, etc.
-   - Descrição detalhada da disposição dos móveis dentro de cada cômodo.
-   - Formato dos móveis e seu tamanho relativo em comparação ao restante do cômodo (por exemplo: "sofá ocupa metade do comprimento da parede norte", "mesa redonda pequena no centro", "cama queen encostada à parede leste").
-   - O máximo de descrição possível sobre cada móvel presente, para que a geração do modelo 3D seja precisa e realista.
+            1. Which rooms are present?
+            2. What are the approximate dimensions of each (in cm)?
+            3. What is the relative location of each room (e.g., 'upper left', 'center', etc.)?
+            4. Also add an optional field called "notas" for each room containing:
+            - Relevant observations about plan limitations, scale, possible ambiguities, etc.
+            - Detailed description of the furniture layout within each room.
+            - Shape of the furniture and its relative size compared to the rest of the room (for example: "sofa occupies half the length of the north wall", "small round table in the center", "queen bed against the east wall").
+            - The maximum possible description of each piece of furniture present, so that the 3D model generation is accurate and realistic.
 
 
-⚠️ Responda com **apenas o JSON bruto**, no seguinte formato:
+           Return **only the raw JSON**, exactly in this schema (keys MUST remain in Portuguese):
+        {{"cômodos": [{{"nome": "...", "dimensões": {{"largura": ..., "comprimento": ...}}, "localização": "...", "notas": "..."}}]}}
 
-{{"cômodos": [{{"nome": "...", "dimensões": {{"largura": ..., "comprimento": ...}}, "localização": "...", "notas": "..."}}]
+        STRICT RULES:
+        - All JSON keys MUST be exactly these in Portuguese: "cômodos", "nome", "dimensões", "largura", "comprimento", "localização", "notas".
+        - The content/value of "notas" MUST be written in ENGLISH (translate if OCR is in another language).
+        - Dimensions must be numeric values in centimeters (integers or decimals), without units in the numbers.
+        - Do NOT use mathematical expressions (e.g., "122 + 120"); provide only the final numeric value.
+        - Do NOT include explanations, markdown, code fences, or extra fields."""
 
-❌ **Não use expressões matemáticas** como "122 + 120". Faça o cálculo e informe apenas o valor numérico final.
-
-❌ Não inclua explicações, markdown ou campos extras."""
 
     # Chamada para a LLM
     resposta = interpretar_planta_com_imagem(prompt, image_bytes)
