@@ -7,6 +7,8 @@ import numpy as np
 from fastapi.middleware.cors import CORSMiddleware
 import os
 
+from pathlib import Path
+
 # Imports das rotas organizadas
 from .routes.image_generation import router as imagens_router
 from .routes.ocr import router as ocr_router
@@ -26,9 +28,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Servir imagens geradas estaticamente
-IMAGES_OUTPUT_DIR = "/tmp/generated_images"
-os.makedirs(IMAGES_OUTPUT_DIR, exist_ok=True)
+# Diretório "generated_images" dentro do projeto
+BASE_DIR = Path(__file__).resolve().parent.parent  # sobe para a raiz do back-end
+IMAGES_OUTPUT_DIR = BASE_DIR / "generated_images"
+IMAGES_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
+
 app.mount("/imagens", StaticFiles(directory=IMAGES_OUTPUT_DIR), name="imagens")
 
 # Inclui as rotas organizadas

@@ -12,12 +12,15 @@ from ...core.ocr.ocr_service import reader
 from ...core.ai import interpreter_plan
 from ...core.image_generation.image_service import gerar_imagens_para_comodos
 from ...shared.json_utils import limpar_json_llm
+from pathlib import Path
 
 router = APIRouter()
 
+
+BASE_DIR = Path(__file__).resolve().parents[3]
 # Diretório para salvar as imagens geradas
-IMAGES_OUTPUT_DIR = "/tmp/generated_images"
-os.makedirs(IMAGES_OUTPUT_DIR, exist_ok=True)
+IMAGES_OUTPUT_DIR = BASE_DIR / "generated_images"
+IMAGES_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def sanitizar_nome_arquivo(nome: str) -> str:
@@ -111,8 +114,9 @@ async def gerar_imagens(
     # ✅ SEMPRE GERAR ARQUIVOS EM ALTA QUALIDADE
     session_id = str(uuid.uuid4())[:8]
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    session_dir = os.path.join(IMAGES_OUTPUT_DIR, f"{timestamp}_{session_id}")
-    os.makedirs(session_dir, exist_ok=True)
+    session_dir = IMAGES_OUTPUT_DIR / f"{timestamp}_{session_id}"
+    session_dir.mkdir(parents=True, exist_ok=True)
+
     
     imagens_info = []
     
