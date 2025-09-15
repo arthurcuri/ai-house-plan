@@ -279,7 +279,6 @@ python main.py
 
 - [Frontend README](./mrv-ai-preview-front/README.md)
 - [Backend README](./mrv-ai-preview-back/README.md)
-- [Como Trocar Imagens](./mrv-ai-preview-front/COMO-TROCAR-IMAGENS.md)
 
 ## 🧪 Testes e Qualidade
 
