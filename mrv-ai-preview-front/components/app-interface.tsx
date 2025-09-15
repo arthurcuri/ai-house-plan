@@ -146,7 +146,7 @@ export function AppInterface({ onBackToLanding }: AppInterfaceProps) {
                   </div>
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900">MRV AI Preview</h1>
+                  <h1 className="text-2xl font-bold text-gray-900">House AI Preview</h1>
                   <p className="text-sm text-gray-600">Selecione a categoria e faça upload da planta baixa</p>
                 </div>
               </div>

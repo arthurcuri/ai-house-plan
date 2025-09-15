@@ -16,7 +16,7 @@ export function Footer() {
                   <div className="w-3 h-3 bg-white rounded-sm transform -rotate-45" />
                 </div>
               </div>
-              <span className="text-xl font-bold">MRV AI Preview</span>
+              <span className="text-xl font-bold">House AI Preview</span>
             </div>
             <p className="text-gray-400 leading-relaxed">
               Transforme suas plantas baixas em previews realistas de apartamentos com o poder da inteligência
@@ -57,7 +57,7 @@ export function Footer() {
             <ul className="space-y-2">
               <li>
                 <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                  Sobre a MRV
+                  Sobre a House AI
                 </a>
               </li>
               <li>
@@ -84,16 +84,16 @@ export function Footer() {
             <ul className="space-y-3">
               <li className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-emerald-400" />
-                <span className="text-gray-400">ai-preview@mrv.com.br</span>
+                <span className="text-gray-400">arthur1curi@gmail.com</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="w-4 h-4 text-emerald-400" />
-                <span className="text-gray-400">+55 (11) 3456-7890</span>
+                <span className="text-gray-400">+55 (31) 9341-6474</span>
               </li>
               <li className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 text-emerald-400 mt-1" />
                 <span className="text-gray-400">
-                  São Paulo, SP
+                  Belo Horizonte, MG
                   <br />
                   Brasil
                 </span>
@@ -104,7 +104,7 @@ export function Footer() {
 
         {/* Bottom */}
         <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-gray-400 text-sm">© 2024 MRV AI Preview. Todos os direitos reservados.</p>
+          <p className="text-gray-400 text-sm">© 2024 House AI Preview. Todos os direitos reservados.</p>
           <div className="flex gap-6">
             <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
               Política de Privacidade

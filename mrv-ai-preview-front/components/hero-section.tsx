@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { ArrowRight, Sparkles } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
 import Image from "next/image"
+import { images, getImageSrc } from "@/lib/images"
 
 interface HeroSectionProps {
   onTryNow: () => void
@@ -34,7 +35,7 @@ export function HeroSection({ onTryNow }: HeroSectionProps) {
                 Transforme Plantas Baixas em <span className="text-emerald-600">Previews Realistas</span> com IA
               </h1>
               <p className="text-xl text-gray-600 leading-relaxed max-w-lg">
-                Experimente seu futuro apartamento antes mesmo de ser construído com o MRV AI Preview. Obtenha
+                Experimente seu futuro apartamento antes mesmo de ser construído com o House AI Preview. Obtenha
                 visualizações fotorrealistas em segundos.
               </p>
             </div>
@@ -99,8 +100,8 @@ export function HeroSection({ onTryNow }: HeroSectionProps) {
           <div className="relative">
             <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-white p-4">
               <Image
-                src="/placeholder.svg?height=600&width=800&text=Visualização+Moderna+de+Apartamento"
-                alt="Preview de apartamento gerado por IA"
+                src={getImageSrc(images.hero.main, "/placeholder.svg?height=600&width=800&text=Visualização+Moderna+de+Apartamento")}
+                alt={images.hero.alt}
                 width={800}
                 height={600}
                 className="w-full h-auto rounded-lg"

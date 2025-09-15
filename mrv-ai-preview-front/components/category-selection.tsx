@@ -2,6 +2,7 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Crown, Leaf, Recycle, Home, Check } from "lucide-react"
+import { images } from "@/lib/images"
 
 interface CategorySelectionProps {
   selectedCategory: string | null

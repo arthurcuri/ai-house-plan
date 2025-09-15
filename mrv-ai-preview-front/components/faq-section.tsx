@@ -11,7 +11,7 @@ export function FAQSection() {
     {
       question: "Quais formatos de arquivo são suportados para plantas baixas?",
       answer:
-        "O MRV AI Preview suporta todos os formatos de imagem comuns incluindo PNG, JPG, JPEG e arquivos PDF. Recomendamos imagens de alta resolução para melhores resultados.",
+        "O House AI Preview suporta todos os formatos de imagem comuns incluindo PNG, JPG, JPEG e arquivos PDF. Recomendamos imagens de alta resolução para melhores resultados.",
     },
     {
       question: "Quanto tempo leva para gerar um preview?",
@@ -40,7 +40,7 @@ export function FAQSection() {
         <div className="text-center mb-16">
           <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6">Perguntas Frequentes</h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Obtenha respostas para perguntas comuns sobre o MRV AI Preview
+            Obtenha respostas para perguntas comuns sobre o House AI Preview
           </p>
         </div>
 

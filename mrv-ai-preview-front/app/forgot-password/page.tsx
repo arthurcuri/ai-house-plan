@@ -66,7 +66,7 @@ export default function ForgotPasswordPage() {
                     <div className="w-3 h-3 bg-white rounded-sm transform -rotate-45" />
                   </div>
                 </div>
-                <span className="text-xl font-bold">MRV AI Preview</span>
+                <span className="text-xl font-bold">House AI Preview</span>
               </div>
               <CardTitle className="text-2xl">Email Enviado!</CardTitle>
               <p className="text-emerald-100">Verifique sua caixa de entrada para redefinir sua senha</p>
@@ -133,7 +133,7 @@ export default function ForgotPasswordPage() {
                   <div className="w-3 h-3 bg-white rounded-sm transform -rotate-45" />
                 </div>
               </div>
-              <span className="text-xl font-bold">MRV AI Preview</span>
+              <span className="text-xl font-bold">House AI Preview</span>
             </div>
             <CardTitle className="text-2xl">Esqueceu sua senha?</CardTitle>
             <p className="text-emerald-100">Digite seu email e enviaremos um link para redefinir sua senha</p>

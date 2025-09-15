@@ -7,7 +7,7 @@ import { AuthProvider } from "@/hooks/use-auth"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "MRV AI Preview - Transform Floor Plans with AI",
+  title: "House AI Preview - Transform Floor Plans with AI",
   description: "Upload a floor plan and generate a realistic apartment preview using AI technology.",
     generator: 'v0.dev'
 }

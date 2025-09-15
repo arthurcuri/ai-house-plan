@@ -53,7 +53,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const initAuth = async () => {
-      const savedUser = localStorage.getItem("mrv-user")
+      const savedUser = localStorage.getItem("house-ai-user")
       const token = TokenManager.getToken()
       
       if (savedUser && token) {
@@ -97,7 +97,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       setUser(userData)
       setIsAuthenticated(true)
-      localStorage.setItem("mrv-user", JSON.stringify(userData))
+      localStorage.setItem("house-ai-user", JSON.stringify(userData))
       TokenManager.setToken(data.token)
       toast({ title: "Login realizado com sucesso" })
     } catch (error: any) {
@@ -130,7 +130,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       setUser(userData)
       setIsAuthenticated(true)
-      localStorage.setItem("mrv-user", JSON.stringify(userData))
+      localStorage.setItem("house-ai-user", JSON.stringify(userData))
       TokenManager.setToken(data.token)
       toast({ title: "Conta criada com sucesso" })
     } catch (error: any) {

@@ -58,7 +58,7 @@ export function Header({ onTryNow }: HeaderProps) {
                 <div className="w-3 h-3 bg-white rounded-sm transform -rotate-45" />
               </div>
             </div>
-            <span className="text-xl font-bold text-gray-900">MRV AI Preview</span>
+            <span className="text-xl font-bold text-gray-900">House AI Preview</span>
           </Link>
 
           {/* Desktop Navigation */}

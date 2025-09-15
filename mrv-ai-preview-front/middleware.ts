@@ -8,7 +8,7 @@ const protectedRoutes = ['/dashboard', '/profile', '/settings']
 const authRoutes = ['/login', '/register']
 
 export function middleware(request: NextRequest) {
-  const token = request.cookies.get('mrv-token')?.value
+  const token = request.cookies.get('house-ai-token')?.value
   const { pathname } = request.nextUrl
 
   // Verificar se é uma rota protegida

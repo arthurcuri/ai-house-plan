@@ -5,30 +5,10 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import Image from "next/image"
+import { images, showcaseItems, getImageSrc } from "@/lib/images"
 
 export function PreviewShowcase() {
   const [currentSlide, setCurrentSlide] = useState(0)
-
-  const showcaseItems = [
-    {
-      before: "/placeholder.svg?height=300&width=400&text=Planta+Baixa+1",
-      after: "/placeholder.svg?height=300&width=400&text=Apartamento+3D+1",
-      title: "Apartamento Studio Moderno",
-      description: "Convertido de uma planta baixa simples para uma visualização 3D impressionante",
-    },
-    {
-      before: "/placeholder.svg?height=300&width=400&text=Planta+Baixa+2",
-      after: "/placeholder.svg?height=300&width=400&text=Apartamento+3D+2",
-      title: "Layout de Dois Quartos",
-      description: "Completo com disposição de móveis e iluminação realista",
-    },
-    {
-      before: "/placeholder.svg?height=300&width=400&text=Planta+Baixa+3",
-      after: "/placeholder.svg?height=300&width=400&text=Apartamento+3D+3",
-      title: "Cobertura de Luxo",
-      description: "Visualização de acabamentos premium e materiais de alta qualidade",
-    },
-  ]
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % showcaseItems.length)
@@ -58,8 +38,8 @@ export function PreviewShowcase() {
                   <h3 className="text-xl font-semibold text-gray-900 mb-4">Antes: Planta Baixa</h3>
                   <div className="relative rounded-lg overflow-hidden bg-white shadow-lg">
                     <Image
-                      src={showcaseItems[currentSlide].before || "/placeholder.svg"}
-                      alt="Planta baixa original"
+                      src={getImageSrc(images.showcase.before[currentSlide]?.src, "/placeholder.svg?height=300&width=400&text=Planta+Baixa")}
+                      alt={images.showcase.before[currentSlide]?.alt || "Planta baixa original"}
                       width={400}
                       height={300}
                       className="w-full h-64 object-cover"
@@ -72,8 +52,8 @@ export function PreviewShowcase() {
                   <h3 className="text-xl font-semibold text-gray-900 mb-4">Depois: Preview IA</h3>
                   <div className="relative rounded-lg overflow-hidden bg-white shadow-lg">
                     <Image
-                      src={showcaseItems[currentSlide].after || "/placeholder.svg"}
-                      alt="Preview gerado por IA"
+                      src={getImageSrc(images.showcase.after[currentSlide]?.src, "/placeholder.svg?height=300&width=400&text=Preview+IA")}
+                      alt={images.showcase.after[currentSlide]?.alt || "Preview gerado por IA"}
                       width={400}
                       height={300}
                       className="w-full h-64 object-cover"

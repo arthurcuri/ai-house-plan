@@ -8,8 +8,8 @@ export interface TokenPayload {
 }
 
 export class TokenManager {
-  private static TOKEN_KEY = 'mrv-token'
-  private static USER_KEY = 'mrv-user'
+  private static TOKEN_KEY = 'house-ai-token'
+  private static USER_KEY = 'house-ai-user'
 
   static getToken(): string | null {
     if (typeof window === 'undefined') return null
