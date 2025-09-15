@@ -4,7 +4,6 @@ Estrutura hierárquica: Usuário → Plantas → Sessões → Imagens
 """
 
 import hashlib
-import logging
 import time
 from typing import Optional, List, Dict, Any
 from sqlalchemy.orm import Session
@@ -231,7 +230,7 @@ class ImageDatabaseService:
             
         except Exception as e:
             db.rollback()
-            logging.error(f"Erro ao deletar planta: {e}")
+            print(f"Erro ao deletar planta: {e}")
             return False
         finally:
             db.close()

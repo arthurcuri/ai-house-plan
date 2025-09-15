@@ -2,26 +2,22 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Download, Eye, X, Sparkles, Clock } from "lucide-react"
+import { Download, Eye, X, ImageIcon } from "lucide-react"
 import Image from "next/image"
 
 interface ResultSectionProps {
   generatedImage: string | null
   generatedImages: any[]
   isGenerating: boolean
-  isGeneratingImages: boolean
   error: string | null
-  onGenerateImages?: () => void
   previewData?: any
 }
 
 export function ResultSection({ 
   generatedImage, 
-  generatedImages, 
+  generatedImages,
   isGenerating, 
-  isGeneratingImages, 
   error, 
-  onGenerateImages,
   previewData 
 }: ResultSectionProps) {
   const downloadImage = () => {
@@ -44,7 +40,41 @@ export function ResultSection({
     document.body.removeChild(link)
   }
 
-  if (!generatedImage && !generatedImages.length && !isGenerating && !isGeneratingImages && !error) {
+  // Função auxiliar para extrair JSON válido de resposta que pode conter markdown
+  function parseInterpretation(interpretationText: string) {
+    try {
+      // Se já é um objeto, retorna direto
+      if (typeof interpretationText === 'object') {
+        return interpretationText
+      }
+      
+      // Tentar parse direto primeiro
+      return JSON.parse(interpretationText)
+    } catch {
+      try {
+        // Extrair JSON de dentro de markdown code blocks
+        const jsonMatch = interpretationText.match(/```json\s*([\s\S]*?)\s*```/)
+        if (jsonMatch) {
+          return JSON.parse(jsonMatch[1])
+        }
+        
+        // Tentar encontrar JSON sem code blocks
+        const jsonStart = interpretationText.indexOf('{')
+        const jsonEnd = interpretationText.lastIndexOf('}')
+        
+        if (jsonStart !== -1 && jsonEnd !== -1 && jsonEnd > jsonStart) {
+          const jsonStr = interpretationText.substring(jsonStart, jsonEnd + 1)
+          return JSON.parse(jsonStr)
+        }
+        
+        return null
+      } catch {
+        return null
+      }
+    }
+  }
+
+  if (!generatedImage && !generatedImages.length && !isGenerating && !error) {
     return null
   }
 
@@ -88,10 +118,13 @@ export function ResultSection({
                     <h3 className="font-semibold text-gray-900 mb-2">Informações Detectadas:</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                       {previewData.interpretacao_llm && (
-                        <div>
+                        <div className="border rounded-lg p-4 bg-gray-50">
                           <span className="font-medium">Cômodos encontrados:</span>
                           <p className="text-gray-600 mt-1">
-                            {JSON.parse(previewData.interpretacao_llm)?.cômodos?.length || 'N/A'} cômodos detectados
+                            {(() => {
+                              const parsed = parseInterpretation(previewData.interpretacao_llm)
+                              return parsed?.cômodos?.length || parsed?.comodos?.length || 'N/A'
+                            })()} cômodos detectados
                           </p>
                         </div>
                       )}
@@ -110,16 +143,6 @@ export function ResultSection({
                     <Download className="w-4 h-4" />
                     Baixar Preview
                   </Button>
-                  
-                  {onGenerateImages && !isGeneratingImages && (
-                    <Button 
-                      onClick={onGenerateImages}
-                      className="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700"
-                    >
-                      <Sparkles className="w-4 h-4" />
-                      Gerar Imagens 3D HD
-                    </Button>
-                  )}
                 </div>
               </div>
             )}
@@ -127,97 +150,86 @@ export function ResultSection({
         </Card>
       )}
 
-      {/* HD Images Generation Section */}
-      {(isGeneratingImages || generatedImages.length > 0) && (
+      {/* Generated Images Catalog */}
+      {generatedImages.length > 0 && (
         <Card className="overflow-hidden">
           <CardHeader className="bg-gradient-to-r from-emerald-50 to-teal-50 border-b">
             <CardTitle className="flex items-center gap-2 text-xl">
-              <Sparkles className="w-5 h-5 text-emerald-600" />
-              Imagens 3D em Alta Definição
+              <ImageIcon className="w-5 h-5 text-emerald-600" />
+              Álbum de Ambientes Gerados
+              <span className="text-sm font-normal text-gray-600">
+                ({generatedImages.length} {generatedImages.length === 1 ? 'ambiente' : 'ambientes'})
+              </span>
             </CardTitle>
+            <p className="text-sm text-gray-500 mt-1">
+              Imagens geradas em alta qualidade para cada cômodo identificado na planta
+            </p>
           </CardHeader>
           <CardContent className="p-6">
-            {isGeneratingImages && (
-              <div className="flex flex-col items-center justify-center py-12 space-y-4">
-                <div className="w-12 h-12 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin" />
-                <div className="text-center">
-                  <p className="text-lg font-medium text-gray-900">Gerando imagens 3D em alta qualidade...</p>
-                  <p className="text-gray-600 mt-1">Este processo pode levar alguns minutos</p>
-                  <div className="flex items-center gap-2 mt-2 text-sm text-gray-500">
-                    <Clock className="w-4 h-4" />
-                    Renderização fotorrealística com ray tracing
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {generatedImages.map((image, index) => (
+                <div key={index} className="space-y-3">
+                  <div className="relative rounded-lg overflow-hidden bg-gray-100 aspect-square group">
+                    <Image
+                      src={image.url}
+                      alt={image.name || `Ambiente ${index + 1}`}
+                      fill
+                      className="object-cover transition-transform group-hover:scale-105"
+                      onError={(e) => {
+                        console.error('Erro ao carregar imagem:', e)
+                        console.error('URL da imagem:', image.url)
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-opacity" />
+                    {image.fileSize && (
+                      <div className="absolute top-2 right-2 bg-black bg-opacity-70 text-white text-xs px-2 py-1 rounded">
+                        {(image.fileSize / 1024).toFixed(0)}KB
+                      </div>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-gray-900">
+                      {image.name || image.room || `Ambiente ${index + 1}`}
+                    </h4>
+                    {image.location && (
+                      <p className="text-sm text-gray-600">
+                        <span className="font-medium">Localização:</span> {image.location}
+                      </p>
+                    )}
+                    <div className="flex flex-wrap gap-2 text-xs">
+                      <span className="bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full">
+                        {image.category}
+                      </span>
+                      {image.room && (
+                        <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+                          {image.room}
+                        </span>
+                      )}
+                      <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full">
+                        3D HD
+                      </span>
+                    </div>
+                    {image.notes && (
+                      <p className="text-xs text-gray-500 line-clamp-2" title={image.notes}>
+                        {image.notes}
+                      </p>
+                    )}
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => downloadGeneratedImage(
+                        image.url,
+                        `${image.name || image.room || `ambiente_${index + 1}`}.png`
+                      )}
+                      className="w-full"
+                    >
+                      <Download className="w-3 h-3 mr-1" />
+                      Baixar Imagem HD
+                    </Button>
                   </div>
                 </div>
-              </div>
-            )}
-
-            {generatedImages.length > 0 && (
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {generatedImages.map((image, index) => (
-                    <div key={index} className="space-y-3">
-                      {image.erro ? (
-                        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                          <p className="text-red-800 font-medium">{image.comodo}</p>
-                          <p className="text-red-600 text-sm mt-1">{image.erro}</p>
-                        </div>
-                      ) : (
-                        <>
-                          <div className="relative rounded-lg overflow-hidden bg-gray-100 aspect-square">
-                            {image.arquivo && (
-                              <Image
-                                src={`http://127.0.0.1:8000${image.url_relativa}`}
-                                alt={`Cômodo: ${image.comodo}`}
-                                fill
-                                className="object-cover"
-                                onError={(e) => {
-                                  console.error('Erro ao carregar imagem:', e)
-                                }}
-                              />
-                            )}
-                          </div>
-                          <div className="space-y-2">
-                            <h4 className="font-semibold text-gray-900">{image.comodo}</h4>
-                            <div className="flex flex-wrap gap-2 text-xs text-gray-600">
-                              <span className="bg-gray-100 px-2 py-1 rounded">
-                                {(image.tamanho_bytes / 1024).toFixed(0)}KB
-                              </span>
-                              {image.alta_qualidade && (
-                                <span className="bg-emerald-100 text-emerald-700 px-2 py-1 rounded">
-                                  HD
-                                </span>
-                              )}
-                              {image.tempo_geracao && (
-                                <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded">
-                                  {image.tempo_geracao.toFixed(1)}s
-                                </span>
-                              )}
-                            </div>
-                            {image.dimensoes && (
-                              <p className="text-xs text-gray-500">
-                                {image.dimensoes.largura}cm × {image.dimensoes.comprimento}cm
-                              </p>
-                            )}
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => downloadGeneratedImage(
-                                `http://127.0.0.1:8000${image.url_relativa}`,
-                                `${image.comodo}.jpg`
-                              )}
-                              className="w-full"
-                            >
-                              <Download className="w-3 h-3 mr-1" />
-                              Baixar
-                            </Button>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+              ))}
+            </div>
           </CardContent>
         </Card>
       )}

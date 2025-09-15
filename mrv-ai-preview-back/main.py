@@ -16,11 +16,22 @@ if __name__ == "__main__":
     
     from utils.api.main import app
     
+    # Configurar CORS para permitir conexões do frontend
+    from fastapi.middleware.cors import CORSMiddleware
+    
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+    
     uvicorn.run(
         "utils.api.main:app",
         host="127.0.0.1",
         port=8000,
         log_level="info",
-        reload=True  # Auto-reload durante desenvolvimento
+        reload=True,  # Auto-reload durante desenvolvimento
+        access_log=True  # Log de acesso para debug
     )
- 

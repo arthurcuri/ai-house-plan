@@ -26,7 +26,6 @@ export function AppInterface({ onBackToLanding }: AppInterfaceProps) {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [uploadedFile, setUploadedFile] = useState<File | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
-  const [isGeneratingImages, setIsGeneratingImages] = useState(false)
   const [generatedImage, setGeneratedImage] = useState<string | null>(null)
   const [generatedImages, setGeneratedImages] = useState<any[]>([])
   const [error, setError] = useState<string | null>(null)
@@ -54,12 +53,12 @@ export function AppInterface({ onBackToLanding }: AppInterfaceProps) {
 
     setIsGenerating(true)
     setError(null)
+    setGeneratedImages([])
 
     try {
       const formData = new FormData()
-      formData.append("floorplan", uploadedFile) // Use "floorplan" para corresponder à API route
-      formData.append("category", selectedCategory) // Send category along with file
-      formData.append("generateImages", "false") // Apenas preview
+      formData.append("floorplan", uploadedFile)
+      formData.append("category", selectedCategory)
 
       const response = await fetch("/api/generate-preview", {
         method: "POST",
@@ -72,15 +71,25 @@ export function AppInterface({ onBackToLanding }: AppInterfaceProps) {
 
       const jsonResponse = await response.json()
       
-      if (jsonResponse.success && jsonResponse.data.interpretacao_llm) {
-        // Salvar dados da interpretação
-        setPreviewData(jsonResponse.data)
+      console.log("Full API Response:", jsonResponse)
+      
+      if (jsonResponse.success) {
+        // Se temos imagens geradas, mostrar o catálogo
+        if (jsonResponse.data.images && jsonResponse.data.images.length > 0) {
+          console.log("Found generated images:", jsonResponse.data.images.length)
+          setGeneratedImages(jsonResponse.data.images)
+          // Para o preview principal, usar a primeira imagem ou um placeholder
+          setGeneratedImage(jsonResponse.data.images[0]?.url || "/placeholder.svg?height=400&width=600&text=Preview+Gerado")
+        } else if (jsonResponse.data.interpretacao_llm) {
+          // Caso seja apenas interpretação sem imagens
+          console.log("Found interpretation data only")
+          setPreviewData(jsonResponse.data)
+          setGeneratedImage("/placeholder.svg?height=400&width=600&text=Preview+Gerado+por+IA")
+        } else {
+          console.log("No images or interpretation found in response")
+        }
         
-        // Para demonstração, vamos usar uma imagem placeholder por enquanto
-        setGeneratedImage("/placeholder.svg?height=400&width=600&text=Preview+Gerado+por+IA")
-        
-        // Log da interpretação da LLM para debug
-        console.log("Interpretação da LLM:", jsonResponse.data.interpretacao_llm)
+        console.log("Response data:", jsonResponse.data)
       } else {
         throw new Error("Invalid response format")
       }
@@ -97,53 +106,6 @@ export function AppInterface({ onBackToLanding }: AppInterfaceProps) {
       }, 2000)
     } finally {
       setIsGenerating(false)
-    }
-  }
-
-  const handleGenerateImages = async () => {
-    if (!uploadedFile || !selectedCategory || !user) return
-
-    const token = TokenManager.getToken()
-    if (!token) {
-      setError("Token de autenticação não encontrado. Faça login novamente.")
-      return
-    }
-
-    setIsGeneratingImages(true)
-    setError(null)
-
-    try {
-      const formData = new FormData()
-      formData.append("floorplan", uploadedFile)
-      formData.append("category", selectedCategory)
-      formData.append("generateImages", "true") // Gerar imagens HD
-      formData.append("authToken", token) // Token de autenticação
-
-      const response = await fetch("/api/generate-preview", {
-        method: "POST",
-        body: formData,
-      })
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          throw new Error("Sessão expirada. Faça login novamente.")
-        }
-        throw new Error("Failed to generate images")
-      }
-
-      const jsonResponse = await response.json()
-      
-      if (jsonResponse.success && jsonResponse.data.resultado) {
-        setGeneratedImages(jsonResponse.data.resultado)
-        console.log("Imagens geradas:", jsonResponse.data)
-      } else {
-        throw new Error("Invalid response format")
-      }
-    } catch (err: any) {
-      setError(err.message || "Falha ao gerar imagens HD. Tente novamente.")
-      console.error("Error generating images:", err)
-    } finally {
-      setIsGeneratingImages(false)
     }
   }
 
@@ -241,9 +203,7 @@ export function AppInterface({ onBackToLanding }: AppInterfaceProps) {
           generatedImage={generatedImage} 
           generatedImages={generatedImages}
           isGenerating={isGenerating} 
-          isGeneratingImages={isGeneratingImages}
           error={error}
-          onGenerateImages={handleGenerateImages}
           previewData={previewData}
         />
       </main>
