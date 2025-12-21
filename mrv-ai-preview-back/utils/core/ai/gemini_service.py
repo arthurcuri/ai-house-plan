@@ -7,6 +7,9 @@ import base64
 import time
 import random
 import warnings
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain.schema import HumanMessage
+
 
 # Suprimir warnings desnecessários do PyTorch
 warnings.filterwarnings("ignore", category=UserWarning, module="torch")
