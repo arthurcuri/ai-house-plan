@@ -34,9 +34,9 @@ if GEMINI_2_AVAILABLE:
     client = genai_new.Client(api_key=GEMINI_API_KEY)
 
 # Modelos específicos por funcionalidade
-modelo_texto = genai.GenerativeModel("gemini-1.5-flash")
-modelo_imagem = genai.GenerativeModel("gemini-1.5-flash")  # Usando flash para imagens também
-modelo_multimodal = genai.GenerativeModel("gemini-1.5-flash")
+modelo_texto = genai.GenerativeModel("gemini-2.5-flash")
+modelo_imagem = "gemini-2.5-flash-image" # nano banana
+modelo_multimodal = genai.GenerativeModel("gemini-2.5-flash")
 
 
 def interpretar_texto(prompt: str, history: list[dict] = None) -> str:
@@ -130,7 +130,7 @@ def gerar_imagem(prompt: str, image_bytes: bytes = None, max_retries: int = 8) -
             
             # Gerar conteúdo com o modelo de geração de imagens em MÁXIMA QUALIDADE NATIVA
             response = client.models.generate_content(
-                model="gemini-2.0-flash-preview-image-generation",
+                model=modelo_imagem,
                 contents=contents,
                 config=types.GenerateContentConfig(
                     response_modalities=['TEXT', 'IMAGE'],
