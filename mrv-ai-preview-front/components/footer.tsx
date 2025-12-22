@@ -87,8 +87,16 @@ export function Footer() {
                 <span className="text-gray-400">arthur1curi@gmail.com</span>
               </li>
               <li className="flex items-center gap-3">
+                <Mail className="w-4 h-4 text-emerald-400" />
+                <span className="text-gray-400">lucas.nogueira20mc@gmail.com</span>
+              </li>
+              <li className="flex items-center gap-3">
                 <Phone className="w-4 h-4 text-emerald-400" />
-                <span className="text-gray-400">+55 (31) 9341-6474</span>
+                <span className="text-gray-400">+55 (31) 99341-6474</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <Phone className="w-4 h-4 text-emerald-400" />
+                <span className="text-gray-400">+55 (31) 99241-0320</span>
               </li>
               <li className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 text-emerald-400 mt-1" />

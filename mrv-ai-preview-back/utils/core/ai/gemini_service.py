@@ -29,13 +29,25 @@ load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY_LUCAS")
 genai.configure(api_key=GEMINI_API_KEY)
 
+# Após linha 30, adicionar validação e log
+if not GEMINI_API_KEY:
+    raise ValueError(
+        "GEMINI_API_KEY_LUCAS não encontrada no arquivo .env. "
+        "Certifique-se de configurar a variável de ambiente."
+    )
+
+# Log para debug (remover em produção se necessário)
+import logging
+logging.basicConfig(level=logging.INFO)
+logging.info(f"API Key configurada: {GEMINI_API_KEY[:10]}...{GEMINI_API_KEY[-4:] if len(GEMINI_API_KEY) > 14 else '***'}")
+
 # Cliente para geração de imagens (se disponível)
 if GEMINI_2_AVAILABLE:
     client = genai_new.Client(api_key=GEMINI_API_KEY)
 
 # Modelos específicos por funcionalidade
 modelo_texto = genai.GenerativeModel("gemini-2.5-flash")
-modelo_imagem = "gemini-2.5-flash-image" # nano banana
+modelo_imagem = "gemini-2.5-flash-image-preview" #nano banana
 modelo_multimodal = genai.GenerativeModel("gemini-2.5-flash")
 
 
