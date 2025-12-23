@@ -12,26 +12,15 @@ interface CategorySelectionProps {
 export function CategorySelection({ selectedCategory, onCategorySelect }: CategorySelectionProps) {
   const categories = [
     {
-      id: "class",
-      name: "Class",
-      description: "Apartamentos premium com acabamentos de luxo e comodidades exclusivas",
-      icon: <Crown className="w-8 h-8" />,
-      color: "from-purple-500 to-purple-600",
-      bgColor: "bg-purple-50",
-      textColor: "text-purple-700",
-      borderColor: "border-purple-200",
-      features: ["Acabamentos premium", "Comodidades exclusivas", "Serviço de concierge"],
-    },
-    {
-      id: "bio",
-      name: "Bio",
-      description: "Apartamentos ecológicos com materiais sustentáveis e áreas verdes",
-      icon: <Leaf className="w-8 h-8" />,
-      color: "from-green-500 to-green-600",
-      bgColor: "bg-green-50",
-      textColor: "text-green-700",
-      borderColor: "border-green-200",
-      features: ["Materiais sustentáveis", "Áreas verdes", "Eficiência energética"],
+      id: "essential",
+      name: "Essential",
+      description: "Apartamentos confortáveis e funcionais com todas as comodidades básicas",
+      icon: <Home className="w-8 h-8" />,
+      color: "from-blue-500 to-blue-600",
+      bgColor: "bg-blue-50",
+      textColor: "text-blue-700",
+      borderColor: "border-blue-200",
+      features: ["Design moderno", "Acabamentos de qualidade", "Ótima localização"],
     },
     {
       id: "eco",
@@ -45,16 +34,28 @@ export function CategorySelection({ selectedCategory, onCategorySelect }: Catego
       features: ["Painéis solares", "Reciclagem de água", "Sistemas inteligentes"],
     },
     {
-      id: "essential",
-      name: "Essential",
-      description: "Apartamentos confortáveis e funcionais com todas as comodidades básicas",
-      icon: <Home className="w-8 h-8" />,
-      color: "from-blue-500 to-blue-600",
-      bgColor: "bg-blue-50",
-      textColor: "text-blue-700",
-      borderColor: "border-blue-200",
-      features: ["Design moderno", "Acabamentos de qualidade", "Ótima localização"],
+      id: "bio",
+      name: "Bio",
+      description: "Apartamentos ecológicos com materiais sustentáveis e áreas verdes",
+      icon: <Leaf className="w-8 h-8" />,
+      color: "from-green-500 to-green-600",
+      bgColor: "bg-green-50",
+      textColor: "text-green-700",
+      borderColor: "border-green-200",
+      features: ["Materiais sustentáveis", "Áreas verdes", "Eficiência energética"],
     },
+    
+    {
+      id: "class",
+      name: "Class",
+      description: "Apartamentos premium com acabamentos de luxo e comodidades exclusivas",
+      icon: <Crown className="w-8 h-8" />,
+      color: "from-purple-500 to-purple-600",
+      bgColor: "bg-purple-50",
+      textColor: "text-purple-700",
+      borderColor: "border-purple-200",
+      features: ["Acabamentos premium", "Comodidades exclusivas", "Serviço de concierge"],
+    }
   ]
 
   return (
