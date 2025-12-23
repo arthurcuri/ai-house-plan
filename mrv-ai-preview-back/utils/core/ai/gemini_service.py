@@ -10,6 +10,9 @@ import warnings
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.schema import HumanMessage
 
+from pydantic import ValidationError, BaseModel
+from .schemas import InterpretacaoPlanta
+
 
 # Suprimir warnings desnecessários do PyTorch
 warnings.filterwarnings("ignore", category=UserWarning, module="torch")
@@ -19,9 +22,9 @@ warnings.filterwarnings("ignore", message=".*pin_memory.*")
 try:
     from google import genai as genai_new
     from google.genai import types
-    GEMINI_2_AVAILABLE = True
+    GEMINI_AVAILABLE = True
 except ImportError:
-    GEMINI_2_AVAILABLE = False
+    GEMINI_AVAILABLE = False
 
 # Lógica usando GEMINI
 # Carregar variáveis do .env
@@ -42,13 +45,13 @@ logging.basicConfig(level=logging.INFO)
 logging.info(f"API Key configurada: {GEMINI_API_KEY[:10]}...{GEMINI_API_KEY[-4:] if len(GEMINI_API_KEY) > 14 else '***'}")
 
 # Cliente para geração de imagens (se disponível)
-if GEMINI_2_AVAILABLE:
+if GEMINI_AVAILABLE:
     client = genai_new.Client(api_key=GEMINI_API_KEY)
 
 # Modelos específicos por funcionalidade
 modelo_texto = genai.GenerativeModel("gemini-2.5-flash")
 modelo_imagem = "gemini-2.5-flash-image-preview" #nano banana
-modelo_multimodal = genai.GenerativeModel("gemini-2.5-flash")
+modelo_multimodal = "gemini-2.5-flash"
 
 
 def interpretar_texto(prompt: str, history: list[dict] = None) -> str:
@@ -81,7 +84,7 @@ def gerar_imagem(prompt: str, image_bytes: bytes = None, max_retries: int = 8) -
     if not image_bytes:
         raise ValueError("image_bytes é obrigatório para geração de imagens")
     
-    if not GEMINI_2_AVAILABLE:
+    if not GEMINI_AVAILABLE:
         raise RuntimeError("Gemini 2.0 não está disponível. Instale a versão mais recente.")
     
     for attempt in range(max_retries):
@@ -193,10 +196,75 @@ def classificar_tipo_comodo(prompt: str) -> str:
     except Exception as e:
         raise RuntimeError(f"Erro na classificação de cômodo: {str(e)}")
 
+def interpretar_planta_com_imagem_structured(
+    prompt: str, 
+    image_bytes: bytes, 
+    schema: BaseModel = InterpretacaoPlanta
+    ) -> dict:
+    """
+        Interpreta uma planta baixa usando modelo multimodal do Gemini com Structured Output.
+        
+        Args:
+            prompt: Prompt de análise
+            image_bytes: Bytes da imagem da planta
+            schema: Schema Pydantic para validação (padrão: InterpretacaoPlanta)
+        
+        Returns:
+            dict: Dados validados e parseados
+        """
+
+    try:
+        if not GEMINI_AVAILABLE:
+            # Fallback para API antiga se necessário
+            raise RuntimeError("Bibliotecas do Gemini não estão disponíveis")
+
+        # Converter bytes para PIL Image (formato esperado pela nova API)
+        image = Image.open(BytesIO(image_bytes))
+        
+        # Garantir que está no formato RGB para compatibilidade
+        if image.mode != 'RGB':
+            image = image.convert('RGB')
+        
+        # Preparar conteúdo multimodal no formato correto
+        # A nova API aceita PIL Image diretamente, não dicionários
+        contents = [prompt, image]
+
+        # Usar structured output com o novo cliente
+        response = client.models.generate_content(
+            model=modelo_multimodal,
+            contents=contents,
+            config=types.GenerateContentConfig(
+                response_mime_type="application/json",
+                response_schema=schema.model_json_schema(),
+            )
+        )
+
+         # Parse e validação automática com Pydantic
+        dados = schema.model_validate_json(response.text)
+
+        # Converter para dict para compatibilidade
+        return dados.model_dump()
+
+    except ValidationError as e:
+        logging.error(f"Erro de validação do schema: {e}")
+        raise RuntimeError(f"Resposta do modelo não corresponde ao schema esperado: {e}")
+    except Exception as e:
+        logging.error(f"Erro na interpretação estruturada: {e}")
+        # Fallback para método antigo em caso de erro
+        resposta_texto = interpretar_planta_com_imagem(prompt, image_bytes)
+        # Tentar parsear manualmente
+        from ...shared.json_utils import limpar_json_llm
+        try:
+            dados = limpar_json_llm(resposta_texto)
+            # Validar com Pydantic
+            return schema.model_validate(dados).model_dump()
+        except:
+            raise RuntimeError(f"Erro ao processar resposta: {e}")
+
 
 def interpretar_planta_com_imagem(prompt: str, image_bytes: bytes) -> str:
     """
-    Interpreta uma planta baixa usando modelo multimodal do Gemini
+    [DEPRECATED] Use interpretar_planta_com_imagem_structured() para structured output.
     """
     try:
         # Preparar conteúdo multimodal

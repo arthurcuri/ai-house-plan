@@ -85,15 +85,14 @@ async def gerar_imagens(
 
     # ✅ Interpretação da planta via LLM
     try:
-        interpretacao_raw = interpreter_plan.interpretar_planta_com_ocr(contents, textos_ocr, tipo)
-        dados = limpar_json_llm(interpretacao_raw)
+        dados = interpreter_plan.interpretar_planta_com_ocr(contents, textos_ocr, tipo)
+        comodos = dados.get("comodos") or dados.get("cômodos")  # compatibilidade
     except Exception as e:
         return {
-            "erro": f"Erro ao interpretar a planta ou ao decodificar JSON: {str(e)}",
-            "interpretacao_raw": interpretacao_raw if 'interpretacao_raw' in locals() else None
+            "erro": f"Erro ao interpretar a planta: {str(e)}",
+            "detalhes": str(e) if hasattr(e, '__dict__') else None
         }
 
-    comodos = dados.get("cômodos") or dados.get("comodos")  # aceitar ambos formatos
 
     if not comodos:
         return {"erro": "Nenhum cômodo encontrado na interpretação da planta."}
@@ -148,8 +147,8 @@ async def gerar_imagens(
                 "arquivo": filepath,
                 "tamanho_bytes": len(image_data),
                 "url_relativa": f"/imagens/{timestamp}_{session_id}/{filename}",
-                "dimensoes": comodo.get("dimensões", {}),
-                "localizacao": comodo.get("localização", ""),
+                "dimensoes": comodo.get("dimensoes", {}),
+                "localizacao": comodo.get("localizacao", ""),
                 "notas": comodo.get("notas", "")  # Add this line to include the 'notas' field
             })
             

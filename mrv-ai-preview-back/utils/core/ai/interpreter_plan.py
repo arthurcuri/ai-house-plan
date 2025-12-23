@@ -2,50 +2,70 @@ from core.ai.gemini_service import interpretar_planta_com_imagem
 import io
 from PIL import Image
 
+
+from core.ai.gemini_service import interpretar_planta_com_imagem_structured
+from core.ai.schemas import InterpretacaoPlanta, Comodo, Dimensoes, ContextoGeral
+import logging
+
 def interpretar_planta_com_ocr(image_bytes: bytes, texto_ocr: list, tipo_apartamento: str):
     """
-    Interpreta uma planta baixa usando OCR e LLM
+    Interpreta uma planta baixa usando OCR e LLM com Structured Output.
     
     Args:
         image_bytes: Bytes da imagem da planta
-        texto_ocr: Lista de textos extraídos por OCR (valores reais da planta)
-        tipo_apartamento: Tipo do apartamento (class, eco, bio, essential)
+        texto_ocr: Lista de textos extraídos por OCR
+        tipo_apartamento: Tipo do apartamento (essential, eco, bio, class)
     
     Returns:
-        Resposta da LLM interpretando a planta
+        dict: Dados estruturados e validados da interpretação
     """
     
     # Prompt estruturado para a LLM interpretar
-    prompt = f"""You are a specialist assistant in interpreting residential architectural floor plans.
+    prompt = f"""You are an expert architectural analyst specializing in residential floor plans.
 
-            Based on the following text extracted by OCR from the plan:
-
+            Based on the OCR text extracted from the plan:
             {texto_ocr}
 
-            And considering the provided floor plan image, identify with maximum accuracy:
+            And analyzing the provided floor plan image, perform a COMPREHENSIVE analysis:
 
-            1. Which rooms are present?
-            2. What are the approximate dimensions of each (in cm)?
-            3. What is the relative location of each room (e.g., 'upper left', 'center', etc.)?
-            4. Also add an optional field called "notas" for each room containing:
-            - Relevant observations about plan limitations, scale, possible ambiguities, etc.
-            - Detailed description of the furniture layout within each room.
-            - Shape of the furniture and its relative size compared to the rest of the room (for example: "sofa occupies half the length of the north wall", "small round table in the center", "queen bed against the east wall").
-            - The maximum possible description of each piece of furniture present, so that the 3D model generation is accurate and realistic.
+            1. Identify ALL rooms present
+            2. For EACH room, provide:
+            - Exact name (in Portuguese)
+            - Dimensions in BOTH centimeters and meters
+            - Area in m² (calculate: largura_m x comprimento_m)
+            - Room type classification from the allowed enum
+            - Shape/proportion: "retangular alongado", "quadrado", "retangular estreito", "L-shaped", etc.
+            - Relative position: "upper left", "center", "north", "south", etc.
+            - Fixed elements: windows, doors, columns (list with positions)
+            - Furniture layout suggestion: based on dimensions, suggest optimal layout
+            - Scale context: "maior cômodo", "menor cômodo", "cômodo médio" compared to others
+            - Furniture positioning details: exact positions from walls in cm, furniture sizes relative to room
+
+            3. Overall context:
+            - Apartment type: {tipo_apartamento}
+            - Solar orientation (if visible): north, south, east, west
+            - Circulation flow: linear, circular, etc.
+            - Total area estimate
+
+            IMPORTANT:
+            - Calculate area_m2 = largura_m × comprimento_m for each room
+            - Convert dimensions: largura_m = largura_cm / 100
+            - Furniture positioning must include exact distances from walls
+            - Furniture sizes must be realistic and proportional to room dimensions
+            - "notas" field must be in ENGLISH with detailed layout descriptions
+            """
 
 
-           Return **only the raw JSON**, exactly in this schema (keys MUST remain in Portuguese):
-        {{"cômodos": [{{"nome": "...", "dimensões": {{"largura": ..., "comprimento": ...}}, "localização": "...", "notas": "..."}}]}}
+    try:
+        #usar structured outputs
+        dados = interpretar_planta_com_imagem_structured(
+            prompt = prompt,
+            image_bytes = image_bytes,
+            schema =  InterpretacaoPlanta
+        )
 
-        STRICT RULES:
-        - All JSON keys MUST be exactly these in Portuguese: "cômodos", "nome", "dimensões", "largura", "comprimento", "localização", "notas".
-        - The content/value of "notas" MUST be written in ENGLISH (translate if OCR is in another language).
-        - Dimensions must be numeric values in centimeters (integers or decimals), without units in the numbers.
-        - Do NOT use mathematical expressions (e.g., "122 + 120"); provide only the final numeric value.
-        - Do NOT include explanations, markdown, code fences, or extra fields."""
+        return dados
 
-
-    # Chamada para a LLM
-    resposta = interpretar_planta_com_imagem(prompt, image_bytes)
-    
-    return resposta
+    except Exception as e:
+        logging.error(f"Erro na interpretação estruturada: {e}")
+        raise RuntimeError(f"Erro ao interpretar planta: {e}")
