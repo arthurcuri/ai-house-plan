@@ -8,6 +8,7 @@ import { TokenManager } from "@/lib/token-manager"
 import { CategorySelection } from "@/components/category-selection"
 import { UploadSection } from "@/components/upload-section"
 import { ResultSection } from "@/components/result-section"
+import { useRouter } from "next/navigation" 
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,12 +19,14 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 
 interface AppInterfaceProps {
-  onBackToLanding: () => void
+  onBackToFeatures: () => void
 }
 
-export function AppInterface({ onBackToLanding }: AppInterfaceProps) {
+export function AppInterface({ onBackToFeatures }: AppInterfaceProps) {
   const { user, logout } = useAuth()
+  const router = useRouter() 
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+  const [selectedPersonalType, setSelectedPersonalType] = useState<number | null>(null)
   const [uploadedFile, setUploadedFile] = useState<File | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const [generatedImage, setGeneratedImage] = useState<string | null>(null)
@@ -31,9 +34,18 @@ export function AppInterface({ onBackToLanding }: AppInterfaceProps) {
   const [error, setError] = useState<string | null>(null)
   const [previewData, setPreviewData] = useState<any>(null)
 
-  const handleCategorySelect = (category: string) => {
+  const handleCategorySelect = (category: string | null) => {
     setSelectedCategory(category)
     // Reset previous results when category changes
+    setGeneratedImage(null)
+    setGeneratedImages([])
+    setPreviewData(null)
+    setError(null)
+  }
+
+  const handlePersonalTypeSelect = (personalTypeId: number | null) => {
+    setSelectedPersonalType(personalTypeId)
+    // Reset previous results when personal type changes
     setGeneratedImage(null)
     setGeneratedImages([])
     setPreviewData(null)
@@ -49,7 +61,7 @@ export function AppInterface({ onBackToLanding }: AppInterfaceProps) {
   }
 
   const handleGeneratePreview = async () => {
-    if (!uploadedFile || !selectedCategory) return
+    if (!uploadedFile || (!selectedCategory && !selectedPersonalType)) return
 
     setIsGenerating(true)
     setError(null)
@@ -58,7 +70,12 @@ export function AppInterface({ onBackToLanding }: AppInterfaceProps) {
     try {
       const formData = new FormData()
       formData.append("floorplan", uploadedFile)
-      formData.append("category", selectedCategory)
+      
+      if (selectedPersonalType) {
+        formData.append("tipo_pessoal_id", selectedPersonalType.toString())
+      } else if (selectedCategory) {
+        formData.append("category", selectedCategory)
+      }
 
       const response = await fetch("/api/generate-preview", {
         method: "POST",
@@ -120,10 +137,14 @@ export function AppInterface({ onBackToLanding }: AppInterfaceProps) {
 
   const handleLogout = () => {
     logout()
-    onBackToLanding()
+    router.push("/")
   }
 
-  const canGeneratePreview = selectedCategory && uploadedFile
+  const backToLanding = () => {
+    router.push("/")
+  }
+
+  const canGeneratePreview = (selectedCategory || selectedPersonalType) && uploadedFile
 
   return (
     <div className="min-h-screen bg-white">
@@ -132,9 +153,9 @@ export function AppInterface({ onBackToLanding }: AppInterfaceProps) {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <Button variant="ghost" onClick={onBackToLanding} className="text-gray-600 hover:text-emerald-600">
+              <Button variant="ghost" onClick={onBackToFeatures} className="text-gray-600 hover:text-emerald-600">
                 <ArrowLeft className="w-4 h-4 mr-2" />
-                Voltar ao Início
+                Voltar
               </Button>
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-2">
@@ -168,7 +189,7 @@ export function AppInterface({ onBackToLanding }: AppInterfaceProps) {
                   <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
                 </div>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={onBackToLanding} className="cursor-pointer">
+                <DropdownMenuItem onClick={backToLanding} className="cursor-pointer">
                   Voltar ao Início
                 </DropdownMenuItem>
                 <DropdownMenuItem className="cursor-pointer">Configurações</DropdownMenuItem>
@@ -185,7 +206,12 @@ export function AppInterface({ onBackToLanding }: AppInterfaceProps) {
       {/* App Content */}
       <main className="container mx-auto px-4 py-8 max-w-6xl space-y-12">
         {/* Category Selection */}
-        <CategorySelection selectedCategory={selectedCategory} onCategorySelect={handleCategorySelect} />
+        <CategorySelection 
+          selectedCategory={selectedCategory} 
+          selectedPersonalType={selectedPersonalType}
+          onCategorySelect={handleCategorySelect}
+          onPersonalTypeSelect={handlePersonalTypeSelect}
+        />
 
         {/* Upload Section - Show when category is selected */}
         {selectedCategory && (

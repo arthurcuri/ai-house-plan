@@ -4,15 +4,16 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData()
     const file = formData.get("floorplan") as File
-    const category = formData.get("category") as string
+    const category = formData.get("category") as string | null
+    const tipoPessoalId = formData.get("tipo_pessoal_id") as string | null
     const authToken = formData.get("authToken") as string || 'dummy-token'
 
     if (!file) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 })
     }
 
-    if (!category) {
-      return NextResponse.json({ error: "No category provided" }, { status: 400 })
+    if (!category && !tipoPessoalId) {
+      return NextResponse.json({ error: "No category or personal type provided" }, { status: 400 })
     }
 
     // Sempre gerar imagens quando o botão Generate Preview for clicado
@@ -24,10 +25,15 @@ export async function POST(request: NextRequest) {
     // Criar FormData para enviar para o backend Python
     const pythonBackendFormData = new FormData()
     pythonBackendFormData.append('file', file)
-    pythonBackendFormData.append('tipo', category)
+    
+    if (tipoPessoalId) {
+      pythonBackendFormData.append('tipo_pessoal_id', tipoPessoalId)
+    } else if (category) {
+      pythonBackendFormData.append('tipo', category)
+    }
     
     console.log(`Sending request to: ${endpoint}`)
-    console.log(`Category: ${category}`)
+    console.log(`Category: ${category || 'N/A'}, Tipo Pessoal ID: ${tipoPessoalId || 'N/A'}`)
     
     const response = await fetch(endpoint, {
       method: 'POST',
@@ -59,7 +65,8 @@ export async function POST(request: NextRequest) {
         data: {
           images: [],
           metadata: {
-            category,
+            category: category || null,
+            tipoPessoalId: tipoPessoalId || null,
             totalImages: 0,
             generatedAt: new Date().toISOString(),
             message: "No images generated"
@@ -117,7 +124,8 @@ export async function POST(request: NextRequest) {
       data: {
         images: processedImages,
         metadata: {
-          category,
+          category: category || null,
+          tipoPessoalId: tipoPessoalId || null,
           totalImages: processedImages.length,
           generatedAt: new Date().toISOString()
         }

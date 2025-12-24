@@ -11,17 +11,19 @@ import { PreviewShowcase } from "@/components/preview-showcase"
 import { FAQSection } from "@/components/faq-section"
 import { Footer } from "@/components/footer"
 import { AppInterface } from "@/components/app-interface"
+import { FeatureSelection } from "@/components/feature-selection"
+import { useRouter } from "next/navigation"
 
 export default function Home() {
   const { user, isAuthenticated, isLoading } = useAuth()
-  const [showApp, setShowApp] = useState(false)
+  const router = useRouter()
   const searchParams = useSearchParams()
 
   // Verificar se deve iniciar o app automaticamente após login
   useEffect(() => {
     const startApp = searchParams.get('start-app')
     if (startApp === 'true' && isAuthenticated && !isLoading) {
-      setShowApp(true)
+      router.push("/features")
     }
   }, [isAuthenticated, isLoading, searchParams])
 
@@ -31,16 +33,12 @@ export default function Home() {
     }
     
     if (isAuthenticated) {
-      setShowApp(true)
+      router.push("/features")
     } else {
       // Redirect to login page com parâmetro para voltar à aplicação
       const currentUrl = window.location.href
       window.location.href = `/login?redirect=${encodeURIComponent(currentUrl)}&action=start-app`
     }
-  }
-
-  if (showApp && isAuthenticated) {
-    return <AppInterface onBackToLanding={() => setShowApp(false)} />
   }
 
   return (

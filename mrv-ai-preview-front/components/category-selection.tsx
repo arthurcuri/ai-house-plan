@@ -1,15 +1,80 @@
 "use client"
+import { useState, useEffect } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Crown, Leaf, Recycle, Home, Check } from "lucide-react"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Crown, Leaf, Recycle, Home, Check, Palette } from "lucide-react"
 import { images } from "@/lib/images"
+import { TokenManager } from "@/lib/token-manager"
 
 interface CategorySelectionProps {
   selectedCategory: string | null
-  onCategorySelect: (category: string) => void
+  selectedPersonalType: number | null
+  onCategorySelect: (category: string | null) => void
+  onPersonalTypeSelect: (personalTypeId: number | null) => void
 }
 
-export function CategorySelection({ selectedCategory, onCategorySelect }: CategorySelectionProps) {
+interface PersonalType {
+  id: number
+  nome: string
+  status: string
+  prompts_gerados: boolean
+}
+
+export function CategorySelection({ 
+  selectedCategory, 
+  selectedPersonalType,
+  onCategorySelect, 
+  onPersonalTypeSelect 
+}: CategorySelectionProps) {
+  const [personalTypes, setPersonalTypes] = useState<PersonalType[]>([])
+  const [isLoadingTypes, setIsLoadingTypes] = useState(false)
+
+  useEffect(() => {
+    loadPersonalTypes()
+  }, [])
+
+  const loadPersonalTypes = async () => {
+    setIsLoadingTypes(true)
+    try {
+      const token = TokenManager.getToken()
+      if (!token) return
+
+      const response = await fetch("/api/architect/types", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        // Filtrar apenas tipos concluídos e com prompts gerados
+        const tiposDisponiveis = (data.tipos || []).filter(
+          (t: PersonalType) => t.status === "concluido" && t.prompts_gerados
+        )
+        setPersonalTypes(tiposDisponiveis)
+      }
+    } catch (error) {
+      console.error("Erro ao carregar tipos pessoais:", error)
+    } finally {
+      setIsLoadingTypes(false)
+    }
+  }
+
+  const handleCategorySelect = (categoryId: string) => {
+    onCategorySelect(categoryId)
+    onPersonalTypeSelect(null) // Limpar seleção de tipo pessoal
+  }
+
+  const handlePersonalTypeSelect = (typeId: string) => {
+    if (typeId === "none") {
+      onPersonalTypeSelect(null)
+    } else {
+      onPersonalTypeSelect(parseInt(typeId))
+      onCategorySelect(null) // Limpar seleção de categoria padrão
+    }
+  }
+
   const categories = [
     {
       id: "essential",
@@ -74,7 +139,7 @@ export function CategorySelection({ selectedCategory, onCategorySelect }: Catego
                 ? `ring-2 ring-emerald-500 shadow-lg ${category.borderColor}`
                 : "border-gray-200 hover:border-gray-300"
             }`}
-            onClick={() => onCategorySelect(category.id)}
+            onClick={() => handleCategorySelect(category.id)}
           >
             <CardContent className="p-6 text-center space-y-4">
               {/* Selection Indicator */}
@@ -125,11 +190,59 @@ export function CategorySelection({ selectedCategory, onCategorySelect }: Catego
         ))}
       </div>
 
-      {selectedCategory && (
+      {/* Seção de Tipo Pessoal */}
+      <div className="space-y-4 pt-6 border-t border-gray-200">
+        <div className="text-center">
+          <h3 className="text-lg font-semibold text-gray-900 mb-2 flex items-center justify-center gap-2">
+            <Palette className="w-5 h-5 text-emerald-600" />
+            Ou escolha um tipo pessoal
+          </h3>
+          <p className="text-sm text-gray-600 mb-4">
+            Use um estilo arquitetônico personalizado criado na Área do Arquiteto
+          </p>
+        </div>
+
+        <div className="max-w-md mx-auto">
+          <Select
+            value={selectedPersonalType?.toString() || "none"}
+            onValueChange={handlePersonalTypeSelect}
+            disabled={isLoadingTypes}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Selecione um tipo pessoal" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">Nenhum (usar categoria padrão)</SelectItem>
+              {personalTypes.length === 0 && !isLoadingTypes && (
+                <SelectItem value="empty" disabled>
+                  Nenhum tipo pessoal disponível
+                </SelectItem>
+              )}
+              {isLoadingTypes && (
+                <SelectItem value="loading" disabled>
+                  Carregando tipos...
+                </SelectItem>
+              )}
+              {personalTypes.map((type) => (
+                <SelectItem key={type.id} value={type.id.toString()}>
+                  {type.nome}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* Indicadores de Seleção */}
+      {(selectedCategory || selectedPersonalType) && (
         <div className="text-center">
           <div className="inline-flex items-center gap-2 bg-emerald-100 text-emerald-800 px-4 py-2 rounded-full text-sm font-medium">
             <Check className="w-4 h-4" />
-            Categoria {categories.find((c) => c.id === selectedCategory)?.name} selecionada
+            {selectedCategory
+              ? `Categoria ${categories.find((c) => c.id === selectedCategory)?.name} selecionada`
+              : selectedPersonalType
+              ? `Tipo pessoal "${personalTypes.find((t) => t.id === selectedPersonalType)?.nome}" selecionado`
+              : ""}
           </div>
         </div>
       )}
