@@ -66,7 +66,7 @@ export function FeatureSelection({ onBack }: FeatureSelectionProps) {
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-emerald-600 mt-1">•</span>
-                    <span>IA analisa e cria prompts personalizados</span>
+                    <span>IA analisa e cria estilos personalizados</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-emerald-600 mt-1">•</span>
