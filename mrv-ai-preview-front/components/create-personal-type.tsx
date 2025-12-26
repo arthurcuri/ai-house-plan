@@ -276,3 +276,4 @@ export function CreatePersonalType({ onCancel, onSuccess }: CreatePersonalTypePr
   )
 }
 
+
