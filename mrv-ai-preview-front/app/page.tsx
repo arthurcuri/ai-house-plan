@@ -23,7 +23,7 @@ export default function Home() {
   useEffect(() => {
     const startApp = searchParams.get('start-app')
     if (startApp === 'true' && isAuthenticated && !isLoading) {
-      router.push("/features")
+      router.push("/")
     }
   }, [isAuthenticated, isLoading, searchParams])
 
