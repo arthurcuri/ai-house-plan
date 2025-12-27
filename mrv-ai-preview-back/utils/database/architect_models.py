@@ -7,6 +7,10 @@ from datetime import datetime
 from .db_service import Base
 
 class ArchitectPersonalType(Base):
+    """
+    Modelo para armazenar tipos pessoais de arquitetura criados por arquitetos.
+    Um usuário pode ter vários tipos pessoais.
+    """
     __tablename__ = "architect_personal_types"
     
     id = Column(Integer, primary_key=True, index=True)
@@ -24,6 +28,10 @@ class ArchitectPersonalType(Base):
     prompts_comodos = relationship("TypeRoomPrompt", back_populates="tipo", cascade="all, delete-orphan")
 
 class TypeReferencePhoto(Base):
+    """
+    Modelo para armazenar fotos de referência de um tipo pessoal.
+    Um tipo pessoal pode ter várias fotos (10-20).
+    """
     __tablename__ = "type_reference_photos"
     
     id = Column(Integer, primary_key=True, index=True)
@@ -39,6 +47,10 @@ class TypeReferencePhoto(Base):
     tipo = relationship("ArchitectPersonalType", back_populates="fotos_referencia")
 
 class TypeRoomPrompt(Base):
+    """
+    Modelo para armazenar prompts personalizados gerados pela LLM.
+    Um tipo pessoal tem um prompt para cada tipo de cômodo.
+    """
     __tablename__ = "type_room_prompts"
     
     id = Column(Integer, primary_key=True, index=True)

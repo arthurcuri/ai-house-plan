@@ -53,3 +53,12 @@ class InterpretacaoPlanta(BaseModel):
     """Estrutura completa da interpretação da planta"""
     comodos: List[Comodo] = Field(description="Lista de cômodos identificados")
     contexto_geral: Optional[ContextoGeral] = Field(None, description="Contexto geral do apartamento")
+
+class AnaliseEstiloArquitetura(BaseModel):
+    """Schema para análise de estilo arquitetônico e geração de prompts"""
+    analise_estilo: str = Field(
+        description="Descrição detalhada do estilo arquitetônico identificado nas fotos, incluindo cores, materiais, mobiliário, iluminação e elementos decorativos característicos"
+    )
+    prompts: Dict[str, str] = Field(
+        description="Dicionário com prompts personalizados para cada tipo de cômodo. Chaves: quarto_pequeno, quarto_casal, suite, sala, sala_cozinha, cozinha, banheiro, varanda, sacada, lavanderia, escritorio, home_office, closet, corredor, hall, area_privativa, area_gourmet, generico"
+    )

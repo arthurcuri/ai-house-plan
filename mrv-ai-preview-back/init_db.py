@@ -17,6 +17,11 @@ try:
     from utils.database.db_service import init_db, SessionLocal, engine, Base
     from utils.auth.models import User
     from utils.auth.utils import hash_password
+    from utils.database.architect_models import (
+    ArchitectPersonalType,
+    TypeReferencePhoto,
+    TypeRoomPrompt
+)
 except ImportError as e:
     logging.error(f"Erro ao importar módulos: {e}")
     logging.error("Certifique-se de que todas as dependências estão instaladas")
@@ -56,13 +61,10 @@ def main():
     logging.basicConfig(level=logging.INFO)
     
     try:
-        # Criar tabelas diretamente usando o Base do User
-        # Isso garante que usamos o Base correto
-        User.metadata.create_all(bind=engine)
-        logging.info("Tabela 'users' criada com sucesso")
-        
-        # Alternativamente, usar init_db() se funcionar
-        # init_db()
+        # Criar TODAS as tabelas usando Base.metadata.create_all()
+        # Isso garante que todas as foreign keys sejam resolvidas corretamente
+        Base.metadata.create_all(bind=engine)
+        logging.info("Todas as tabelas criadas com sucesso")
         
         # Criar usuário de teste
         create_test_user()
@@ -77,5 +79,6 @@ def main():
         traceback.print_exc()
         sys.exit(1)
 
+        
 if __name__ == "__main__":
     main()

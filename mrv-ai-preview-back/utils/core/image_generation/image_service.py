@@ -86,7 +86,7 @@ def gerar_prompt_por_tipo(comodo: dict, tipo_apartamento: str) -> str:
             "sacada": sacada_essential,
             "area_gourmet": area_gourmet_essential,
             "home_office": home_office_essential,
-            "outro": generico_essential
+            "generico": generico_essential
         }
     
     elif tipo_apartamento == 'ECO':
@@ -115,7 +115,7 @@ def gerar_prompt_por_tipo(comodo: dict, tipo_apartamento: str) -> str:
             "sacada": sacada_eco,
             "area_gourmet": area_gourmet_eco,
             "home_office": home_office_eco,
-            "outro": generico_eco
+            "generico": generico_eco
         }
     
     elif tipo_apartamento == 'BIO':
@@ -144,7 +144,7 @@ def gerar_prompt_por_tipo(comodo: dict, tipo_apartamento: str) -> str:
             "sacada": sacada_bio,
             "area_gourmet": area_gourmet_bio,
             "home_office": home_office_bio,
-            "outro": generico_bio
+            "generico": generico_bio
         }
     
     elif tipo_apartamento == 'CLASS':
@@ -173,11 +173,11 @@ def gerar_prompt_por_tipo(comodo: dict, tipo_apartamento: str) -> str:
             "sacada": sacada_class,
             "area_gourmet": area_gourmet_class,
             "home_office": home_office_class,
-            "outro": generico_class
+            "generico": generico_class
         }
     
     # Buscar função correspondente ao tipo de cômodo
-    prompt_function = prompt_functions.get(tipo_comodo, prompt_functions["outro"])
+    prompt_function = prompt_functions.get(tipo_comodo, prompt_functions["generico"])
     
     return prompt_function(comodo_normalizado)
 
@@ -241,7 +241,7 @@ Classify the type of room, choosing **only one of the following options**:
 - banheiro
 - cozinha
 - área_privativa
-- outro
+- generico
 
 Return **only the name of the option** corresponding to the room type.
 """

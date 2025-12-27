@@ -1,9 +1,9 @@
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import declarative_base, Session
+from sqlalchemy.orm import Session
 from sqlalchemy.exc import NoResultFound
 from .utils import hash_password, verify_password
 
-Base = declarative_base()
+from ..database.db_service import Base 
 
 class User(Base):
     __tablename__ = "users"

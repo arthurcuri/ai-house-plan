@@ -13,7 +13,7 @@ from pathlib import Path
 from .routes.image_generation import router as imagens_router
 from .routes.ocr import router as ocr_router
 from ..auth.routes import router as auth_router
-from ..auth.models import Base
+from ..database.db_service import Base
 from ..database.db_service import engine
 
 Base.metadata.create_all(bind=engine)
