@@ -13,6 +13,10 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    // Log do token recebido (apenas preview por segurança)
+    const tokenPreview = authHeader.substring(0, 20) + "..."
+    console.log(`[DEBUG] GET - Token recebido: ${tokenPreview}`)
+
     const response = await fetch(`${BACKEND_URL}/arquiteto/tipos`, {
       method: "GET",
       headers: {
@@ -51,10 +55,16 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Log do token recebido (apenas preview por segurança)
+    const tokenPreview = authHeader.substring(0, 20) + "..."
+    console.log(`[DEBUG] Token recebido na rota /api/architect/types: ${tokenPreview}`)
+    console.log(`[DEBUG] Token completo length: ${authHeader.length}`)
+
     // Obter FormData da requisição
     const formData = await request.formData()
 
     // Reenviar para o backend Python
+    console.log(`[DEBUG] Enviando requisição para: ${BACKEND_URL}/arquiteto/tipos`)
     const response = await fetch(`${BACKEND_URL}/arquiteto/tipos`, {
       method: "POST",
       headers: {
@@ -63,8 +73,11 @@ export async function POST(request: NextRequest) {
       body: formData,
     })
 
+    console.log(`[DEBUG] Resposta do backend: ${response.status} ${response.statusText}`)
+
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ error: "Erro desconhecido" }))
+      console.error(`[DEBUG] Erro do backend:`, errorData)
       return NextResponse.json(
         { error: errorData.error || `Erro ${response.status}` },
         { status: response.status }

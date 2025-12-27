@@ -1,12 +1,23 @@
 import { type NextRequest, NextResponse } from "next/server"
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:8000"
+
 export async function POST(request: NextRequest) {
   try {
+    // Obter token do header Authorization
+    const authHeader = request.headers.get("authorization")
+    
+    if (!authHeader) {
+      return NextResponse.json(
+        { error: "Token de autenticação não fornecido" },
+        { status: 401 }
+      )
+    }
+
     const formData = await request.formData()
     const file = formData.get("floorplan") as File
     const category = formData.get("category") as string | null
     const tipoPessoalId = formData.get("tipo_pessoal_id") as string | null
-    const authToken = formData.get("authToken") as string || 'dummy-token'
 
     if (!file) {
       return NextResponse.json({ error: "No file provided" }, { status: 400 })
@@ -14,12 +25,6 @@ export async function POST(request: NextRequest) {
 
     if (!category && !tipoPessoalId) {
       return NextResponse.json({ error: "No category or personal type provided" }, { status: 400 })
-    }
-
-    // Sempre gerar imagens quando o botão Generate Preview for clicado
-    const endpoint = 'http://127.0.0.1:8000/gerar-imagens'
-    const headers: Record<string, string> = {
-      'Authorization': `Bearer ${authToken}`
     }
 
     // Criar FormData para enviar para o backend Python
@@ -32,12 +37,14 @@ export async function POST(request: NextRequest) {
       pythonBackendFormData.append('tipo', category)
     }
     
-    console.log(`Sending request to: ${endpoint}`)
+    console.log(`Sending request to: ${BACKEND_URL}/gerar-imagens`)
     console.log(`Category: ${category || 'N/A'}, Tipo Pessoal ID: ${tipoPessoalId || 'N/A'}`)
     
-    const response = await fetch(endpoint, {
+    const response = await fetch(`${BACKEND_URL}/gerar-imagens`, {
       method: 'POST',
-      headers: headers,
+      headers: {
+        'Authorization': authHeader,  // ← Usar token do header
+      },
       body: pythonBackendFormData,
     })
     
@@ -141,4 +148,3 @@ export async function POST(request: NextRequest) {
     }, { status: 500 })
   }
 }
-      

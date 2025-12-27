@@ -1,5 +1,6 @@
 import os
 import warnings
+import logging
 from passlib.context import CryptContext
 from jose import jwt, JWTError
 from datetime import datetime, timedelta
@@ -7,6 +8,8 @@ from typing import Optional
 
 # Silenciar warnings do bcrypt sobre versão
 warnings.filterwarnings("ignore", category=UserWarning, module="passlib")
+
+logger = logging.getLogger(__name__)
 
 # Configurações JWT - usar variáveis de ambiente
 SECRET_KEY = os.getenv("JWT_SECRET_KEY", "dev-secret-key-change-this-in-production")
@@ -37,17 +40,35 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     else:
         expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     
-    to_encode.update({"exp": expire, "iat": datetime.utcnow()})
+    # Converter datetime para timestamp Unix (segundos desde epoch)
+    to_encode.update({
+        "exp": int(expire.timestamp()),  # ← Converter para timestamp Unix
+        "iat": int(datetime.utcnow().timestamp())  # ← Converter para timestamp Unix
+    })
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
 def decode_access_token(token: str) -> Optional[dict]:
     """Decodificar e validar token JWT"""
     try:
+        logger.debug(f"Decoding token with SECRET_KEY: {SECRET_KEY[:10]}... (truncated)")
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        
         # Verificar se o token não expirou
-        if datetime.fromtimestamp(payload.get("exp", 0)) < datetime.utcnow():
+        exp_timestamp = payload.get("exp", 0)
+        now_timestamp = int(datetime.utcnow().timestamp())  # ← Usar timestamp diretamente
+        
+        if exp_timestamp < now_timestamp:
+            exp_datetime = datetime.fromtimestamp(exp_timestamp)
+            now_datetime = datetime.fromtimestamp(now_timestamp)
+            logger.warning(f"Token expired. Exp: {exp_datetime}, Now: {now_datetime}, Diff: {now_datetime - exp_datetime}")
             return None
+        
+        logger.info(f"Token decoded successfully. User: {payload.get('sub')}, Exp: {datetime.fromtimestamp(exp_timestamp)}")
         return payload
-    except JWTError:
+    except JWTError as e:
+        logger.error(f"JWT decode error: {type(e).__name__}: {str(e)}")
+        return None
+    except Exception as e:
+        logger.error(f"Unexpected error decoding token: {type(e).__name__}: {str(e)}")
         return None

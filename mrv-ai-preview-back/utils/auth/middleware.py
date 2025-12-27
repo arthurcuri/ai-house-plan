@@ -20,6 +20,7 @@ def get_current_user(
     Dependency para obter o usuário atual através do token JWT
     """
     if not credentials:
+        logger.warning("No credentials provided in request")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Token de acesso necessário",
@@ -27,13 +28,18 @@ def get_current_user(
         )
 
     # Decodificar token
+    token_preview = credentials.credentials[:20] + "..." if len(credentials.credentials) > 20 else credentials.credentials
+    logger.info(f"Attempting to decode token: {token_preview}")
     payload = decode_access_token(credentials.credentials)
     if not payload:
+        logger.error(f"Token decode failed - token may be expired or invalid. Token preview: {token_preview}")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Token inválido ou expirado",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    
+    logger.info(f"Token decoded successfully. Email from payload: {payload.get('sub')}")
 
     # Obter email do payload
     email: str = payload.get("sub")

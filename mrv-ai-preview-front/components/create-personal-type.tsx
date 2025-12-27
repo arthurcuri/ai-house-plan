@@ -126,7 +126,7 @@ export function CreatePersonalType({ onCancel, onSuccess }: CreatePersonalTypePr
       
       // Limpar formulário
       setNome("")
-      setFotos.forEach((photo) => URL.revokeObjectURL(photo.preview))
+      fotos.forEach((photo) => URL.revokeObjectURL(photo.preview))
       setFotos([])
       
       // Chamar callback de sucesso após um breve delay

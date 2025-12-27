@@ -27,7 +27,7 @@ def _carregar_exemplo_prompt_padrao(tipo_comodo: str) -> str:
     Isso garante que a LLM gere prompts no mesmo formato e estrutura.
     """
     try:
-        from ...image_generation.prompt_essential import (
+        from ..image_generation.prompt_essential import (
             quarto_pequeno_essential, quarto_casal_essential, sala_essential,
             area_privativa_essential, banheiro_essential, cozinha_essential, 
             varanda_essential, generico_essential, lavanderia_essential,
@@ -76,6 +76,28 @@ def _carregar_exemplo_prompt_padrao(tipo_comodo: str) -> str:
     except Exception as e:
         logger.warning(f"Erro ao carregar prompt padrão: {e}")
         return None
+
+
+# Adicionar função auxiliar antes da função analisar_fotos_e_gerar_prompts
+def _remover_additional_properties(schema: dict) -> dict:
+    """
+    Remove recursivamente additionalProperties do schema JSON,
+    pois o Gemini API não suporta essa propriedade.
+    """
+    if isinstance(schema, dict):
+        # Remover additionalProperties do nível atual
+        schema.pop("additionalProperties", None)
+        
+        # Processar recursivamente todas as chaves
+        for key, value in schema.items():
+            if isinstance(value, (dict, list)):
+                schema[key] = _remover_additional_properties(value)
+    elif isinstance(schema, list):
+        # Processar cada item da lista
+        return [_remover_additional_properties(item) for item in schema]
+    
+    return schema
+
 
 def analisar_fotos_e_gerar_prompts(
     fotos_bytes: List[bytes],
@@ -140,14 +162,18 @@ def analisar_fotos_e_gerar_prompts(
         
         # Schema para structured output
         schema = AnaliseEstiloArquitetura
-        
+        json_schema = schema.model_json_schema()
+
+        # Remover additionalProperties que o Gemini não suporta (recursivamente)
+        json_schema = _remover_additional_properties(json_schema)
+
         # Chamar Gemini com structured output
         response = client.models.generate_content(
             model=modelo_multimodal,
             contents=contents,
             config=types.GenerateContentConfig(
                 response_mime_type="application/json",
-                response_schema=schema.model_json_schema(),
+                response_schema=json_schema,
             )
         )
         
@@ -155,7 +181,8 @@ def analisar_fotos_e_gerar_prompts(
         resultado = schema.model_validate_json(response.text)
         
         # Extrair dados
-        prompts_dict = resultado.prompts
+        # Converter List[PromptComodo] para Dict[str, str]
+        prompts_dict = {p.tipo_comodo: p.prompt for p in resultado.prompts}
         analise_estilo = resultado.analise_estilo
         
         # Garantir que todos os tipos de cômodos tenham prompt

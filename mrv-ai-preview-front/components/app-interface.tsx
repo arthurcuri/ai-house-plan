@@ -68,6 +68,11 @@ export function AppInterface({ onBackToFeatures }: AppInterfaceProps) {
     setGeneratedImages([])
 
     try {
+      const token = TokenManager.getToken()  // ← Adicionar
+      if (!token) {
+        throw new Error("Você precisa estar autenticado")
+      }
+
       const formData = new FormData()
       formData.append("floorplan", uploadedFile)
       
@@ -79,6 +84,9 @@ export function AppInterface({ onBackToFeatures }: AppInterfaceProps) {
 
       const response = await fetch("/api/generate-preview", {
         method: "POST",
+        headers:{
+          Authorization: `Bearer ${token}`, 
+        },
         body: formData,
       })
 
