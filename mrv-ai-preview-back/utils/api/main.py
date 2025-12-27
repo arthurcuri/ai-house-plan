@@ -13,6 +13,7 @@ from pathlib import Path
 from .routes.image_generation import router as imagens_router
 from .routes.ocr import router as ocr_router
 from ..auth.routes import router as auth_router
+from .routes.architect import router as architect_router
 from ..database.db_service import Base
 from ..database.db_service import engine
 
@@ -40,3 +41,4 @@ app.mount("/imagens", StaticFiles(directory=IMAGES_OUTPUT_DIR), name="imagens")
 app.include_router(ocr_router)           # POST /ocr
 app.include_router(imagens_router)       # POST /gerar-imagens (unificada)
 app.include_router(auth_router)          # POST /auth/login, /auth/register
+app.include_router(architect_router)  # Rotas /arquiteto/*

@@ -104,36 +104,36 @@ def analisar_fotos_e_gerar_prompts(
         
         # Construir prompt de análise com referência ao formato padrão
         prompt_analise = f"""
-Analise as seguintes fotos de projetos arquitetônicos reais e identifique o estilo arquitetônico comum entre elas.
+        Analise as seguintes fotos de projetos arquitetônicos reais e identifique o estilo arquitetônico comum entre elas.
 
-Nome do estilo: {nome_tipo}
+        Nome do estilo: {nome_tipo}
 
-Analise:
-1. Estilo arquitetônico predominante
-2. Paleta de cores comum
-3. Materiais e acabamentos
-4. Estilo de mobiliário
-5. Iluminação e atmosfera
-6. Elementos decorativos característicos
+        Analise:
+        1. Estilo arquitetônico predominante
+        2. Paleta de cores comum
+        3. Materiais e acabamentos
+        4. Estilo de mobiliário
+        5. Iluminação e atmosfera
+        6. Elementos decorativos característicos
 
-Com base nessa análise, gere prompts personalizados para CADA um dos seguintes tipos de cômodos:
-{', '.join(TIPOS_COMODOS)}
+        Com base nessa análise, gere prompts personalizados para CADA um dos seguintes tipos de cômodos:
+        {', '.join(TIPOS_COMODOS)}
 
-IMPORTANTE: Mantenha EXATAMENTE a mesma estrutura e formato dos prompts padrão. Use o seguinte exemplo como referência:
+        IMPORTANTE: Mantenha EXATAMENTE a mesma estrutura e formato dos prompts padrão. Use o seguinte exemplo como referência:
 
---- EXEMPLO DE PROMPT PADRÃO (formato a seguir) ---
-{exemplo_prompt if exemplo_prompt else "Formato padrão não disponível"}
---- FIM DO EXEMPLO ---
+        --- EXEMPLO DE PROMPT PADRÃO (formato a seguir) ---
+        {exemplo_prompt if exemplo_prompt else "Formato padrão não disponível"}
+        --- FIM DO EXEMPLO ---
 
-Para cada cômodo, crie um prompt que:
-- Use a MESMA estrutura do exemplo acima (dimensões, localização, notas, descrição detalhada)
-- Substitua o estilo MRV ESSENTIAL pelo estilo identificado nas fotos ({nome_tipo})
-- Mantenha a formatação e organização do texto
-- Seja específico sobre cores, materiais, mobiliário e decoração do estilo identificado
-- Seja fotorrealístico e detalhado
-- Use inglês para o prompt final
-- Inclua placeholders {{comodo['dimensões']['largura']}}, {{comodo['dimensões']['comprimento']}}, {{comodo['localização']}}, {{comodo.get('notas')}} que serão substituídos dinamicamente
-"""
+        Para cada cômodo, crie um prompt que:
+        - Use a MESMA estrutura do exemplo acima (dimensões, localização, notas, descrição detalhada)
+        - Substitua o estilo MRV ESSENTIAL pelo estilo identificado nas fotos ({nome_tipo})
+        - Mantenha a formatação e organização do texto
+        - Seja específico sobre cores, materiais, mobiliário e decoração do estilo identificado
+        - Seja fotorrealístico e detalhado
+        - Use inglês para o prompt final
+        - Inclua placeholders {{comodo['dimensões']['largura']}}, {{comodo['dimensões']['comprimento']}}, {{comodo['localização']}}, {{comodo.get('notas')}} que serão substituídos dinamicamente
+        """
         
         # Preparar conteúdo multimodal
         contents = [prompt_analise] + imagens

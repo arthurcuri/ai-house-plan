@@ -1,4 +1,4 @@
-from fastapi import APIRouter, UploadFile, File, Form
+from fastapi import APIRouter, UploadFile, File, Form, Depends
 from fastapi.responses import JSONResponse
 from PIL import Image
 import io
@@ -13,9 +13,13 @@ from ...core.ai import interpreter_plan
 from ...core.image_generation.image_service import gerar_imagens_para_comodos
 from ...shared.json_utils import limpar_json_llm
 from pathlib import Path
+from ...auth.middleware import get_current_active_user
+from ...auth.models import User
+from ...database.db_service import get_db
+from sqlalchemy.orm import Session
+from ...database.architect_service import get_personal_type_by_id, get_room_prompts
 
 router = APIRouter()
-
 
 BASE_DIR = Path(__file__).resolve().parents[3]
 # Diretório para salvar as imagens geradas
@@ -60,23 +64,58 @@ def sanitizar_nome_arquivo(nome: str) -> str:
     
     return nome_limpo
 
+
 @router.post("/gerar-imagens")
 async def gerar_imagens(
     file: UploadFile = File(...), 
-    tipo: str = Form(...)
+    tipo: str = Form(None),
+    tipo_pessoal_id: int = Form(None),
+    current_user: User = Depends(get_current_active_user),
+    db: Session = Depends(get_db)
 ):
     contents = await file.read()
-    # Manter os bytes originais para máxima qualidade na geração de imagens
-    # Converter para numpy array apenas para OCR, sem afetar a qualidade original
     image = Image.open(io.BytesIO(contents))
     image_np = np.array(image)
 
-    # ✅ VALIDAR TIPO DE APARTAMENTO
-    tipos_validos = ['essential', 'eco', 'bio', 'class']
-    if tipo.lower() not in tipos_validos:
+    # ✅ VALIDAR TIPO DE APARTAMENTO OU TIPO PESSOAL
+    tipo_para_interpretacao = None
+    tipo_pessoal = None
+
+    if tipo_pessoal_id:
+        # Usuário escolheu tipo pessoal
+        tipo_pessoal = get_personal_type_by_id(db, tipo_pessoal_id, current_user.id)
+        
+        if not tipo_pessoal:
+            return {
+                "erro": f"Tipo pessoal {tipo_pessoal_id} não encontrado ou você não tem permissão para acessá-lo"
+            }
+        
+        if tipo_pessoal.status != "concluido":
+            return {
+                "erro": f"Tipo pessoal ainda está processando. Status: {tipo_pessoal.status}. Aguarde a conclusão da análise."
+            }
+        
+        if not tipo_pessoal.prompts_gerados:
+            return {
+                "erro": f"Prompts do tipo pessoal ainda não foram gerados. Status: {tipo_pessoal.status}"
+            }
+
+        # Para interpretação, usar tipo fornecido ou 'essential' como fallback
+        tipo_para_interpretacao = tipo.lower() if tipo else 'essential'
+
+    elif tipo:
+        # Usuário escolheu tipo padrão
+        tipos_validos = ['essential', 'eco', 'bio', 'class']
+        if tipo.lower() not in tipos_validos:
+            return {
+                "erro": f"Tipo de apartamento '{tipo}' inválido. Tipos permitidos: {tipos_validos}",
+                "tipos_disponveis": tipos_validos
+            }
+        tipo_para_interpretacao = tipo.lower()
+    else:
+        # Nenhum tipo fornecido
         return {
-            "erro": f"Tipo de apartamento '{tipo}' inválido. Tipos permitidos: {tipos_validos}",
-            "tipos_disponveis": tipos_validos
+            "erro": "É necessário fornecer 'tipo' (essential/eco/bio/class) ou 'tipo_pessoal_id'"
         }
 
     # ✅ OCR
@@ -85,19 +124,25 @@ async def gerar_imagens(
 
     # ✅ Interpretação da planta via LLM
     try:
-        dados = interpreter_plan.interpretar_planta_com_ocr(contents, textos_ocr, tipo)
-        comodos = dados.get("comodos") or dados.get("cômodos")  # compatibilidade
+        dados = interpreter_plan.interpretar_planta_com_ocr(
+            contents, 
+            textos_ocr, 
+            tipo_apartamento=tipo_para_interpretacao,
+            tipo_pessoal_nome=None
+        )
+        comodos = dados.get("comodos") or dados.get("cômodos")
     except Exception as e:
         return {
             "erro": f"Erro ao interpretar a planta: {str(e)}",
             "detalhes": str(e) if hasattr(e, '__dict__') else None
         }
 
-
     if not comodos:
         return {"erro": "Nenhum cômodo encontrado na interpretação da planta."}
 
     # ✅ Configurações fixas em ULTRA ALTA QUALIDADE
+    tipo_prompt_usado = f"tipo_pessoal_{tipo_pessoal_id}" if tipo_pessoal_id else tipo_para_interpretacao.upper()
+    
     configuracao = {
         "alta_qualidade": True,
         "resolucao": "MÁXIMA DISPONÍVEL NO MODELO",
@@ -107,7 +152,7 @@ async def gerar_imagens(
         "max_tentativas": 8,
         "delay_progressivo": "5s até 80s",
         "formato": "PNG sem compressão",
-        "tipo_prompt": tipo.upper()
+        "tipo_prompt": tipo_prompt_usado
     }
 
     # ✅ SEMPRE GERAR ARQUIVOS EM ALTA QUALIDADE
@@ -116,18 +161,29 @@ async def gerar_imagens(
     session_dir = IMAGES_OUTPUT_DIR / f"{timestamp}_{session_id}"
     session_dir.mkdir(parents=True, exist_ok=True)
 
-    
     imagens_info = []
+    tipos_validos = ['essential', 'eco', 'bio', 'class']  # Definir aqui para usar no except
     
     for i, comodo in enumerate(comodos):
         try:
-            # Ensure 'comodo' is a dictionary
             if not isinstance(comodo, dict):
                 raise ValueError(f"Expected 'comodo' to be a dictionary, got {type(comodo)}")
             
-            # Gerar prompt específico para o cômodo baseado no tipo do apartamento
+            # Gerar prompt específico para o cômodo
             from ...core.image_generation.image_service import gerar_prompt_por_tipo
-            prompt = gerar_prompt_por_tipo(comodo, tipo.upper())
+
+            if tipo_pessoal_id:
+                # USUÁRIO ESCOLHEU TIPO PESSOAL: usar prompts personalizados
+                prompts_pessoais = get_room_prompts(db, tipo_pessoal_id)
+                tipo_comodo = comodo.get('tipo', 'generico')
+                prompt = prompts_pessoais.get(tipo_comodo)
+                
+                if not prompt:
+                    # Fallback para prompt padrão se não encontrado
+                    prompt = gerar_prompt_por_tipo(comodo, tipo_para_interpretacao.upper())
+            else:
+                # USUÁRIO ESCOLHEU TIPO PADRÃO: usar prompts padrão do tipo escolhido
+                prompt = gerar_prompt_por_tipo(comodo, tipo_para_interpretacao.upper())
             
             # Gerar imagem sempre em ULTRA ALTA QUALIDADE
             from ...core.ai.gemini_service import gerar_imagem
@@ -149,14 +205,13 @@ async def gerar_imagens(
                 "url_relativa": f"/imagens/{timestamp}_{session_id}/{filename}",
                 "dimensoes": comodo.get("dimensoes", {}),
                 "localizacao": comodo.get("localizacao", ""),
-                "notas": comodo.get("notas", "")  # Add this line to include the 'notas' field
+                "notas": comodo.get("notas", "")
             })
             
         except ValueError as e:
-            # Erro de validação de tipo
             return {
                 "erro": str(e),
-                "tipos_disponveis": tipos_validos
+                "tipos_disponveis": tipos_validos if not tipo_pessoal_id else None
             }
         except Exception as e:
             imagens_info.append({
@@ -166,7 +221,8 @@ async def gerar_imagens(
 
     return {
         "modo": "arquivos_hd",
-        "tipo": tipo.upper(),
+        "tipo": tipo_prompt_usado,  # ← CORRIGIDO: usar tipo_prompt_usado ao invés de tipo.upper()
+        "tipo_pessoal_id": tipo_pessoal_id if tipo_pessoal_id else None,
         "quantidade_comodos": len(comodos),
         "session_id": f"{timestamp}_{session_id}",
         "diretorio": session_dir,

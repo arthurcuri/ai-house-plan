@@ -7,7 +7,7 @@ from core.ai.gemini_service import interpretar_planta_com_imagem_structured
 from core.ai.schemas import InterpretacaoPlanta, Comodo, Dimensoes, ContextoGeral
 import logging
 
-def interpretar_planta_com_ocr(image_bytes: bytes, texto_ocr: list, tipo_apartamento: str):
+def interpretar_planta_com_ocr(image_bytes: bytes, texto_ocr: list, tipo_apartamento: str = None, tipo_pessoal_nome: str = None):
     """
     Interpreta uma planta baixa usando OCR e LLM com Structured Output.
     
@@ -19,6 +19,16 @@ def interpretar_planta_com_ocr(image_bytes: bytes, texto_ocr: list, tipo_apartam
     Returns:
         dict: Dados estruturados e validados da interpretação
     """
+
+     # Validar que pelo menos um tipo foi fornecido
+    if not tipo_apartamento and not tipo_pessoal_nome:
+        raise ValueError("É necessário fornecer 'tipo_apartamento' ou 'tipo_pessoal_nome'")
+
+    # Determinar o tipo para o contexto
+    if tipo_pessoal_nome:
+        tipo_contexto = f"Tipo pessoal: {tipo_pessoal_nome}"
+    else:
+        tipo_contexto = f"Tipo padrão MRV: {tipo_apartamento}"
     
     # Prompt estruturado para a LLM interpretar
     prompt = f"""You are an expert architectural analyst specializing in residential floor plans.
@@ -42,7 +52,7 @@ def interpretar_planta_com_ocr(image_bytes: bytes, texto_ocr: list, tipo_apartam
             - Furniture positioning details: exact positions from walls in cm, furniture sizes relative to room
 
             3. Overall context:
-            - Apartment type: {tipo_apartamento}
+            - Apartment type: {tipo_contexto}
             - Solar orientation (if visible): north, south, east, west
             - Circulation flow: linear, circular, etc.
             - Total area estimate
