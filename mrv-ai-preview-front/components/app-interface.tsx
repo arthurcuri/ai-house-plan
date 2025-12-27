@@ -222,7 +222,7 @@ export function AppInterface({ onBackToFeatures }: AppInterfaceProps) {
         />
 
         {/* Upload Section - Show when category is selected */}
-        {selectedCategory && (
+        {(selectedCategory || selectedPersonalType) &&(
           <UploadSection
             onFileUpload={handleFileUpload}
             uploadedFile={uploadedFile}
